@@ -1,12 +1,7 @@
 .. image:: //img.shields.io/badge/license-BSD-brightgreen.png?style=flat
    :alt: License
    :align: center
-   :target: //bitbucket.org/MDukhan/peachpy/src/tip/LICENSE.txt
-
-.. image:: //drone.io/bitbucket.org/MDukhan/peachpy/status.png
-   :alt: Build Status
-   :align: center
-   :target: //drone.io/bitbucket.org/MDukhan/peachpy/latest
+   :target: https://github.com/Maratyszcza/PeachPy/blob/master/license.rst
 
 Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 ============================================================================
