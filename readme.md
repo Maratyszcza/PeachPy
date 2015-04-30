@@ -1,6 +1,8 @@
-[![License](https://img.shields.io/github/license/Maratyszcza/PeachPy.svg)](https://github.com/Maratyszcza/PeachPy/blob/master/license.md)
+<p align="center"><img src="https://github.com/Maratyszcza/PeachPy/blob/master/logo.png" alt="PeachPy logo" title="PeachPy Logo"/></p>
 
 # Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
+
+[![License](https://img.shields.io/github/license/Maratyszcza/PeachPy.svg)](https://github.com/Maratyszcza/PeachPy/blob/master/license.md)
 
 PeachPy is a Python framework for writing high-performance assembly kernels. PeachPy is developed to simplify writing optimized assembly kernels while preserving all optimization opportunities of traditional assembly. Some PeachPy features:
 
