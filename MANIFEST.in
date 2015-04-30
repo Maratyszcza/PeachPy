@@ -1,0 +1,5 @@
+include license.rst
+include readme.rst
+exclude sphinx
+exclude test
+
