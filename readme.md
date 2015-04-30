@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat)](https://github.com/Maratyszcza/PeachPy/blob/master/license.md)
+[![License](https://img.shields.io/github/license/Maratyszcza/PeachPy.svg)](https://github.com/Maratyszcza/PeachPy/blob/master/license.md)
 
 # Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 
