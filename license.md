@@ -1,5 +1,4 @@
-PeachPy license (2-clause BSD)
-===============================
+# PeachPy license (2-clause BSD)
 
 Copyright (c) 2013-2015, Georgia Institute of Technology
 All rights reserved.
