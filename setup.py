@@ -46,7 +46,7 @@ setup(
     url="https://github.com/Maratyszcza/PeachPy/",
     packages=["peachpy"],
     keywords=["assembly", "codegen", "x86-64"],
-    long_description=read_text_file("readme.rst"),
+    long_description=read_text_file("README.rst"),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
