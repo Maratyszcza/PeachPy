@@ -39,7 +39,8 @@ PeachPy is actively developed, and thus there are presently no stable releases. 
 Dependencies and Users
 ----------------------
 
-- Nearly all instruction classes in PeachPy are generated from Opcode
-Most of PeachPy is generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
+- Nearly all instruction classes in PeachPy are generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
+
 - Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
+
 - PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
