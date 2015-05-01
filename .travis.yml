@@ -8,6 +8,7 @@ python:
   - "pypy3"
 install:
   - pip install -r requirements.txt
+  - python setup.py generate
   - pip install .
   - pip install -r test/requirements.txt
   - export PATH="$HOME/.local/bin:$PATH"
