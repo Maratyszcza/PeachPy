@@ -4,7 +4,9 @@
 Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 ===========================================================================
 
-[![License](https://img.shields.io/github/license/Maratyszcza/PeachPy.svg)](https://github.com/Maratyszcza/PeachPy/blob/master/LICENSE.rst)
+.. image:: https://img.shields.io/github/license/Maratyszcza/PeachPy.svg
+  :alt: PeachPy License: Simplified BSD
+  :target: https://github.com/Maratyszcza/PeachPy/blob/master/LICENSE.rst
 
 PeachPy is a Python framework for writing high-performance assembly kernels. PeachPy is developed to simplify writing optimized assembly kernels while preserving all optimization opportunities of traditional assembly. Some PeachPy features:
 
@@ -32,6 +34,6 @@ Dependencies and Users
 ----------------------
 
 - Nearly all instruction classes in PeachPy are generated from Opcode
-Most of PeachPy is generated from [Opcodes Database](https://github.com/Maratyszcza/Opcodes)
-- Instruction encodings in PeachPy are validated against [binutils](https://www.gnu.org/software/binutils/) using auto-generated tests
-- PeachPy powers [Yeppp!](http://www.yeppp.info) performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
+Most of PeachPy is generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
+- Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
+- PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
