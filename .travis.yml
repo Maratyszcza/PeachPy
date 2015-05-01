@@ -9,4 +9,5 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install .
+  - pip install -r test/requirements.txt
 script: nosetests
