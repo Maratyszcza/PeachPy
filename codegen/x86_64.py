@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 import opcodes
+import six
 from opcodes.x86_64 import *
 from codegen.code import CodeWriter, CodeBlock
 import operator
@@ -49,8 +50,8 @@ def aggregate_instruction_forms(instruction_forms):
         if len(form.operands) != len(other_form.operands):
             return None
         different_operand_numbers = \
-            filter(lambda n: form.operands[n].type != other_form.operands[n].type,
-                   range(len(form.operands)))
+            list(filter(lambda n: form.operands[n].type != other_form.operands[n].type,
+                        range(len(form.operands))))
         if len(different_operand_numbers) == 1:
             return different_operand_numbers[0]
         else:
@@ -553,9 +554,9 @@ def instruction_branch_label_form_init(code, instruction_form, instruction_subfo
     if write_gas_name:
         gas_name_init(code, instruction_form)
 
-    for form in ([instruction_form] + map(operator.itemgetter(1), instruction_subforms)):
-        encoding_lambdas = map(lambda e: generate_encoding_lambda(e, form.operands, use_off_argument=True),
-                               form.encodings)
+    for form in ([instruction_form] + list(map(operator.itemgetter(1), instruction_subforms))):
+        encoding_lambdas = list(map(lambda e: generate_encoding_lambda(e, form.operands, use_off_argument=True),
+                                    form.encodings))
         assert len(encoding_lambdas) == 1, \
             "Branch label instructions are expected to have only one encoding for each operand type"
         flags, encoding_lambda = encoding_lambdas[0]
@@ -575,7 +576,7 @@ def instruction_form_init(code, instruction_form, instruction_subforms,
                           write_in_regs=True, write_out_regs=True, write_out_operands=True,
                           write_mmx_mode=True, write_xmm_mode=True):
     """Generates initialization code for a particular instruction form"""
-    immediate_operands = filter(lambda (_, op): op.is_immediate, enumerate(instruction_form.operands))
+    immediate_operands = [(i, op) for (i, op) in enumerate(instruction_form.operands) if op.is_immediate]
     for (i, operand) in immediate_operands:
         code.line("if not %s:" % generate_operand_check(i, operand,
                                                         ignore_imm_size=False, ext_imm_size=operand.extended_size))
@@ -657,8 +658,8 @@ def reduce_operand_types(operand_types_list):
             if len(operand_types) != len(other_operand_types):
                 continue
             different_operand_numbers = \
-                filter(lambda n: operand_types[n] != other_operand_types[n],
-                       range(len(operand_types)))
+                list(filter(lambda n: operand_types[n] != other_operand_types[n],
+                            range(len(operand_types))))
             if len(different_operand_numbers) == 1:
                 operand_number = different_operand_numbers[0]
                 if (operand_types[operand_number], other_operand_types[operand_number]) in nested_operand_types:
@@ -698,8 +699,8 @@ def reduce_operand_types(operand_types_list):
             if len(operand_types) != len(other_operand_types):
                 continue
             different_operand_numbers = \
-                filter(lambda n: operand_types[n] != other_operand_types[n],
-                       range(len(operand_types)))
+                list(filter(lambda n: operand_types[n] != other_operand_types[n],
+                       range(len(operand_types))))
             if len(different_operand_numbers) == 1:
                 operand_number = different_operand_numbers[0]
                 if (other_operand_types[operand_number], operand_types[operand_number]) in mergeble_operand_types:
@@ -729,7 +730,7 @@ def supported_forms_comment(code, instruction_forms):
         return form_descriptions
 
     def get_operand_types_list(instruction_forms):
-        operand_types_list = [map(operator.attrgetter("type"), instruction_form.operands) \
+        operand_types_list = [list(map(operator.attrgetter("type"), instruction_form.operands))
                               for instruction_form in instruction_forms]
         return reduce_operand_types(operand_types_list)
 
@@ -741,12 +742,13 @@ def supported_forms_comment(code, instruction_forms):
     form_descriptions = format_form_descriptions(instruction_forms[0].name, get_operand_types_list(instruction_forms))
     padding_length = max(map(len, form_descriptions))
 
-    form_isa_extensions_options = sorted(set(map(tuple, get_isa_extensions(instruction_forms))))
+    form_isa_extensions_options = sorted(set(map(tuple, get_isa_extensions(instruction_forms))),
+                                         key=lambda isa_tuple: tuple(map(operator.attrgetter("score"), isa_tuple)))
     for isa_extensions_option in form_isa_extensions_options:
         isa_description = ""
         if isa_extensions_option:
             isa_description = "[" + "/".join(map(str, isa_extensions_option)) + "]"
-        isa_forms = filter(lambda form: tuple(form.isa_extensions) == isa_extensions_option, instruction_forms)
+        isa_forms = list(filter(lambda form: tuple(form.isa_extensions) == isa_extensions_option, instruction_forms))
         for form_description in format_form_descriptions(instruction_forms[0].name, get_operand_types_list(isa_forms)):
             if isa_description:
                 padding = " " * (4 + padding_length - len(form_description))
@@ -760,7 +762,7 @@ def is_label_branch(instruction_form):
 
 
 def main(package_root="."):
-    for group, instruction_names in instruction_groups.iteritems():
+    for group, instruction_names in six.iteritems(instruction_groups):
         with open(os.path.join(package_root, "peachpy", "x86_64", group + ".py"), "w") as out:
             with CodeWriter() as code:
                 code.line("# This file is auto-generated by /codegen/x86_64.py")
@@ -782,7 +784,7 @@ def main(package_root="."):
                 code.line()
                 for name in instruction_names:
                     # Instructions with `name` name
-                    name_instructions = filter(lambda i: i.name == name, instruction_set)
+                    name_instructions = list(filter(lambda i: i.name == name, instruction_set))
                     if not name_instructions:
                         print("No forms for instruction: " + name)
                         continue
@@ -830,7 +832,7 @@ def main(package_root="."):
                         with CodeBlock():
                             code.line("\"\"\"Supported forms:")
                             with CodeBlock():
-                                supported_forms_comment(code, instruction_forms.keys())
+                                supported_forms_comment(code, list(six.iterkeys(instruction_forms)))
                             code.line("\"\"\"")
                             code.line()
 
@@ -841,7 +843,7 @@ def main(package_root="."):
                             code.line("super(%s, self).__init__(\"%s\", origin=origin, prototype=prototype)" % (name, name))
                             code.line("self.operands = tuple(map(check_operand, args))")
                             operand_count_options = sorted(set([len(instruction_form.operands)
-                                                                for instruction_form in instruction_forms.iterkeys()]))
+                                                                for instruction_form in six.iterkeys(instruction_forms)]))
                             if len(operand_count_options) == 1:
                                 code.line("if len(self.operands) != %d:" % operand_count_options[0])
                                 code.indent_line("raise SyntaxError(\"Instruction \\\"%s\\\" requires %d operands\")" % (name, operand_count_options[0]))
@@ -851,10 +853,11 @@ def main(package_root="."):
                                     code.line("%s len(self.operands) == %d:" % ("if" if index == 0 else "elif", count))
                                 with CodeBlock(consider_operand_count):
                                     # Consider only instruction forms that have exactly `count` operands
-                                    count_operand_form_trees = filter(lambda (form, _): len(form.operands) == count,
-                                                                      instruction_forms.iteritems())
+                                    count_operand_form_trees = list(filter(lambda form_subforms:
+                                                                           len(form_subforms[0].operands) == count,
+                                                                           six.iteritems(instruction_forms)))
                                     # The most generic instruction forms
-                                    count_operand_forms = map(operator.itemgetter(0), count_operand_form_trees)
+                                    count_operand_forms = list(map(operator.itemgetter(0), count_operand_form_trees))
                                     combine_attrs = len(count_operand_forms) > 1 or is_label_branch(count_operand_forms[0])
                                     # Check how many in_regs combinations exist
                                     in_regs_options = set(map(get_in_regs, count_operand_forms))
