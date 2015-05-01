@@ -6,13 +6,8 @@ import inspect
 import peachpy.stream
 import peachpy.x86_64.options
 import peachpy.x86_64.isa
-from peachpy.util import is_sint8, is_sint32
-from peachpy.x86_64.encoding import rex, optional_rex, vex2, vex3, modrm_sib_disp
-from peachpy.x86_64.instructions import Instruction, BranchInstruction
-from peachpy.x86_64.operand import is_al, is_ax, is_eax, is_rax, is_cl, is_xmm0, is_r8, is_r8rex, is_r16, is_r32, is_r64, \
-    is_mm, is_xmm, is_ymm, is_m, is_m8, is_m16, is_m32, is_m64, is_m80, is_m128, is_m256, \
-    is_vm32x, is_vm64x, is_vm32y, is_vm64y, is_imm, is_imm4, is_imm8, is_imm16, is_imm32, is_imm64, \
-    is_rel8, is_rel32, is_label, check_operand, format_operand_type
+from peachpy.x86_64.instructions import Instruction
+from peachpy.x86_64.operand import check_operand, format_operand_type
 
 
 class Label:
@@ -44,7 +39,13 @@ class Label:
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with Unicode middle dot symbol
-            return self.name.replace(".", "\xC2\xB7")
+            import six
+            if six.PY2:
+                return self.name.replace(".", "\xC2\xB7")
+            else:
+                import six
+                return self.name.replace(".", six.unichr(0xB7))
+
         else:
             return str(self)
 
@@ -81,7 +82,11 @@ class LABEL(Instruction):
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with Unicode middle dot symbol
-            return self.identifier.replace(".", "\xC2\xB7") + ":"
+            import six
+            if six.PY2:
+                return self.identifier.replace(".", "\xC2\xB7") + ":"
+            else:
+                return self.identifier.replace(".", "\u00B7") + ":"
         else:
             return str(self)
 
@@ -258,7 +263,7 @@ class LOAD:
 
             # Check destination (first) operand
             if isinstance(self.operands[0], GeneralPurposeRegister) and (argument.is_integer or argument.is_pointer):
-                if self.operands[0].size < argument.size:
+                if argument.size is not None and self.operands[0].size < argument.size:
                     raise ValueError("Destination register %s is too narrow for the argument %s"
                                      % (self.operands[0], argument))
             elif isinstance(self.operands[0], (XMMRegister, YMMRegister)) and argument.is_floating_point:

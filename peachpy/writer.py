@@ -34,8 +34,9 @@ class AssemblyWriter:
         global active_writer
         self.previous_writer = active_writer
         active_writer = self
-        self.output_file = open(self.output_path, "w", buffering=0)
+        self.output_file = open(self.output_path, "w")
         self.output_file.write(self.output_header)
+        self.output_file.flush()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -60,6 +61,7 @@ class AssemblyWriter:
 
         import os
         self.output_file.write(function_code + os.linesep)
+        self.output_file.flush()
 
 
 class ELFWriter:

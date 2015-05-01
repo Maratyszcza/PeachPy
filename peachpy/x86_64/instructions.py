@@ -2,6 +2,9 @@
 #    See license.rst for the full text of the license.
 
 
+from six.moves import reduce
+
+
 class Instruction(object):
     def __init__(self, name, isa_extensions=None, origin=None, prototype=None):
         import peachpy.x86_64.isa
@@ -59,7 +62,7 @@ class Instruction(object):
             return self._gas_name
 
     def format(self, assembly_format, indent):
-        from operand import format_operand
+        from peachpy.x86_64.operand import format_operand
         text = "\t" * self._indent_level if indent else ""
         if assembly_format == "peachpy":
             return text + str(self)

@@ -1,23 +1,52 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-from __future__ import print_function
 from peachpy import *
 from peachpy.x86_64 import *
 import sys
 import argparse
 
 
-import argparse
 parser = argparse.ArgumentParser(
     description="Peach-Py: Portable Efficient Assembly Code-generation in High-level Python")
 parser.add_argument("-g", dest="debug_level", type=int, default=0,
                     help="Debug information level")
 parser.add_argument("-S", dest="generate_assembly", action="store_true",
                     help="Generate assembly listing on output")
+
+abi_map = {
+    "ms": peachpy.x86_64.abi.microsoft_x64_abi,
+    "sysv": peachpy.x86_64.abi.system_v_x86_64_abi,
+    "x32": peachpy.x86_64.abi.linux_x32_abi,
+    "nacl": peachpy.x86_64.abi.native_client_x86_64_abi,
+    "golang": peachpy.x86_64.abi.golang_amd64_abi,
+    "golang-p32": peachpy.x86_64.abi.golang_amd64p32_abi
+}
 parser.add_argument("-mabi", dest="abi", required=True,
                     choices=("ms", "sysv", "x32", "nacl", "golang", "golang-p32"),
                     help="Generate code for specified ABI")
+
+cpu_map = {
+    "default": peachpy.x86_64.uarch.default,
+    "prescott": peachpy.x86_64.uarch.prescott,
+    "conroe": peachpy.x86_64.uarch.conroe,
+    "penryn": peachpy.x86_64.uarch.penryn,
+    "nehalem": peachpy.x86_64.uarch.nehalem,
+    "sandybridge": peachpy.x86_64.uarch.sandy_bridge,
+    "ivybridge": peachpy.x86_64.uarch.ivy_bridge,
+    "haswell": peachpy.x86_64.uarch.haswell,
+    "broadwell": peachpy.x86_64.uarch.broadwell,
+    "k8": peachpy.x86_64.uarch.k8,
+    "k10": peachpy.x86_64.uarch.k10,
+    "bulldozer": peachpy.x86_64.uarch.bulldozer,
+    "piledriver": peachpy.x86_64.uarch.piledriver,
+    "steamroller": peachpy.x86_64.uarch.steamroller,
+    "bonnell": peachpy.x86_64.uarch.bonnell,
+    "saltwell": peachpy.x86_64.uarch.saltwell,
+    "silvermont": peachpy.x86_64.uarch.silvermont,
+    "bobcat": peachpy.x86_64.uarch.bobcat,
+    "jaguar": peachpy.x86_64.uarch.jaguar
+}
 parser.add_argument("-mcpu", dest="cpu", required=True,
                     choices=("default", "prescott", "conroe", "penryn", "nehalem", "sandybridge", "ivybridge",
                              "haswell", "broadwell", "k8", "k10", "bulldozer", "piledriver", "steamroller",
@@ -65,53 +94,30 @@ def main():
     options = parser.parse_args()
     import peachpy.x86_64.options
     peachpy.x86_64.options.debug_level = options.debug_level
-    peachpy.x86_64.options.abi = {
-        "ms": abi.microsoft_x64_abi,
-        "sysv": abi.system_v_x86_64_abi,
-        "x32": abi.linux_x32_abi,
-        "nacl": abi.native_client_x86_64_abi,
-        "golang": abi.golang_amd64_abi,
-        "golang-p32": abi.golang_amd64p32_abi
-    }[options.abi]
-    peachpy.x86_64.options.target = {
-        "default": uarch.default,
-        "prescott": uarch.prescott,
-        "conroe": uarch.conroe,
-        "penryn": uarch.penryn,
-        "nehalem": uarch.nehalem,
-        "sandybridge": uarch.sandy_bridge,
-        "ivybridge": uarch.ivy_bridge,
-        "haswell": uarch.haswell,
-        "broadwell": uarch.broadwell,
-        "k8": uarch.k8,
-        "k10": uarch.k10,
-        "bulldozer": uarch.bulldozer,
-        "piledriver": uarch.piledriver,
-        "steamroller": uarch.steamroller,
-        "bonnell": uarch.bonnell,
-        "saltwell": uarch.saltwell,
-        "silvermont": uarch.silvermont,
-        "bobcat": uarch.bobcat,
-        "jaguar": uarch.jaguar
-    }[options.cpu]
+    peachpy.x86_64.options.abi = abi_map[options.abi]
+    peachpy.x86_64.options.target = cpu_map[options.cpu]
     peachpy.x86_64.options.package = options.package
     peachpy.x86_64.options.generate_assembly = options.generate_assembly
 
     import peachpy.writer
     writer = peachpy.writer.NullWriter()
     if peachpy.x86_64.options.generate_assembly:
-        if peachpy.x86_64.options.abi in [abi.golang_amd64_abi, abi.golang_amd64p32_abi]:
+        if peachpy.x86_64.options.abi in [peachpy.x86_64.abi.golang_amd64_abi, peachpy.x86_64.abi.golang_amd64p32_abi]:
             writer = peachpy.writer.AssemblyWriter(options.output, "go", options.input[0])
         else:
             raise ValueError("Assembly output for %s ABI is unsupported" % str(peachpy.x86_64.options.abi))
     else:
-        if peachpy.x86_64.options.abi in [abi.system_v_x86_64_abi, abi.linux_x32_abi, abi.native_client_x86_64_abi]:
+        if peachpy.x86_64.options.abi in [peachpy.x86_64.abi.system_v_x86_64_abi,
+                                          peachpy.x86_64.abi.linux_x32_abi,
+                                          peachpy.x86_64.abi.native_client_x86_64_abi]:
             writer = peachpy.writer.ELFWriter(options.output, peachpy.x86_64.options.abi, options.input[0])
         else:
             raise ValueError("Binary output for %s ABI is unsupported" % str(peachpy.x86_64.options.abi))
 
     with writer:
-        execfile(options.input[0])
+        with open(options.input[0]) as input_file:
+            code = compile(input_file.read(), options.input[0], 'exec')
+            exec(code, globals())
 
 
 if __name__ == "__main__":

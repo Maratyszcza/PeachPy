@@ -6,6 +6,7 @@ import os
 import operator
 import bisect
 import collections
+import six
 
 import peachpy
 import peachpy.writer
@@ -141,7 +142,7 @@ class Function:
             else:
                 return None
 
-        go_argument_types = map(c_to_go_type, map(operator.attrgetter("ctype"), self.arguments))
+        go_argument_types = list(map(c_to_go_type, map(operator.attrgetter("ctype"), self.arguments)))
         # Some of the C types doesn't have a Go analog
         if not(all(map(bool, go_argument_types))):
             return None
@@ -167,7 +168,7 @@ class Function:
             self._add_default_labels()
             self._check_undefined_labels()
             self._remove_unused_labels()
-            self._analylize()
+            self._analize()
             self._check_live_registers()
             self._preallocate_registers()
             self._bind_registers()
@@ -314,12 +315,12 @@ class Function:
             if not isinstance(self._instructions[0], LABEL) or self._instructions[0].identifier != self.entry.name:
                 unreferenced_label_names.remove(self.entry.name)
         # Remove LABEL pseudo-instructions with unreferenced label names
-        self._instructions = filter(
-            lambda instr: not isinstance(instr, LABEL) or instr.identifier not in unreferenced_label_names,
-            self._instructions)
+        self._instructions = [instruction for instruction in self._instructions
+                              if not isinstance(instruction, LABEL) or
+                              instruction.identifier not in unreferenced_label_names]
         self._label_names.difference_update(unreferenced_label_names)
 
-    def _analylize(self):
+    def _analize(self):
         from peachpy.x86_64.instructions import BranchInstruction
         from peachpy.x86_64.pseudo import LABEL, RETURN
         from peachpy.x86_64.generic import RET
@@ -381,11 +382,11 @@ class Function:
                 # - If a register is produced by an instruction, it becomes available for the subsequent instructions
                 #   of the basic block and counts as produced by the basic block
                 for (input_registers, output_registers) in zip(input_registers_list, output_registers_list):
-                    for (input_register_id, input_register_mask) in input_registers.iteritems():
+                    for (input_register_id, input_register_mask) in six.iteritems(input_registers):
                         consumed_mask = input_register_mask & ~self.produced_register_masks[input_register_id]
                         if consumed_mask != 0:
                             self.consumed_register_masks[input_register_id] |= consumed_mask
-                    for (output_register_id, output_register_mask) in output_registers.iteritems():
+                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
                         self.produced_register_masks[output_register_id] |= output_register_mask
 
             @property
@@ -397,7 +398,7 @@ class Function:
                     # Record available registers for current instruction
                     available_registers_list.append(available_registers_masks.copy())
                     # Update with output registers for current instruction
-                    for (output_register_id, output_register_mask) in output_registers.iteritems():
+                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
                         available_registers_masks[output_register_id] = \
                             available_registers_masks.get(output_register_id, 0) | output_register_mask
                 return available_registers_list
@@ -408,9 +409,9 @@ class Function:
                 live_registers_list = []
                 live_registers_masks = self.live_register_masks.copy()
                 for (input_registers, output_registers) in \
-                        reversed(zip(self.input_registers_list, self.output_registers_list)):
+                        reversed(list(zip(self.input_registers_list, self.output_registers_list))):
                     # Mark register written by the instruction as non-live
-                    for (output_register_id, output_register_mask) in output_registers.iteritems():
+                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
                         if output_register_id in live_registers_masks:
                             new_live_register_mask = live_registers_masks[output_register_id] & ~output_register_mask
                             if new_live_register_mask != 0:
@@ -418,7 +419,7 @@ class Function:
                             else:
                                 del live_registers_masks[output_register_id]
                     # Mark registers read by the instruction as live
-                    for (input_register_id, input_register_mask) in input_registers.iteritems():
+                    for (input_register_id, input_register_mask) in six.iteritems(input_registers):
                         live_registers_masks[input_register_id] = \
                             live_registers_masks.get(input_register_id, 0) | input_register_mask
                     # Record available registers for current instruction
@@ -440,12 +441,12 @@ class Function:
                     self.available_register_masks.update(extra_available_registers)
                     if self.output_blocks:
                         # Add registers produced by this block
-                        for (produced_reg_id, produced_reg_mask) in self.produced_register_masks.iteritems():
+                        for (produced_reg_id, produced_reg_mask) in six.iteritems(self.produced_register_masks):
                             extra_available_registers[produced_reg_id] =\
                                 extra_available_registers.get(produced_reg_id, 0) | produced_reg_mask
                 else:
                     # Subsequent passes: compute and propagate only the input registers that were not processed before
-                    for (reg_id, extra_reg_mask) in extra_available_registers.items():
+                    for (reg_id, extra_reg_mask) in list(six.iteritems(extra_available_registers)):
                         old_reg_mask = self.available_register_masks[reg_id]
                         update_reg_mask = extra_reg_mask & ~old_reg_mask
                         if update_reg_mask != 0:
@@ -472,7 +473,7 @@ class Function:
                 self.liveness_analysis_passes += 1
 
                 # Steps 1 and 2
-                for (reg_id, extra_reg_mask) in extra_live_registers.items():
+                for (reg_id, extra_reg_mask) in list(six.iteritems(extra_live_registers)):
                     old_reg_mask = self.live_register_masks[reg_id]
                     update_reg_mask = extra_reg_mask & ~old_reg_mask
                     if update_reg_mask != 0:
@@ -491,7 +492,7 @@ class Function:
                 # Step 3
                 if self.input_blocks:
                     if self.liveness_analysis_passes == 1:
-                        for (consumed_reg_id, consumed_reg_mask) in self.consumed_register_masks.iteritems():
+                        for (consumed_reg_id, consumed_reg_mask) in six.iteritems(self.consumed_register_masks):
                             extra_live_registers[consumed_reg_id] =\
                                 extra_live_registers.get(consumed_reg_id, 0) | consumed_reg_mask
 
@@ -508,11 +509,11 @@ class Function:
                     for output_block in self.output_blocks:
                         output_block.analyze_reachability()
 
-        basic_blocks = map(lambda start_end:
+        basic_blocks = list(map(lambda start_end:
                            BasicBlock(start_end[0], start_end[1],
                                       input_registers[start_end[0]:start_end[1]],
                                       output_registers[start_end[0]:start_end[1]]),
-                           basic_block_bounds)
+                           basic_block_bounds))
         # Map from block start position to BasicBlock object
         basic_blocks_map = {basic_block_start: basic_block
                             for (basic_block_start, basic_block) in zip(basic_block_starts, basic_blocks)}
@@ -535,7 +536,7 @@ class Function:
                 basic_block.output_blocks = [basic_blocks[i+1]]
         # Set input basic blocks for each basic block object
         for basic_block in basic_blocks:
-            basic_block.input_blocks = filter(lambda bb: basic_block in bb.output_blocks, basic_blocks)
+            basic_block.input_blocks = list(filter(lambda bb: basic_block in bb.output_blocks, basic_blocks))
 
         # Analyze which blocks can be reached from the entry point
         basic_blocks_map[entry_position].analyze_reachability()
@@ -559,11 +560,11 @@ class Function:
 
         # Analyze conflicting registers
         for instruction in self._instructions:
-            virtual_registers = filter(operator.attrgetter("is_virtual"), instruction.registers)
+            virtual_registers = list(filter(operator.attrgetter("is_virtual"), instruction.registers))
             for virtual_register in virtual_registers:
                 # TODO: generalize conflicts
                 conflicting_ids = [reg_id for (reg_id, reg_mask)
-                                   in instruction._live_registers.iteritems()
+                                   in six.iteritems(instruction._live_registers)
                                    if reg_mask & virtual_register.mask != 0]
                 self._conflicting_registers[virtual_register.kind][-virtual_register.virtual_id]\
                     .update(conflicting_ids)
@@ -582,7 +583,7 @@ class Function:
             live_registers = max_live_registers.copy()
             for reg in instruction.live_registers:
                 live_registers[reg.kind] -= 1
-            if any(map(lambda c: c < 0, live_registers.itervalues())):
+            if any(map(lambda c: c < 0, six.itervalues(live_registers))):
                 raise peachpy.RegisterAllocationError(
                     "The number of live virtual registers exceeds physical constaints %s" % str(instruction))
 
@@ -789,7 +790,7 @@ class ABIFunction:
         assert isinstance(function, Function), "Function object expected"
         assert isinstance(abi, ABI), "ABI object expected"
         self.name = function.name
-        self.arguments = map(lambda arg: Argument(arg, abi), function.arguments)
+        self.arguments = list(map(lambda arg: Argument(arg, abi), function.arguments))
         self.result_type = function.result_type
         self.result_offset = None
         self.package = function.package
@@ -947,7 +948,7 @@ class ABIFunction:
             XMMRegister._kind: dict()
         }
         from peachpy.x86_64.pseudo import LOAD
-        for vreg_kind, vreg_ids in self._conflicting_registers.iteritems():
+        for vreg_kind, vreg_ids in six.iteritems(self._conflicting_registers):
             for vreg_id in vreg_ids:
                 allocation_options[vreg_kind][vreg_id] = []
 
@@ -963,9 +964,9 @@ class ABIFunction:
         # A list of physical register IDs ordered by allocation priority:
         # - Volatile and argument registers go first
         # - Then allocation may use non-volatile registers
-        physical_register_ids = map(operator.attrgetter("physical_id"), self.abi.volatile_registers +
-                                    list(reversed(self.abi.argument_registers)) + self.abi.callee_save_registers)
-        for vreg_kind, vreg_ids in allocation_options.iteritems():
+        physical_register_ids = list(map(operator.attrgetter("physical_id"), self.abi.volatile_registers +
+                                         list(reversed(self.abi.argument_registers)) + self.abi.callee_save_registers))
+        for vreg_kind, vreg_ids in six.iteritems(allocation_options):
             for vreg_id in vreg_ids:
                 allocation_options[vreg_kind][vreg_id] = \
                     unique(allocation_options[vreg_kind][vreg_id] + physical_register_ids)
@@ -975,7 +976,7 @@ class ABIFunction:
                 # print("%d -> %s" % (vreg_id, str(allocation_options[vreg_kind][vreg_id])))
 
         # Allocate registers
-        for vreg_kind, vreg_ids in allocation_options.iteritems():
+        for vreg_kind, vreg_ids in six.iteritems(allocation_options):
             # Choose the register to allocate
             for vreg_id in vreg_ids:
                 if not vreg_ids[vreg_id]:
@@ -1058,7 +1059,7 @@ class ABIFunction:
             else:
                 if self.abi == native_client_x86_64_abi:
                     from peachpy.x86_64.operand import is_m
-                    memory_operands = filter(lambda op: is_m(op), instruction.operands)
+                    memory_operands = list(filter(lambda op: is_m(op), instruction.operands))
                     if memory_operands:
                         assert len(memory_operands) == 1, \
                             "x86-64 instructions can not have more than 1 explicit memory operand"
@@ -1085,7 +1086,7 @@ class ABIFunction:
         output_registers = set()
         for instruction in self._instructions:
             output_registers.update(instruction.output_registers)
-        return sorted(filter(lambda reg: reg in self.abi.callee_save_registers, output_registers))
+        return list(sorted(filter(lambda reg: reg in self.abi.callee_save_registers, output_registers)))
 
     def _bind_registers(self):
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
@@ -1126,7 +1127,10 @@ class ABIFunction:
             package_string = self.package
             if package_string is None:
                 package_string = ""
-            text_arguments = ["%s\xC2\xB7%s(SB)" % (package_string, self.name)]
+            if six.PY2:
+                text_arguments = [package_string + "\xC2\xB7" + self.name + "(SB)"]
+            else:
+                text_arguments = [package_string + "\u00B7" + self.name + "(SB)"]
 
             text_arguments.append("4")
             stack_size = sum(map(operator.attrgetter("size"), self.arguments))
@@ -1254,7 +1258,7 @@ class EncodedFunction:
         from copy import copy, deepcopy
         assert isinstance(function, ABIFunction), "ABIFunction object expected"
         self.name = function.name
-        self.arguments = map(copy, function.arguments)
+        self.arguments = list(map(copy, function.arguments))
         self.result_type = function.result_type
         self.target = function.target
         self.abi = function.abi
@@ -1292,13 +1296,13 @@ class EncodedFunction:
 
     def _encode_nops(self, length):
         assert 1 <= length <= 31
-        import encoding
+        from peachpy.x86_64.encoding import nop
         if length <= 15:
-            return encoding.nop(length)
+            return nop(length)
         elif length <= 30:
-            return encoding.nop(length // 2) + encoding.nop(length - length // 2)
+            return nop(length // 2) + nop(length - length // 2)
         else:
-            return encoding.nop(8) + encoding.nop(8) + encoding.nop(15)
+            return nop(8) + nop(8) + nop(15)
 
     def _encode_abort(self, length):
         from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
@@ -1352,7 +1356,7 @@ class EncodedFunction:
 
     @property
     def as_bytearray(self):
-        return reduce(operator.add, filter(bool, map(operator.attrgetter("bytecode"), self._instructions)), bytearray())
+        return sum(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)), bytearray())
 
 
 class ExecutableFuntion:
@@ -1367,9 +1371,9 @@ class ExecutableFuntion:
         self.loader.copy_code(self.code_segment)
 
         import ctypes
-        return_type = None if function.return_type is None else function.return_type.as_ctypes_type
+        result_type = None if function.result_type is None else function.result_type.as_ctypes_type
         argument_types = [arg.ctype.as_ctypes_type for arg in function.arguments]
-        self.function_type = ctypes.CFUNCTYPE(return_type, *argument_types)
+        self.function_type = ctypes.CFUNCTYPE(result_type, *argument_types)
         self.function_pointer = self.function_type(self.loader.code_address)
 
     def __call__(self, *args):
@@ -1383,12 +1387,13 @@ class ExecutableFuntion:
 
 class LocalVariable:
     def __init__(self, size_option, alignment=None):
-        if alignment is not None and not isinstance(alignment, (int, long)):
+        from peachpy.util import is_int
+        if alignment is not None and not is_int(alignment):
             raise TypeError("alignment %s is not an integer" % str(alignment))
         if alignment is not None and alignment <= 0:
             raise ValueError("alignment %d is not a positive integer" % alignment)
         self.alignment = alignment
-        if isinstance(size_option, (int, long)):
+        if is_int(size_option):
             if size_option <= 0:
                 raise ValueError("size %d is not a positive integer" % size_option)
             self.size = size_option
