@@ -10,6 +10,10 @@ Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
   :alt: PeachPy License: Simplified BSD
   :target: https://github.com/Maratyszcza/PeachPy/blob/master/LICENSE.rst
 
+.. image:: https://travis-ci.org/Maratyszcza/PeachPy.svg?branch=master
+  :alt: CI Build Status
+  :target: https://travis-ci.org/Maratyszcza/PeachPy/
+
 PeachPy is a Python framework for writing high-performance assembly kernels. PeachPy is developed to simplify writing optimized assembly kernels while preserving all optimization opportunities of traditional assembly. Some PeachPy features:
 
   - Universal assembly syntax for Windows, Unix, and Golang assembly
