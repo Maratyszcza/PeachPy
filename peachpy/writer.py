@@ -100,10 +100,11 @@ class ELFWriter:
 
     def add_function(self, function):
         import peachpy.x86_64.function
-        assert isinstance(function, peachpy.x86_64.function.EncodedFunction), \
-            "Function must be encoded before writing to ELF image"
+        assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
+            "Function must be bindinded to an ABI before its assembly can be used"
 
-        function_code = function.as_bytearray()
+        encoded_function = function.encode()
+        function_code = encoded_function.as_bytearray
 
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
         function_symbol = Symbol(self.abi)
