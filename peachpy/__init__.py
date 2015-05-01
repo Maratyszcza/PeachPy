@@ -506,32 +506,32 @@ class Constant(object):
     @staticmethod
     def is_int64(number):
         if isinstance(number, int) or isinstance(number, long):
-            return -9223372036854775808L <= number <= 18446744073709551615L
+            return -9223372036854775808 <= number <= 18446744073709551615
         else:
             return False
 
     @staticmethod
     def as_uint64(number):
         assert Constant.is_int64(number)
-        if 0 <= number <= 18446744073709551615L:
+        if 0 <= number <= 18446744073709551615:
             return long(number)
         else:
-            return long(number + 18446744073709551616L)
+            return long(number + 18446744073709551616)
 
     @staticmethod
     def is_int32(number):
         if isinstance(number, int) or isinstance(number, long):
-            return -2147483648L <= number <= 4294967295L
+            return -2147483648 <= number <= 4294967295
         else:
             return False
 
     @staticmethod
     def as_uint32(number):
         assert Constant.is_int32(number)
-        if 0 <= number <= 4294967295L:
+        if 0 <= number <= 4294967295:
             return long(number)
         else:
-            return long(number + 4294967296L)
+            return long(number + 4294967296)
 
     @staticmethod
     def is_int16(number):
@@ -567,7 +567,7 @@ class Constant(object):
     def uint64(number):
         if isinstance(number, int) or isinstance(number, long):
             if Constant.is_int64(number):
-                return Constant(64, 1, Constant.as_uint64(number + 18446744073709551616L))
+                return Constant(64, 1, Constant.as_uint64(number + 18446744073709551616))
             else:
                 raise ValueError("The number {0} is not a 64-bit integer".format(number))
         else:
@@ -763,10 +763,10 @@ class Constant(object):
     @staticmethod
     def uint32(number):
         if isinstance(number, int) or isinstance(number, long):
-            if 0 <= number <= 4294967295L:
+            if 0 <= number <= 4294967295:
                 return Constant(32, 1, long(number), 'uint32')
-            elif -2147483648L <= number < 0:
-                return Constant(32, 1, long(number + 4294967296L), 'uint32')
+            elif -2147483648 <= number < 0:
+                return Constant(32, 1, long(number + 4294967296), 'uint32')
             else:
                 raise ValueError("The number {0} is not a 32-bit integer".format(number))
         else:
@@ -839,11 +839,11 @@ class Constant(object):
             number = float.hex(number)
         elif isinstance(number, str):
             if number == "inf" or number == "+inf":
-                return 0x7FF0000000000000L
+                return 0x7FF0000000000000
             elif number == "-inf":
-                return 0xFFF0000000000000L
+                return 0xFFF0000000000000
             elif number == "nan":
-                return 0x7FF8000000000000L
+                return 0x7FF8000000000000
             else:
                 # Validity check
                 float.hex(float.fromhex(number))

@@ -7,7 +7,7 @@ def is_int(n):
 
 
 def is_int64(n):
-    return isinstance(n, (int, long)) and -9223372036854775808L <= n <= 18446744073709551615L
+    return isinstance(n, (int, long)) and -9223372036854775808 <= n <= 18446744073709551615
 
 
 def is_int32(n):
