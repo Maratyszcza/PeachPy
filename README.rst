@@ -32,7 +32,7 @@ PeachPy is actively developed, and thus there are presently no stable releases. 
 
   git clone https://github.com/Maratyszcza/PeachPy.git
   cd PeachPy
-  pip install opcodes
+  pip install -r requirements
   python setup.py generate
   export PYTHONPATH="$PWD:$PYTHONPATH"
 
