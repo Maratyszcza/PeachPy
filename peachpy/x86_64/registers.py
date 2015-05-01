@@ -2,6 +2,9 @@
 #    See license.rst for the full text of the license.
 
 
+import six
+
+
 class Register(object):
     """A base class for all encodable registers (rip is not encodable)"""
     _mask_size_map = {
@@ -20,16 +23,17 @@ class Register(object):
 
     def __init__(self, mask, virtual_id=None, physical_id=None):
         super(Register, self).__init__()
-        assert isinstance(mask, (int, long)), \
+        from peachpy.util import is_int
+        assert is_int(mask), \
             "Mask must be an integer"
         assert mask in Register._mask_size_map, \
             "Unknown mask value: %X" % mask
         self.mask = int(mask)
         assert virtual_id is not None or physical_id is not None, \
             "Virtual or physical ID must be specified"
-        assert virtual_id is None or isinstance(virtual_id, (int, long)) and virtual_id > 0,\
+        assert virtual_id is None or is_int(virtual_id) and virtual_id > 0,\
             "Virtual ID must be a positive integer"
-        assert physical_id is None or isinstance(physical_id, (int, long)) and physical_id >= 0,\
+        assert physical_id is None or is_int(physical_id) and physical_id >= 0,\
             "Physical ID must be a non-negative integer"
         self.virtual_id = None if virtual_id is None else int(virtual_id)
         self.physical_id = None if physical_id is None else int(physical_id)
@@ -126,7 +130,7 @@ class Register(object):
     @staticmethod
     def _reconstruct_multiple(reg_dict):
         reg_set = set()
-        for (reg_id, reg_mask) in reg_dict.iteritems():
+        for (reg_id, reg_mask) in six.iteritems(reg_dict):
             reg_set.update(Register._reconstruct(reg_id, reg_mask))
         return reg_set
 
@@ -250,7 +254,8 @@ class GeneralPurposeRegister64(GeneralPurposeRegister):
 
     def __mul__(self, scale):
         from peachpy.x86_64.operand import MemoryAddress
-        if not isinstance(scale, (int, long)):
+        from peachpy.util import is_int
+        if not is_int(scale):
             raise TypeError("Register can be scaled only by an integer number")
         if int(scale) not in {1, 2, 4, 8}:
             raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)
@@ -308,7 +313,8 @@ class GeneralPurposeRegister32(GeneralPurposeRegister):
 
     def __mul__(self, scale):
         from peachpy.x86_64.operand import MemoryAddress
-        if not isinstance(scale, (int, long)):
+        from peachpy.util import is_int
+        if not is_int(scale):
             raise TypeError("Register can be scaled only by an integer number")
         if int(scale) not in {1, 2, 4, 8}:
             raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)

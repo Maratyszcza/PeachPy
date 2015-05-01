@@ -120,9 +120,9 @@ def vex3(escape, mmmmm, w____lpp, r, rm, vvvv=0):
 def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import rsp, rbp, r12, r13
-    from peachpy.util import is_sint8, ilog2
+    from peachpy.util import is_int, is_sint8, ilog2
 
-    assert isinstance(reg, (int, long)) and 0 <= reg <= 7, \
+    assert is_int(reg) and 0 <= reg <= 7, \
         "Constant reg value expected, got " + str(reg)
     assert isinstance(rm, MemoryAddress)
 

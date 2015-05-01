@@ -1,9 +1,9 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-import abi
-import uarch
-import isa
+import peachpy.x86_64.abi
+import peachpy.x86_64.uarch
+import peachpy.x86_64.isa
 
 from peachpy.x86_64.registers import GeneralPurposeRegister, \
     GeneralPurposeRegister8, GeneralPurposeRegister16, GeneralPurposeRegister32, GeneralPurposeRegister64, \

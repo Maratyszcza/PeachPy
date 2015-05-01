@@ -9,13 +9,13 @@ def check_operand(operand):
     from peachpy.x86_64.pseudo import Label
     from peachpy.x86_64.function import LocalVariable
     from peachpy import Constant, Argument
-    from peachpy.util import is_int64
+    from peachpy.util import is_int, is_int64
     if isinstance(operand, (Register, Constant, MemoryOperand, LocalVariable, Argument, RIPRelativeOffset, Label)):
         return operand
-    elif isinstance(operand, (int, long)):
+    elif is_int(operand):
         if not is_int64(operand):
             raise ValueError("The immediate operand %d is not representable as a 64-bit value")
-        return long(operand)
+        return operand
     elif isinstance(operand, list):
         if len(operand) != 1:
             raise ValueError("Memory operands must be represented by a list with only one element")
@@ -116,14 +116,14 @@ class MemoryAddress:
 
     def __init__(self, base=None, index=None, scale=None, displacement=0):
         from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
-        from peachpy.util import is_sint32
+        from peachpy.util import is_int, is_sint32
 
         # Check individual arguments
         if base is not None and not isinstance(base, (GeneralPurposeRegister32, GeneralPurposeRegister64)):
             raise TypeError("Base register must be a 32- or 64-bit general-purpose register")
         if index is not None and not isinstance(index, (GeneralPurposeRegister32, GeneralPurposeRegister64)):
             raise TypeError("Index register must be a 32- or 64-bit general-purpose register")
-        if scale is not None and not isinstance(scale, (int, long)):
+        if scale is not None and not is_int(scale):
             raise TypeError("Scale must be an integer")
         if scale is not None and int(scale) not in {1, 2, 4, 8}:
             raise TypeError("Scale must be 1, 2, 4, or 8")
@@ -145,8 +145,8 @@ class MemoryAddress:
 
     def __add__(self, addend):
         from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
-        from peachpy.util import is_sint32
-        if isinstance(addend, (int, long)):
+        from peachpy.util import is_int, is_sint32
+        if is_int(addend):
             if not is_sint32(addend):
                 raise ValueError("The addend value (%d) is not representable as a signed 32-bit integer" % addend)
             return MemoryAddress(self.base, self.index, self.scale, self.displacement + addend)
@@ -170,8 +170,8 @@ class MemoryAddress:
             raise TypeError("Can not add %s: unsupported addend type" % str(addend))
 
     def __sub__(self, minuend):
-        from peachpy.util import is_sint32
-        if isinstance(minuend, (int, long)):
+        from peachpy.util import is_int, is_sint32
+        if is_int(minuend):
             if not is_sint32(-minuend):
                 raise ValueError("The addend value (%d) is not representable as a signed 32-bit integer" % minuend)
             return MemoryAddress(self.base, self.index, self.scale, self.displacement - minuend)
@@ -200,7 +200,8 @@ class MemoryOperand:
         from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
         assert isinstance(address, (GeneralPurposeRegister64, GeneralPurposeRegister32, MemoryAddress)),\
             "Only MemoryAddress, and 32- or 64-bit general-purpose registers may be specified as an address"
-        assert size is None or isinstance(size, (int, long)) and \
+        from peachpy.util import is_int
+        assert size is None or is_int(size) and \
             int(size) in SizeSpecification._size_name_map, \
             "Unsupported size: %d" % size
         if isinstance(address, MemoryAddress):
@@ -248,7 +249,8 @@ class SizeSpecification:
     }
 
     def __init__(self, size):
-        assert isinstance(size, (int, long)) and int(size) in SizeSpecification._size_name_map,\
+        from peachpy.util import is_int
+        assert is_int(size) and int(size) in SizeSpecification._size_name_map,\
             "Unsupported size: %d" % size
         self.size = size
 

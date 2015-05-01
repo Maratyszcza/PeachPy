@@ -3,8 +3,8 @@
 
 import peachpy
 
-import abi
-import isa
+import peachpy.arm.abi
+import peachpy.arm.isa
 
 from peachpy.arm.microarchitecture import Microarchitecture
 from peachpy.arm.registers import GeneralPurposeRegister, SRegister, DRegister, QRegister, WMMXRegister, \

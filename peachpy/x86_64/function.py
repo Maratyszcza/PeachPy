@@ -146,7 +146,7 @@ class Function:
         if not(all(map(bool, go_argument_types))):
             return None
 
-        go_arguments = map(lambda (name, gotype): name + " " + gotype,
+        go_arguments = map(lambda name_gotype: " ".join(name_gotype),
                            zip(map(operator.attrgetter("name"), self.arguments), go_argument_types))
         if self.result_type is None:
             return "func %s(%s)" % (self.name, ", ".join(go_arguments))
@@ -337,8 +337,8 @@ class Function:
         entry_position = 0
         if self.entry.name in self._label_names:
             entry_position = labels[self.entry.name]
-        branch_instructions = filter(lambda (_, instr): isinstance(instr, BranchInstruction) and instr.label_name,
-                                     enumerate(self._instructions))
+        branch_instructions = [(i, instruction) for (i, instruction) in enumerate(self._instructions) if
+                               isinstance(instruction, BranchInstruction) and instruction.label_name]
         # Basic blocks start at function entry position or on branch target
         basic_block_starts = {entry_position}
         for (i, branch_instruction) in branch_instructions:
@@ -508,8 +508,10 @@ class Function:
                     for output_block in self.output_blocks:
                         output_block.analyze_reachability()
 
-        basic_blocks = map(lambda (start, end):
-                           BasicBlock(start, end, input_registers[start:end], output_registers[start:end]),
+        basic_blocks = map(lambda start_end:
+                           BasicBlock(start_end[0], start_end[1],
+                                      input_registers[start_end[0]:start_end[1]],
+                                      output_registers[start_end[0]:start_end[1]]),
                            basic_block_bounds)
         # Map from block start position to BasicBlock object
         basic_blocks_map = {basic_block_start: basic_block

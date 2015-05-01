@@ -1,45 +1,47 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+import six
+
 
 def is_int(n):
-    return isinstance(n, (int, long))
+    return isinstance(n, six.integer_types)
 
 
 def is_int64(n):
-    return isinstance(n, (int, long)) and -9223372036854775808 <= n <= 18446744073709551615
+    return isinstance(n, six.integer_types) and -9223372036854775808 <= n <= 18446744073709551615
 
 
 def is_int32(n):
-    return isinstance(n, (int, long)) and -2147483648 <= n <= 4294967295
+    return isinstance(n, six.integer_types) and -2147483648 <= n <= 4294967295
 
 
 def is_sint32(n):
-    return isinstance(n, (int, long)) and -2147483648 <= n <= 2147483647
+    return isinstance(n, six.integer_types) and -2147483648 <= n <= 2147483647
 
 
 def is_int16(n):
-    return isinstance(n, (int, long)) and -32768 <= n <= 65535
+    return isinstance(n, six.integer_types) and -32768 <= n <= 65535
 
 
 def is_sint16(n):
-    return isinstance(n, (int, long)) and -32768 <= n <= 32767
+    return isinstance(n, six.integer_types) and -32768 <= n <= 32767
 
 
 def is_uint16(n):
-    return isinstance(n, (int, long)) and 0 <= n <= 65535
+    return isinstance(n, six.integer_types) and 0 <= n <= 65535
 
 
 def is_int8(n):
-    return isinstance(n, (int, long)) and -128 <= n <= 255
+    return isinstance(n, six.integer_types) and -128 <= n <= 255
 
 
 def is_uint8(n):
-    return isinstance(n, (int, long)) and 0 <= n <= 255
+    return isinstance(n, six.integer_types) and 0 <= n <= 255
 
 
 def is_sint8(n):
-    return isinstance(n, (int, long)) and -128 <= n <= 127
+    return isinstance(n, six.integer_types) and -128 <= n <= 127
 
 
 def roundup(n, q):

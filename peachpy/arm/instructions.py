@@ -61,6 +61,7 @@ class Operand(object):
             GeneralPurposeRegisterWriteback, ShiftedGeneralPurposeRegister, DRegisterLanes
         from peachpy.arm.function import LocalVariable
         from peachpy.arm.pseudo import Label
+        from peachpy.util import is_int
 
         if isinstance(operand, GeneralPurposeRegisterWriteback):
             self.type = Operand.AddressRegisterType
@@ -86,8 +87,8 @@ class Operand(object):
                 self.register_list = copy.deepcopy(operand)
             else:
                 raise TypeError('Unknown tuple elements {0}'.format(operand))
-        elif isinstance(operand, int) or isinstance(operand, long):
-            if -9223372036854775808L <= operand <= 18446744073709551615L:
+        elif is_int(operand):
+            if -9223372036854775808 <= operand <= 18446744073709551615:
                 self.type = Operand.ImmediateType
                 self.immediate = operand
             else:

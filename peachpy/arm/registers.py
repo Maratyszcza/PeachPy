@@ -2,6 +2,9 @@
 #    See license.rst for the full text of the license.
 
 
+import six
+
+
 class Register(object):
     GPType = 1
     WMMXType = 2
@@ -294,7 +297,7 @@ class GeneralPurposeRegister(Register):
             self.type = Register.GPType
             self.size = 4
         elif isinstance(id, str):
-            if id in GeneralPurposeRegister._name_to_number_map.iterkeys():
+            if id in GeneralPurposeRegister._name_to_number_map:
                 self.number = GeneralPurposeRegister._name_to_number_map[id]
                 self.type = Register.GPType
                 self.size = 4
@@ -482,7 +485,7 @@ class WMMXRegister(Register):
             self.regtype = Register.WMMXType
             self.size = 8
         elif isinstance(id, str):
-            if id in WMMXRegister._name_to_number_map.iterkeys():
+            if id in WMMXRegister._name_to_number_map:
                 self.number = WMMXRegister._name_to_number_map[id]
                 self.regtype = Register.WMMXType
                 self.size = 8
@@ -607,7 +610,7 @@ class SRegister(Register):
             self.type = Register.VFPType
             self.size = 4
         elif isinstance(id, str):
-            if id in SRegister._name_to_number_map.iterkeys():
+            if id in SRegister._name_to_number_map:
                 self.number = SRegister._name_to_number_map[id]
                 self.type = Register.VFPType
                 self.size = 4
@@ -832,7 +835,7 @@ class DRegister(Register):
             self.type = Register.VFPType
             self.size = 8
         elif isinstance(id, str):
-            if id in DRegister._name_to_number_map.iterkeys():
+            if id in DRegister._name_to_number_map:
                 self.number = DRegister._name_to_number_map[id]
                 self.type = Register.VFPType
                 self.size = 8
