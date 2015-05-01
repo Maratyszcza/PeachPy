@@ -1,4 +1,6 @@
-<p align="center"><img src="https://github.com/Maratyszcza/PeachPy/blob/master/logo.png" alt="PeachPy logo" title="PeachPy Logo"/></p>
+.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo.png
+  :alt: PeachPy logo
+  :align: center
 
 ===========================================================================
 Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
