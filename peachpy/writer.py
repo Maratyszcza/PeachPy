@@ -108,7 +108,7 @@ class ELFWriter:
 
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
         function_symbol = Symbol(self.abi)
-        function_symbol.name_index = self.image.strtab.add("dot_product")
+        function_symbol.name_index = self.image.strtab.add(function.name)
         function_symbol.value = 0
         function_symbol.content_size = len(function_code)
         function_symbol.section_index = self.text_section.index
