@@ -120,6 +120,60 @@ class ELFWriter:
         self.image.symtab.add(function_symbol)
 
 
+class MachOWriter:
+    def __init__(self, output_path, abi):
+        from peachpy.formats.macho.image import Image
+
+        self.output_path = output_path
+        self.previous_writer = None
+        self.abi = abi
+        self.image = Image(abi)
+
+    def __enter__(self):
+        global active_writer
+        self.previous_writer = active_writer
+        active_writer = self
+        self.output_file = open(self.output_path, "w", buffering=0)
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        global active_writer
+        active_writer = self.previous_writer
+        self.previous_writer = None
+        if exc_type is None:
+            self.output_file.write(self.image.as_bytearray)
+            self.output_file.close()
+            self.output_file = None
+        else:
+            import os
+            os.unlink(self.output_file.name)
+            self.output_file = None
+            raise
+
+    def add_function(self, function):
+        import peachpy.x86_64.function
+        assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
+            "Function must be bindinded to an ABI before its assembly can be used"
+
+        encoded_function = function.encode()
+        function_code = encoded_function.as_bytearray
+
+        function_offset = len(self.image.text_section.content)
+
+        self.image.text_section.append(function_code)
+
+        from peachpy.formats.macho.symbol import Symbol, SymbolDescription, SymbolType, SymbolVisibility
+
+        function_symbol = Symbol(self.abi)
+        function_symbol.description = SymbolDescription.Defined
+        function_symbol.type = SymbolType.SectionRelative
+        function_symbol.visibility = SymbolVisibility.External
+        function_symbol.string_index = self.image.string_table.add("_" + function.name)
+        function_symbol.section_index = self.image.text_section.index
+        function_symbol.value = function_offset
+        self.image.symbols.append(function_symbol)
+
+
 class NullWriter:
     def __init__(self):
         pass
