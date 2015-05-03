@@ -15,12 +15,12 @@ parser.add_argument("-S", dest="generate_assembly", action="store_true",
                     help="Generate assembly listing on output")
 
 abi_map = {
-    "ms": peachpy.x86_64.abi.microsoft_x64_abi,
-    "sysv": peachpy.x86_64.abi.system_v_x86_64_abi,
-    "x32": peachpy.x86_64.abi.linux_x32_abi,
-    "nacl": peachpy.x86_64.abi.native_client_x86_64_abi,
-    "golang": peachpy.x86_64.abi.golang_amd64_abi,
-    "golang-p32": peachpy.x86_64.abi.golang_amd64p32_abi
+    "ms": (peachpy.x86_64.abi.microsoft_x64_abi, ["masm", "nasm"], ["ms-coff"]),
+    "sysv": (peachpy.x86_64.abi.system_v_x86_64_abi, ["gas", "nasm"], ["elf", "mach-o"]),
+    "x32": (peachpy.x86_64.abi.linux_x32_abi, ["gas"], ["elf"]),
+    "nacl": (peachpy.x86_64.abi.native_client_x86_64_abi, ["gas"], ["elf"]),
+    "golang": (peachpy.x86_64.abi.golang_amd64_abi, ["go"], []),
+    "golang-p32": (peachpy.x86_64.abi.golang_amd64p32_abi, ["go"], [])
 }
 parser.add_argument("-mabi", dest="abi", required=True,
                     choices=("ms", "sysv", "x32", "nacl", "golang", "golang-p32"),
@@ -52,6 +52,14 @@ parser.add_argument("-mcpu", dest="cpu", required=True,
                              "haswell", "broadwell", "k8", "k10", "bulldozer", "piledriver", "steamroller",
                              "bonnell", "saltwell", "silvermont", "bobcat", "jaguar"),
                     help="Target specified microarchitecture")
+
+parser.add_argument("-mimage-format", dest="image_format",
+                    choices=("elf", "mach-o", "ms-coff"),
+                    help="Target binary image format")
+parser.add_argument("-massembly-format", dest="assembly_format",
+                    choices=("golang", "nasm", "gas", "masm"),
+                    help="Target assembly format")
+
 parser.add_argument("-fpackage", dest="package", default="",
                     help="Use specified Go package name in generated Plan 9 assembly listings")
 avx_group = parser.add_mutually_exclusive_group()
@@ -90,11 +98,29 @@ parser.add_argument("input", nargs=1,
                     help="Input file name (must be a Peach-Py Python script)")
 
 
+def guess_assembly_format_from_abi(abi):
+    _, supported_assembly_formats, _ = abi_map[abi]
+    return supported_assembly_formats[0]
+
+
+def check_abi_assembly_format_combination(assembly_format, abi):
+    _, supported_assembly_formats, _ = abi_map[abi]
+    if assembly_format not in supported_assembly_formats:
+        raise ValueError("Assembly format %s is not supported for %s" % (assembly_format, str(abi)))
+
+
+def check_abi_image_format_combination(image_format, abi):
+    _, _, supported_image_formats = abi_map[abi]
+    if image_format not in supported_image_formats:
+        raise ValueError("Image format %s is not supported for %s" % (image_format, str(abi)))
+
+
 def main():
     options = parser.parse_args()
     import peachpy.x86_64.options
     peachpy.x86_64.options.debug_level = options.debug_level
-    peachpy.x86_64.options.abi = abi_map[options.abi]
+    abi, _, _ = abi_map[options.abi]
+    peachpy.x86_64.options.abi = abi
     peachpy.x86_64.options.target = cpu_map[options.cpu]
     peachpy.x86_64.options.package = options.package
     peachpy.x86_64.options.generate_assembly = options.generate_assembly
@@ -102,17 +128,23 @@ def main():
     import peachpy.writer
     writer = peachpy.writer.NullWriter()
     if peachpy.x86_64.options.generate_assembly:
-        if peachpy.x86_64.options.abi in [peachpy.x86_64.abi.golang_amd64_abi, peachpy.x86_64.abi.golang_amd64p32_abi]:
-            writer = peachpy.writer.AssemblyWriter(options.output, "go", options.input[0])
+        assembly_format = options.assembly_format
+        if assembly_format is None:
+            assembly_format = guess_assembly_format_from_abi(options.abi)
         else:
-            raise ValueError("Assembly output for %s ABI is unsupported" % str(peachpy.x86_64.options.abi))
+            check_abi_assembly_format_combination(options.abi, assembly_format)
+        writer = peachpy.writer.AssemblyWriter(options.output, assembly_format, options.input[0])
     else:
-        if peachpy.x86_64.options.abi in [peachpy.x86_64.abi.system_v_x86_64_abi,
-                                          peachpy.x86_64.abi.linux_x32_abi,
-                                          peachpy.x86_64.abi.native_client_x86_64_abi]:
-            writer = peachpy.writer.ELFWriter(options.output, peachpy.x86_64.options.abi, options.input[0])
+        image_format = options.image_format
+        if image_format is None:
+            raise ValueError("Image format is not specified")
+        check_abi_image_format_combination(image_format, options.abi)
+        if image_format == "elf":
+            writer = peachpy.writer.ELFWriter(options.output, abi, options.input[0])
+        elif image_format == "mach-o":
+            writer = peachpy.writer.MachOWriter(options.output, abi)
         else:
-            raise ValueError("Binary output for %s ABI is unsupported" % str(peachpy.x86_64.options.abi))
+            raise ValueError("Image format %s is not supported" % image_format)
 
     with writer:
         with open(options.input[0]) as input_file:
