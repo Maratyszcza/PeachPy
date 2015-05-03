@@ -997,7 +997,7 @@ class ABIFunction:
         from peachpy.x86_64.mmxsse import MOVQ, MOVAPS
         from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
-        from peachpy.stream import NullStream
+        from peachpy.x86_64.lower import load_register
         if self.abi == golang_amd64_abi or self.abi == golang_amd64p32_abi:
             # Like Peach-Py, Go assembler uses pseudo-instructions for argument loads
             return
@@ -1010,21 +1010,11 @@ class ABIFunction:
                 if instruction.operands[0] == instruction.operands[1].register:
                     # LOAD.ARGUMENT loads to the same register as passed in the argument; no actions needed
                     pass
-                elif isinstance(instruction.operands[0], GeneralPurposeRegister):
-                    with NullStream():
-                        lowered_instructions.append(
-                            MOV(instruction.operands[0], instruction.operands[1].register, prototype=instruction)
-                        )
-                elif isinstance(instruction.operands[0], MMXRegister):
-                    with NullStream():
-                        lowered_instructions.append(
-                            MOVQ(instruction.operands[0], instruction.operands[1].register, prototype=instruction)
-                        )
-                elif isinstance(instruction.operands[0], XMMRegister):
-                    with NullStream():
-                        lowered_instructions.append(
-                            MOVAPS(instruction.operands[0], instruction.operands[1].register, prototype=instruction)
-                        )
+                else:
+                    lowered_instructions.append(load_register(instruction.operands[0],
+                                                              instruction.operands[1].register,
+                                                              instruction.operands[1].ctype,
+                                                              prototype=instruction))
             else:
                 lowered_instructions.append(instruction)
         self._instructions = lowered_instructions
