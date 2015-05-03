@@ -106,10 +106,13 @@ class ELFWriter:
         encoded_function = function.encode()
         function_code = encoded_function.as_bytearray
 
+        function_offset = len(self.text_section.content)
+        self.text_section.append(function_code)
+
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
         function_symbol = Symbol(self.abi)
         function_symbol.name_index = self.image.strtab.add(function.name)
-        function_symbol.value = 0
+        function_symbol.value = function_offset
         function_symbol.content_size = len(function_code)
         function_symbol.section_index = self.text_section.index
         function_symbol.binding = SymbolBinding.Global
