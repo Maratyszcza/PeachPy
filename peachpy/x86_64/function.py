@@ -1367,7 +1367,7 @@ class ExecutableFuntion:
         self.function_pointer = self.function_type(self.loader.code_address)
 
     def __call__(self, *args):
-        self.function_pointer(*args)
+        return self.function_pointer(*args)
 
     def __del__(self):
         del self.loader
