@@ -24,3 +24,6 @@ MANIFEST
 *.o
 *.s
 *.S
+
+# Example binaries
+examples/make/test
