@@ -21,7 +21,8 @@ PeachPy is a Python framework for writing high-performance assembly kernels. Pea
   - Automatic register allocation
   - Automatic adaption of function to different calling conventions and ABIs (e.g. functions for Microsoft x64 ABI and System V x86-64 ABI can be generated from the same source)
   - Tracking of instruction extensions used in the function.
-  - Multiplexing of multiple instruction streams (helpful for software pipelining)
+  - Multiplexing of multiple instruction streams (helpful for software pipelining).
+  - Compatible with Python 2, Python 3 and PyPy.
 
 Installation
 ------------
