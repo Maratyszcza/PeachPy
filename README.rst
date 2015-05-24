@@ -6,7 +6,7 @@
 Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 ===========================================================================
 
-.. image:: https://img.shields.io/github/license/Maratyszcza/PeachPy.svg
+.. image:: https://img.shields.io/badge/License-BSD-brightgreen.svg
   :alt: PeachPy License: Simplified BSD
   :target: https://github.com/Maratyszcza/PeachPy/blob/master/LICENSE.rst
 
