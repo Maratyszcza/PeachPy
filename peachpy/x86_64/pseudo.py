@@ -156,21 +156,63 @@ class ALIGN(Instruction):
 
 
 class RETURN(Instruction):
-    def __init__(self, *args):
-        super(RETURN, self).__init__("RETURN")
+    def __init__(self, *args, **kwargs):
+        from peachpy.x86_64.function import active_function
+        from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
+
+        origin = kwargs.get("origin")
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+            origin = inspect.stack()
+        super(RETURN, self).__init__("RETURN", origin=origin)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) == 0:
+            # It is not an error to return nothing from a function with a return type
             self.in_regs = tuple()
             self.out_regs = tuple()
             self.out_operands = tuple()
         elif len(self.operands) == 1:
-            from peachpy.util import is_int64
-            if is_int64(self.operands[0]):
-                self.in_regs = (False,)
-                self.out_regs = (False,)
-                self.out_operands = (False,)
+            # It is an error to return something from a void function
+            from peachpy.util import is_int64, int_size
+            if active_function.result_type is None:
+                raise ValueError("Void function should not return a value")
+            if active_function.result_type.is_integer or active_function.result_type.is_pointer:
+                if is_int64(self.operands[0]):
+                    if active_function.result_type.size < int_size(self.operands[0]):
+                        raise ValueError("Value {0} can not be represented with return type {1}".
+                                         format(str(self.operands[0]), str(active_function.result_type)))
+                    self.in_regs = (False,)
+                    self.out_regs = (False,)
+                    self.out_operands = (False,)
+                elif isinstance(self.operands[0], GeneralPurposeRegister):
+                    if active_function.result_type.size < self.operands[0].size:
+                        raise ValueError("Register {0} can not be converted to return type {1}".
+                                         format(str(self.operands[0]), str(active_function.result_type)))
+                    self.in_regs = (True,)
+                    self.out_regs = (False,)
+                    self.out_operands = (False,)
+                else:
+                    raise TypeError("Invalid operand type: RETURN {0} for {1} function".
+                                    format(str(self.operands[0]), str(active_function.result_type)))
+            elif active_function.result_type.is_floating_point:
+                if isinstance(self.operands[0], XMMRegister):
+                    self.in_regs = (True,)
+                    self.out_regs = (False,)
+                    self.out_operands = (False,)
+                else:
+                    raise TypeError("Invalid operand type: RETURN {0} for {1} function".
+                                    format(str(self.operands[0]), str(active_function.result_type)))
+            elif active_function.result_type.is_vector:
+                if isinstance(self.operands[0], (MMXRegister, XMMRegister, YMMRegister)) and \
+                        active_function.result_type.size == self.operands[0].size:
+                    self.in_regs = (True,)
+                    self.out_regs = (False,)
+                    self.out_operands = (False,)
+                else:
+                    raise TypeError("Invalid operand type: RETURN {0} for {1} function".
+                                    format(str(self.operands[0]), str(active_function.result_type)))
             else:
-                raise SyntaxError("Invalid operand types: RETURN " + ", ".join(map(format_operand_type, self.operands)))
+                raise SyntaxError("Invalid operand type: RETURN " + ", ".join(map(format_operand_type, self.operands)))
         else:
             raise SyntaxError("Pseudo-instruction \"RETURN\" requires 0 or 1 operands")
         if peachpy.stream.active_stream is not None:
@@ -731,6 +773,7 @@ class STORE:
             from peachpy.x86_64.function import active_function
             from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
             from peachpy.util import is_int16, is_int32
+            from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
 
             origin = kwargs.get("origin")
             prototype = kwargs.get("prototype")
@@ -743,12 +786,18 @@ class STORE:
             if len(self.operands) != 1:
                 raise SyntaxError("Instruction \"STORE.RESULT\" requires 1 operand")
 
-            if active_function.result_type is None:
+            target_function = active_function
+            destination_offset = None
+            if target_function is None:
+                target_function = kwargs.get("target_function")
+                destination_offset = target_function.result_offset
+            assert target_function.abi in {golang_amd64_abi, golang_amd64p32_abi}
+            if target_function.result_type is None:
                 raise ValueError("STORE.RESULT can't be used with void functions")
-            self.destination_type = active_function.result_type
+            self.destination_type = target_function.result_type
             self.destination_size = self.destination_type.size
             # Will be updated during ABI binding (ABIFunction._lower_pseudoinstructions)
-            self.destination_offset = None
+            self.destination_offset = destination_offset
 
             if isinstance(self.operands[0], GeneralPurposeRegister):
                 if self.operands[0].size != self.destination_size:

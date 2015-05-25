@@ -1022,19 +1022,99 @@ class ABIFunction:
     def _lower_pseudoinstructions(self):
         from peachpy.x86_64.pseudo import RETURN, STORE
         from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
-        from peachpy.util import is_int32, is_int64
+        from peachpy.util import is_uint32, is_int64
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
         instructions = list()
         for instruction in self._instructions:
             if isinstance(instruction, RETURN):
-                from peachpy.x86_64.registers import rax, rcx, ecx
-                from peachpy.x86_64.generic import MOV, POP, RET
+                from peachpy.x86_64 import m64, m128, m128d, m128i, m256, m256d, m256i
+                from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister, \
+                    rax, eax, ax, al, rcx, ecx, mm0, xmm0, ymm0
+                from peachpy.x86_64.generic import XOR, MOV, MOVSX, MOVZX, POP, RET
+                from peachpy.x86_64.mmxsse import MOVQ, MOVSS, MOVSD, MOVDQA, MOVAPD, MOVAPS
+                from peachpy.x86_64.avx import VMOVDQA, VMOVAPD, VMOVAPS
+                is_golang_abi = self.abi in {golang_amd64_abi, golang_amd64p32_abi}
                 with InstructionStream() as stream:
                     # Save return value
                     if instruction.operands:
-                        assert is_int64(instruction.operands[0])
-                        MOV(rax, instruction.operands[0], prototype=instruction)
+                        assert len(instruction.operands) == 1
+                        if instruction.operands[0] == 0 and not is_golang_abi:
+                            XOR(eax, eax, prototype=instruction)
+                        elif is_uint32(instruction.operands[0]):
+                            if is_golang_abi:
+                                STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
+                            else:
+                                MOV(eax, instruction.operands[0], prototype=instruction)
+                        elif is_int64(instruction.operands[0]):
+                            MOV(rax, instruction.operands[0], prototype=instruction)
+                            if is_golang_abi:
+                                STORE.RESULT(rax, prototype=instruction, target_function=self)
+                        elif isinstance(instruction.operands[0], GeneralPurposeRegister):
+                            if is_golang_abi and instruction.operands[0].size == self.result_type.size:
+                                STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
+                            else:
+                                if instruction.operands[0].size < 4:
+                                    if self.result_type.is_signed_integer:
+                                        if self.result_type <= 4:
+                                            MOVSX(eax, instruction.operands[0], prototype=instruction)
+                                        else:
+                                            MOVSX(rax, instruction.operands[0], prototype=instruction)
+                                    else:
+                                        MOVZX(eax, instruction.operands[0], prototype=instruction)
+                                elif instruction.operands[0].size == 4:
+                                    if self.result_type.is_signed_integer:
+                                        if self.result_type == 8:
+                                            MOVSX(rax, instruction.operands[0], prototype=instruction)
+                                        else:
+                                            MOV(eax, instruction.operands[0], prototype=instruction)
+                                    else:
+                                        MOV(eax, instruction.operands[0], prototype=instruction)
+                                else:
+                                    MOV(rax, instruction.operands[0], prototype=instruction)
+                                if is_golang_abi:
+                                    reg_acc = {
+                                        1: al,
+                                        2: ax,
+                                        4: eax,
+                                        8: rax
+                                    }[self.result_type.size]
+                                    STORE.RESULT(reg_acc, prototype=instruction, target_function=self)
+                        elif isinstance(instruction.operands[0], MMXRegister):
+                            assert self.result_type == m64
+                            if instruction.operands[0] != mm0:
+                                MOVQ(mm0, instruction.operands[0], prototype=instruction)
+                        elif isinstance(instruction.operands[0], XMMRegister):
+                            if self.result_type.is_floating_point:
+                                assert self.result_type.size in {4, 8}
+                                if is_golang_abi:
+                                    STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
+                                else:
+                                    if instruction.operands[0] != xmm0:
+                                        if self.result_type.size == 4:
+                                            MOVSS(xmm0, instruction.operands[0], prototype=instruction)
+                                        else:
+                                            MOVSD(xmm0, instruction.operands[0], prototype=instruction)
+                            else:
+                                assert self.result_type in {m128, m128d, m128i}
+                                if instruction.operands[0] != xmm0:
+                                    MOV128 = {
+                                        m128i: MOVDQA,
+                                        m128d: MOVAPD,
+                                        m128: MOVAPS
+                                    }[self.result_type]
+                                    MOV128(xmm0, instruction.operands[0], prototype=instruction)
+                        elif isinstance(instruction.operands[0], YMMRegister):
+                            assert self.result_type in {m256, m256d, m256i}
+                            if instruction.operands[0] != ymm0:
+                                MOV256 = {
+                                    m256i: VMOVDQA,
+                                    m256d: VMOVAPD,
+                                    m256: VMOVAPS
+                                }[self.result_type]
+                                MOV256(ymm0, instruction.operands[0], prototype=instruction)
+                        else:
+                            assert False
                     # Return from the function
                     if self.abi == native_client_x86_64_abi:
                         from peachpy.x86_64.nacl import NACLJMP
