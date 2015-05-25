@@ -4,6 +4,18 @@
 import six
 
 
+def int_size(n):
+    assert is_int64(n)
+    if is_int8(n):
+        return 1
+    elif is_int16(n):
+        return 2
+    elif is_int32(n):
+        return 4
+    else:
+        return 8
+
+
 def is_int(n):
     return isinstance(n, six.integer_types)
 
@@ -18,6 +30,10 @@ def is_int32(n):
 
 def is_sint32(n):
     return isinstance(n, six.integer_types) and -2147483648 <= n <= 2147483647
+
+
+def is_uint32(n):
+    return isinstance(n, six.integer_types) and 0 <= n <= 4294967295
 
 
 def is_int16(n):
