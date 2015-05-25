@@ -77,7 +77,7 @@ golang_amd64_abi = ABI("Go x86-64 ABI", endianness=Endianness.Little,
 
 golang_amd64p32_abi = ABI("Go x32 ABI", endianness=Endianness.Little,
                           bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,
-                          pointer_size=8, index_size=8,
+                          pointer_size=4, index_size=4,
                           stack_alignment=16, red_zone=128,
                           callee_save_registers=[rbx, rbp, r12, r13, r14, r15],
                           argument_registers=[rdi, rsi, rdx, rcx, r8, r9, xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7],
