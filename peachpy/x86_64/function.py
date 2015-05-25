@@ -1056,7 +1056,7 @@ class ABIFunction:
                             else:
                                 if instruction.operands[0].size < 4:
                                     if self.result_type.is_signed_integer:
-                                        if self.result_type <= 4:
+                                        if self.result_type.size <= 4:
                                             MOVSX(eax, instruction.operands[0], prototype=instruction)
                                         else:
                                             MOVSX(rax, instruction.operands[0], prototype=instruction)
@@ -1064,7 +1064,7 @@ class ABIFunction:
                                         MOVZX(eax, instruction.operands[0], prototype=instruction)
                                 elif instruction.operands[0].size == 4:
                                     if self.result_type.is_signed_integer:
-                                        if self.result_type == 8:
+                                        if self.result_type.size == 8:
                                             MOVSX(rax, instruction.operands[0], prototype=instruction)
                                         else:
                                             MOV(eax, instruction.operands[0], prototype=instruction)
