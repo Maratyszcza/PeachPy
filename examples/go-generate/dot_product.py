@@ -83,5 +83,5 @@ with Function("DotProduct", (x, y, length), float_) as function:
 
     VZEROUPPER()
 
-    STORE.RESULT(xmm_acc)
-    RETURN()
+    RETURN(xmm_acc)
+
