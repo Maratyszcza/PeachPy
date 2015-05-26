@@ -905,7 +905,7 @@ class ABIFunction:
         for argument in self.arguments:
             if (argument.is_floating_point or argument.is_vector) and len(available_floating_point_registers) > 0:
                 argument.register = available_floating_point_registers.pop(0)
-                if argument.size == 8 or argument.size == 16:
+                if argument.size in {4, 8, 16}:
                     pass
                 elif argument.size == 32:
                     argument.register = argument.register.as_hword
