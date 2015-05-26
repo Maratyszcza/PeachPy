@@ -33,7 +33,8 @@ class InstructionStream(object):
             return None
 
     def add_instruction(self, instruction):
-        self.instructions.append(instruction)
+        if instruction is not None:
+            self.instructions.append(instruction)
 
     def issue(self, count=1):
         for i in range(count):
