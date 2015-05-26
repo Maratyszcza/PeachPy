@@ -1434,7 +1434,10 @@ class EncodedFunction:
 
     @property
     def as_bytearray(self):
-        return sum(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)), bytearray())
+        if six.PY3:
+            return b"".join(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)))
+        else:
+            return sum(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)), bytearray())
 
 
 class ExecutableFuntion:
