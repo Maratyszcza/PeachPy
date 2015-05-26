@@ -16,18 +16,33 @@ Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 
 PeachPy is a Python framework for writing high-performance assembly kernels. PeachPy is developed to simplify writing optimized assembly kernels while preserving all optimization opportunities of traditional assembly. Some PeachPy features:
 
-  - Universal assembly syntax for Windows, Unix, and Golang assembly
-  - Python-based metaprogramming and code-generation
-  - Automatic register allocation
-  - Automatic adaption of function to different calling conventions and ABIs (e.g. functions for Microsoft x64 ABI and System V x86-64 ABI can be generated from the same source)
-  - Tracking of instruction extensions used in the function.
+  - Universal assembly syntax for Windows, Unix, and Golang assembly.
+
+      - PeachPy can directly generate ELF and Mach-O object files and assembly listings for Golang toolchain
+
+  - Automatic adaption of function to different calling conventions and ABIs.
+  
+      - Functions for different platforms can be generated from the assembly same source
+      - Supports Microsoft x64 ABI, System V x86-64 ABI (Linux and OS X), Linux x32 ABI, Native Client x86-64 SFI ABI, Golang AMD64 ABI, Golang AMD64p32 ABI
+      
+  - Automatic register allocation.
+  
+      - PeachPy is flexible and lets mix auto-allocated and hardcoded registers in the same code.
+
+  - x86-64 instructions up to AVX2 and SHA
+  
+      - Including 3dnow!+, XOP, FMA3, FMA4, TBM and BMI2.
+      - Excluding x87 FPU and most system instructions.
+      - Rigorously tested with `auto-generated tests <https://github.com/Maratyszcza/PeachPy/tree/master/test/x86_64/encoding>`_ to produce the same opcodes as binutils.
+
+  - Python-based metaprogramming and code-generation.
   - Multiplexing of multiple instruction streams (helpful for software pipelining).
-  - Compatible with Python 2, Python 3 and PyPy.
+  - Python 2, Python 3 and PyPy compatible.
 
 Installation
 ------------
 
-PeachPy is actively developed, and thus there are presently no stable releases. We recommend that you use the `master` version:
+PeachPy is actively developed, and thus there are presently no stable releases of 0.2 branch. We recommend that you use the `master` version:
 
 .. code-block:: bash
 
@@ -95,6 +110,8 @@ What else? You can convert the program to Plan 9 assembly for use with Go progra
   python -m peachpy.x86_64 -mabi=golang -mcpu=default -S -o example_amd64.s example.py
   # Use Golang-p32 ABI with -S flag to generate assembly for Golang x86-64 targets with 32-bit pointers
   python -m peachpy.x86_64 -mabi=golang-p32 -mcpu=default -S -o example_amd64p32.s example.py
+
+See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ for real-world scenarios of using PeachPy with ``make`` and ``go generate`` tools.
 
 Using PeachPy as a Python module
 --------------------------------
