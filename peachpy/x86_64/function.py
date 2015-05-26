@@ -748,10 +748,15 @@ class Argument(peachpy.Argument):
 
         :ivar peachpy.x86_64.registers.Register register: the register in which the argument is passed to the function
             or None if the argument is passed on stack.
-        :ivar peachpy.x86_64.operand.MemoryAddress rsp_offset: offset from the value of rsp on function entry to the
-            location of the argument on stack or None if the argument is passed in a register and has no stack location.
-            Note that in Microsoft X64 ABI the first four arguments are passed in registers but have stack space
-            reserved for their storage. For these arguments both register and rsp_offset are non-null.
+        :ivar int stack_offset: offset from the end of return address on the stack to the location of the argument on
+            stack or None if the argument is passed in a register and has no stack location. Note that in Microsoft X64
+            ABI the first four arguments are passed in registers but have stack space reserved for their storage.
+            For these arguments both register and stack_offset are non-null.
+        :ivar peachpy.x86_64.operand.MemoryAddress address: address of the argument on stack, relative to rsp or rbp.
+            The value of this attribute is None until after register allocation. In Golang ABIs this attribute is never
+            initialized because to load arguments from stack Golang uses its own pseudo-register FP, which is not
+            representable in PeachPy (LOAD.ARGUMENT pseudo-instructions use stack_offset instead when formatted as
+            Golang assembly).
         """
         assert isinstance(argument, peachpy.Argument), \
             "Architecture-specific argument must be constructed from generic Argument object"
@@ -761,7 +766,8 @@ class Argument(peachpy.Argument):
         super(Argument, self).__init__(deepcopy(argument.ctype), argument.name)
         self.abi = abi
         self.register = None
-        self.rsp_offset = None
+        self.address = None
+        self.stack_offset = None
         self.save_on_stack = False
 
     @property
@@ -786,7 +792,7 @@ class ABIFunction:
     def __init__(self, function, abi):
         from peachpy.x86_64.abi import ABI, microsoft_x64_abi, system_v_x86_64_abi, linux_x32_abi, \
             native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
-        from copy import copy, deepcopy
+        from copy import deepcopy
         assert isinstance(function, Function), "Function object expected"
         assert isinstance(abi, ABI), "ABI object expected"
         self.name = function.name
@@ -816,12 +822,13 @@ class ABIFunction:
         else:
             raise ValueError("Unsupported ABI: %s" % str(abi))
 
-        self.clobbered_registers = self._analyze_clobbered_registers()
-
         self._update_argument_loads(function.arguments)
 
         self._allocate_registers()
         self._bind_registers()
+
+        self._clobbered_registers = self._analyze_clobbered_registers()
+        self._update_argument_addresses()
 
         self._lower_argument_loads()
         self._lower_pseudoinstructions()
@@ -993,11 +1000,9 @@ class ABIFunction:
 
     def _lower_argument_loads(self):
         from peachpy.x86_64.pseudo import LOAD
-        from peachpy.x86_64.generic import MOV
-        from peachpy.x86_64.mmxsse import MOVQ, MOVAPS
         from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
-        from peachpy.x86_64.lower import load_register
+        from peachpy.x86_64.lower import load_register, load_memory
         if self.abi == golang_amd64_abi or self.abi == golang_amd64p32_abi:
             # Like Peach-Py, Go assembler uses pseudo-instructions for argument loads
             return
@@ -1007,14 +1012,21 @@ class ABIFunction:
                 assert isinstance(instruction.operands[0],
                                   (GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister)), \
                     "Lowering LOAD.ARGUMENT is supported only for general-purpose, mmx, xmm, and ymm target registers"
-                if instruction.operands[0] == instruction.operands[1].register:
-                    # LOAD.ARGUMENT loads to the same register as passed in the argument; no actions needed
-                    pass
+                if instruction.operands[1].register is not None:
+                    # The argument is passed to function in a register
+                    ld_reg = load_register(instruction.operands[0],
+                                           instruction.operands[1].register,
+                                           instruction.operands[1].ctype,
+                                           prototype=instruction)
+                    if ld_reg is not None:
+                        lowered_instructions.append(ld_reg)
                 else:
-                    lowered_instructions.append(load_register(instruction.operands[0],
-                                                              instruction.operands[1].register,
-                                                              instruction.operands[1].ctype,
-                                                              prototype=instruction))
+                    # The argument is passed to function on stack
+                    ld_mem = load_memory(instruction.operands[0],
+                                         instruction.operands[1].address,
+                                         instruction.operands[1].ctype,
+                                         prototype=instruction)
+                    lowered_instructions.append(ld_mem)
             else:
                 lowered_instructions.append(instruction)
         self._instructions = lowered_instructions
@@ -1026,14 +1038,19 @@ class ABIFunction:
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
         instructions = list()
+        # Generate prologue
+        # TODO: handle situations when entry point is in the middle of a function
+        for reg in self._clobbered_registers:
+            from peachpy.x86_64.generic import PUSH
+            with InstructionStream() as stream:
+                PUSH(reg)
+            instructions.extend(stream.instructions)
         for instruction in self._instructions:
             if isinstance(instruction, RETURN):
-                from peachpy.x86_64 import m64, m128, m128d, m128i, m256, m256d, m256i
                 from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister, \
                     rax, eax, ax, al, rcx, ecx, mm0, xmm0, ymm0
-                from peachpy.x86_64.generic import XOR, MOV, MOVSX, MOVZX, POP, RET
-                from peachpy.x86_64.mmxsse import MOVQ, MOVSS, MOVSD, MOVDQA, MOVAPD, MOVAPS
-                from peachpy.x86_64.avx import VMOVDQA, VMOVAPD, VMOVAPS
+                from peachpy.x86_64.generic import XOR, MOV, POP, RET
+                from peachpy.x86_64.lower import load_register
                 is_golang_abi = self.abi in {golang_amd64_abi, golang_amd64p32_abi}
                 with InstructionStream() as stream:
                     # Save return value
@@ -1054,67 +1071,43 @@ class ABIFunction:
                             if is_golang_abi and instruction.operands[0].size == self.result_type.size:
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
-                                if instruction.operands[0].size < 4:
-                                    if self.result_type.is_signed_integer:
-                                        if self.result_type.size <= 4:
-                                            MOVSX(eax, instruction.operands[0], prototype=instruction)
-                                        else:
-                                            MOVSX(rax, instruction.operands[0], prototype=instruction)
-                                    else:
-                                        MOVZX(eax, instruction.operands[0], prototype=instruction)
-                                elif instruction.operands[0].size == 4:
-                                    if self.result_type.is_signed_integer:
-                                        if self.result_type.size == 8:
-                                            MOVSX(rax, instruction.operands[0], prototype=instruction)
-                                        else:
-                                            MOV(eax, instruction.operands[0], prototype=instruction)
-                                    else:
-                                        MOV(eax, instruction.operands[0], prototype=instruction)
-                                else:
-                                    MOV(rax, instruction.operands[0], prototype=instruction)
+                                result_reg = eax if instruction.operands[0].size <= 4 else rax
+                                stream.add_instruction(load_register(result_reg,
+                                                                     instruction.operands[0],
+                                                                     self.result_type,
+                                                                     prototype=instruction))
                                 if is_golang_abi:
-                                    reg_acc = {
+                                    result_subreg = {
                                         1: al,
                                         2: ax,
                                         4: eax,
                                         8: rax
                                     }[self.result_type.size]
-                                    STORE.RESULT(reg_acc, prototype=instruction, target_function=self)
+                                    STORE.RESULT(result_subreg, prototype=instruction, target_function=self)
                         elif isinstance(instruction.operands[0], MMXRegister):
-                            assert self.result_type == m64
-                            if instruction.operands[0] != mm0:
-                                MOVQ(mm0, instruction.operands[0], prototype=instruction)
+                            stream.add_instruction(load_register(mm0,
+                                                                 instruction.operands[0],
+                                                                 self.result_type,
+                                                                 prototype=instruction))
                         elif isinstance(instruction.operands[0], XMMRegister):
-                            if self.result_type.is_floating_point:
+                            if self.result_type.is_floating_point and is_golang_abi:
                                 assert self.result_type.size in {4, 8}
-                                if is_golang_abi:
-                                    STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
-                                else:
-                                    if instruction.operands[0] != xmm0:
-                                        if self.result_type.size == 4:
-                                            MOVSS(xmm0, instruction.operands[0], prototype=instruction)
-                                        else:
-                                            MOVSD(xmm0, instruction.operands[0], prototype=instruction)
+                                STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
-                                assert self.result_type in {m128, m128d, m128i}
-                                if instruction.operands[0] != xmm0:
-                                    MOV128 = {
-                                        m128i: MOVDQA,
-                                        m128d: MOVAPD,
-                                        m128: MOVAPS
-                                    }[self.result_type]
-                                    MOV128(xmm0, instruction.operands[0], prototype=instruction)
+                                stream.add_instruction(load_register(xmm0,
+                                                                     instruction.operands[0],
+                                                                     self.result_type,
+                                                                     prototype=instruction))
                         elif isinstance(instruction.operands[0], YMMRegister):
-                            assert self.result_type in {m256, m256d, m256i}
-                            if instruction.operands[0] != ymm0:
-                                MOV256 = {
-                                    m256i: VMOVDQA,
-                                    m256d: VMOVAPD,
-                                    m256: VMOVAPS
-                                }[self.result_type]
-                                MOV256(ymm0, instruction.operands[0], prototype=instruction)
+                            stream.add_instruction(load_register(ymm0,
+                                                                 instruction.operands[0],
+                                                                 self.result_type,
+                                                                 prototype=instruction))
                         else:
                             assert False
+                    # Generate epilog
+                    for reg in reversed(self._clobbered_registers):
+                        POP(reg)
                     # Return from the function
                     if self.abi == native_client_x86_64_abi:
                         from peachpy.x86_64.nacl import NACLJMP
@@ -1152,10 +1145,25 @@ class ABIFunction:
         for instruction in self._instructions:
             instruction.encodings = instruction._filter_encodings()
 
+    def _update_argument_addresses(self):
+        from peachpy.x86_64.registers import rsp
+        for argument in self.arguments:
+            if argument.stack_offset is not None:
+                argument.address = rsp + \
+                    (len(self._clobbered_registers) * 8 + self.abi.pointer_size + argument.stack_offset)
+
     def _analyze_clobbered_registers(self):
-        output_registers = set()
+        from peachpy.x86_64.registers import GeneralPurposeRegister, XMMRegister, YMMRegister, ZMMRegister
+        output_subregisters = set()
         for instruction in self._instructions:
-            output_registers.update(instruction.output_registers)
+            output_subregisters.update(instruction.output_registers)
+        output_registers = set()
+        for subreg in output_subregisters:
+            if isinstance(subreg, GeneralPurposeRegister):
+                output_registers.add(subreg.as_qword)
+            elif isinstance(subreg, (XMMRegister, YMMRegister, ZMMRegister)):
+                output_registers.add(subreg.as_xmm)
+            # Other register types are volatile registers for all x86-64 ABIs
         return list(sorted(filter(lambda reg: reg in self.abi.callee_save_registers, output_registers)))
 
     def _bind_registers(self):
@@ -1531,180 +1539,3 @@ class LocalVariable:
         child.parent = self
         child.offset = self.size // 2
         return child
-
-
-class StackFrame(object):
-    # Stack structure:
-    # +---------------------------------------------------+
-    # | On-stack parameters                               |
-    # +---------------------------------------------------+
-    # | Return address                                    |
-    # +---------------------------------------------------+
-    # | Preserved general-purpose registers               |
-    # +---------------------------------------------------+
-    # | Alignment                                         |
-    # +---------------------------------------------------+
-    # | Alignment bytes                                   |
-    # +---------------------------------------------------+
-    # | Preserved SSE registers                           |
-    # +---------------------------------------------------+
-    # | SSE local variables                               |
-    # +---------------------------------------------------+
-    # | AVX local variables                               |
-    # +---------------------------------------------------+
-    def __init__(self, abi):
-        super(StackFrame, self).__init__()
-        self.abi = abi
-        self.general_purpose_registers = list()
-        self.sse_registers = list()
-        self.sse_variables = list()
-        self.avx_variables = list()
-
-    def preserve_registers(self, registers):
-        for register in registers:
-            self.preserve_register(register)
-
-    def preserve_register(self, register):
-        if isinstance(register, peachpy.x86_64.registers.GeneralPurposeRegister8):
-            register = register.as_qword
-        elif isinstance(register, peachpy.x86_64.registers.GeneralPurposeRegister16):
-            register = register.as_qword
-        elif isinstance(register, peachpy.x86_64.registers.GeneralPurposeRegister32):
-            register = register.as_qword
-        elif isinstance(register, peachpy.x86_64.registers.YMMRegister):
-            register = register.as_xmm
-
-        if register not in self.abi.callee_save_registers:
-            return
-
-        if isinstance(register, peachpy.x86_64.registers.GeneralPurposeRegister64):
-            if register not in self.general_purpose_registers:
-                self.general_purpose_registers.append(register)
-        elif isinstance(register, peachpy.x86_64.registers.SSERegister):
-            if register not in self.sse_registers:
-                self.sse_registers.append(register)
-        else:
-            raise TypeError("Unsupported register regtype {0}".format(type(register)))
-
-    def add_variable(self, variable):
-        if variable.get_size() == 16:
-            if variable not in self.sse_variables:
-                self.sse_variables.append(variable)
-        elif variable.get_size() == 32:
-            if variable not in self.avx_variables:
-                self.avx_variables.append(variable)
-        else:
-            raise TypeError("Unsupported variable regtype {0}".format(type(variable)))
-
-    def get_parameters_address(self, use_rbp):
-        if use_rbp:
-            return peachpy.x86_64.registers.rbp + 16
-        else:
-            parameters_offset = 8 + \
-                                len(self.general_purpose_registers) * 8 + \
-                                len(self.sse_registers) * 16 + \
-                                len(self.sse_variables) * 16
-            # Take into account alignment for 16-byte entried on stack
-            if len(self.general_purpose_registers) % 2 == 0 and (self.sse_registers or self.sse_variables):
-                parameters_offset += 8
-            return peachpy.x86_64.registers.rsp + parameters_offset
-
-    def generate_prologue(self, use_avx, use_rbp):
-        from peachpy.stream import InstructionStream
-        from peachpy.x86_64.registers import rax, rbp, rsp
-        from peachpy.x86_64.generic import PUSH, MOV, AND, SUB
-        # from peachpy.x86_64.mmxsse import MOVAPS
-        # from peachpy.x86_64.avx import VMOVAPS
-        with InstructionStream() as instructions:
-        # Save general-purpose registers on stack
-            if use_rbp:
-                PUSH(rbp)
-                MOV(rbp, rsp)
-            for register in self.general_purpose_registers:
-                PUSH(register)
-            # This parameters address is valid only is RBP is not used
-            self.parameters_address = rsp + len(self.general_purpose_registers) * 8
-            variables_size = len(self.sse_variables) * 16 + len(self.avx_variables) * 32
-            if len(self.avx_variables) != 0:
-                # Align stack on 32
-                if use_rbp:
-                    # Old stack pointer is already preserved in RBP
-                    AND(rsp, -32)
-                else:
-                    MOV(rax, rsp)
-                    SUB(rsp, 8)
-                    AND(rsp, -32)
-                    MOV([rsp], rax)
-                stack_frame_size = len(self.sse_registers) * 16 + variables_size
-                if stack_frame_size % 32 != 0:
-                    stack_frame_size += 16
-                assert stack_frame_size % 32 == 0
-                SUB(rsp, stack_frame_size)
-            else:
-                if len(self.sse_registers) + len(self.sse_variables) != 0:
-                    # Align stack on 16
-                    stack_frame_size = len(self.sse_registers) * 16 + variables_size
-                    if len(self.general_purpose_registers) % 2 == 0:
-                        stack_frame_size += 8
-                    SUB(rsp, stack_frame_size)
-                    self.parameters_address += stack_frame_size
-            # Save floating-point registers on stack
-            for index, sse_register in enumerate(self.sse_registers):
-                if use_avx:
-                    VMOVAPS([rsp + variables_size + index * 16], sse_register)
-                else:
-                    MOVAPS([rsp + variables_size + index * 16], sse_register)
-
-            # Assign addresses to local variables
-            variable_offset = 0
-            for variable in self.avx_variables + self.sse_variables:
-                variable.address = rsp + variable_offset
-                variable_offset += variable.get_size()
-
-            # Fix parameters_address is RBP is used
-            if use_rbp:
-                self.parameters_address = rbp + 8
-
-        return list(iter(instructions))
-
-    def generate_epilogue(self, use_mmx, use_avx, use_rbp):
-        from peachpy.stream import InstructionStream
-        from peachpy.x86_64.generic import MOV, POP, ADD
-        # from peachpy.x86_64.mmxsse import MOVAPS, EMMS
-        # from peachpy.x86_64.avx import VMOVAPS, VZEROUPPER
-        with InstructionStream() as instructions:
-            variables_size = len(self.sse_variables) * 16 + len(self.avx_variables) * 32
-            # Restore floating-point registers from stack
-            for index, sse_register in enumerate(self.sse_registers):
-                if use_avx:
-                    VMOVAPS(sse_register, [peachpy.x86_64.registers.rsp + variables_size + index * 16])
-                else:
-                    MOVAPS(sse_register, [peachpy.x86_64.registers.rsp + variables_size + index * 16])
-
-            if use_rbp:
-                MOV(peachpy.x86_64.registers.rsp, peachpy.x86_64.registers.rbp)
-                POP(peachpy.x86_64.registers.rbp)
-            else:
-                # Restore stack pointer
-                if len(self.avx_variables) != 0:
-                    stack_frame_size = len(self.sse_registers) * 16 + variables_size
-                    if stack_frame_size % 32 != 0:
-                        stack_frame_size += 16
-
-                    MOV(peachpy.x86_64.registers.rsp, [peachpy.x86_64.registers.rsp + stack_frame_size])
-                else:
-                    if len(self.sse_registers) + len(self.sse_variables) != 0:
-                        stack_frame_size = len(self.sse_registers) * 16 + variables_size
-                        if len(self.general_purpose_registers) % 2 == 0:
-                            stack_frame_size += 8
-                        ADD(peachpy.x86_64.registers.rsp, stack_frame_size)
-
-            # Restore general-purpose registers from stack
-            for register in reversed(self.general_purpose_registers):
-                POP(register)
-            if use_mmx:
-                EMMS()
-            if use_avx:
-                VZEROUPPER()
-
-        return list(iter(instructions))
