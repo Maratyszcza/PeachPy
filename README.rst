@@ -16,28 +16,28 @@ Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 
 PeachPy is a Python framework for writing high-performance assembly kernels. PeachPy is developed to simplify writing optimized assembly kernels while preserving all optimization opportunities of traditional assembly. Some PeachPy features:
 
-  - Universal assembly syntax for Windows, Unix, and Golang assembly.
+- Universal assembly syntax for Windows, Unix, and Golang assembly.
 
-      - PeachPy can directly generate ELF and Mach-O object files and assembly listings for Golang toolchain
+  * PeachPy can directly generate ELF and Mach-O object files and assembly listings for Golang toolchain
 
-  - Automatic adaption of function to different calling conventions and ABIs.
+- Automatic adaption of function to different calling conventions and ABIs.
   
-      - Functions for different platforms can be generated from the assembly same source
-      - Supports Microsoft x64 ABI, System V x86-64 ABI (Linux and OS X), Linux x32 ABI, Native Client x86-64 SFI ABI, Golang AMD64 ABI, Golang AMD64p32 ABI
+  * Functions for different platforms can be generated from the assembly same source
+  * Supports Microsoft x64 ABI, System V x86-64 ABI (Linux and OS X), Linux x32 ABI, Native Client x86-64 SFI ABI, Golang AMD64 ABI, Golang AMD64p32 ABI
       
-  - Automatic register allocation.
+- Automatic register allocation.
   
-      - PeachPy is flexible and lets mix auto-allocated and hardcoded registers in the same code.
+  * PeachPy is flexible and lets mix auto-allocated and hardcoded registers in the same code.
 
-  - x86-64 instructions up to AVX2 and SHA
+- x86-64 instructions up to AVX2 and SHA
   
-      - Including 3dnow!+, XOP, FMA3, FMA4, TBM and BMI2.
-      - Excluding x87 FPU and most system instructions.
-      - Rigorously tested with `auto-generated tests <https://github.com/Maratyszcza/PeachPy/tree/master/test/x86_64/encoding>`_ to produce the same opcodes as binutils.
+  * Including 3dnow!+, XOP, FMA3, FMA4, TBM and BMI2.
+  * Excluding x87 FPU and most system instructions.
+  * Rigorously tested with `auto-generated tests <https://github.com/Maratyszcza/PeachPy/tree/master/test/x86_64/encoding>`_ to produce the same opcodes as binutils.
 
-  - Python-based metaprogramming and code-generation.
-  - Multiplexing of multiple instruction streams (helpful for software pipelining).
-  - Python 2, Python 3 and PyPy compatible.
+- Python-based metaprogramming and code-generation.
+- Multiplexing of multiple instruction streams (helpful for software pipelining).
+- Python 2, Python 3 and PyPy compatible.
 
 Installation
 ------------
