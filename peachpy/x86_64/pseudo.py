@@ -789,8 +789,8 @@ class STORE:
             target_function = active_function
             destination_offset = None
             if target_function is None:
-                assert target_function.abi in {golang_amd64_abi, golang_amd64p32_abi}
                 target_function = kwargs.get("target_function")
+                assert target_function.abi in {golang_amd64_abi, golang_amd64p32_abi}
                 destination_offset = target_function.result_offset
             if target_function.result_type is None:
                 raise ValueError("STORE.RESULT can't be used with void functions")
