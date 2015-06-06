@@ -121,8 +121,6 @@ But it also works the other way around: PeachPy can represent your assembly func
 
 .. code-block:: python
 
-  # This example works in Linux and OS X
-
   from peachpy import *
   from peachpy.x86_64 import *
 
@@ -140,7 +138,7 @@ But it also works the other way around: PeachPy can represent your assembly func
 
       RETURN(reg_x)
 
-  python_function = asm_function.finalize(abi.system_v_x86_64_abi).encode().load()
+  python_function = asm_function.finalize(abi.detect()).encode().load()
 
   print(python_function(2, 2)) # -> prints "4"
 

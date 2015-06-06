@@ -70,7 +70,47 @@ class Loader:
                     raise OSError("Failed to allocate memory for data segment")
                 self.data_address = data_address
         elif osname == "win32":
-            raise NotImplementedError("Windows")
+            import ctypes
+
+            # From WinNT.h
+            PAGE_READWRITE = 0x04
+            PAGE_EXECUTE_READWRITE = 0x40
+            MEM_COMMIT = 0x1000
+            MEM_RESERVE = 0x2000
+            MEM_DECOMMIT = 0x4000
+            MEM_RELEASE = 0x8000
+
+            # LPVOID WINAPI VirtualAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect)
+            VirtualAlloc_function = ctypes.windll.kernel32.VirtualAlloc
+            VirtualAlloc_function.restype = ctypes.c_void_p
+            VirtualAlloc_function.argtype = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong, ctypes.c_ulong]
+            # BOOL WINAPI VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD  dwFreeType)
+            VirtualFree_function = ctypes.windll.kernel32.VirtualFree
+            VirtualFree_function.restype = ctypes.c_int
+            VirtualFree_function.argtype = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong]
+
+            def VirtualFree(address, size):
+                VirtualFree_result = VirtualFree_function(address, size, MEM_RELEASE)
+                #assert VirtualFree_result != 0
+
+            self._release_memory = lambda address_size: VirtualFree(address_size[0], address_size[1])
+
+            # Allocate code segment
+            code_address = VirtualAlloc_function(None, self.code_size,
+                                                 MEM_RESERVE | MEM_COMMIT,
+                                                 PAGE_EXECUTE_READWRITE)
+            if not code_address:
+                raise OSError("Failed to allocate memory for code segment")
+            self.code_address = code_address
+
+            if self.data_size > 0:
+                # Allocate data segment
+                data_address = VirtualAlloc_function(None, self.data_size,
+                                                     MEM_RESERVE | MEM_COMMIT,
+                                                     PAGE_READWRITE)
+                if not data_address:
+                    raise OSError("Failed to allocate memory for data segment")
+                self.data_address = data_address
         elif osname == "nacl":
             raise NotImplementedError("Native Client")
         else:
