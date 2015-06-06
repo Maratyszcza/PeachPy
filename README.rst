@@ -37,7 +37,7 @@ PeachPy is a Python framework for writing high-performance assembly kernels. Pea
 
 - Python-based metaprogramming and code-generation.
 - Multiplexing of multiple instruction streams (helpful for software pipelining).
-- Python 2, Python 3 and PyPy compatible.
+- Compatible with Python 2 and Python 3, CPython and PyPy.
 
 Installation
 ------------
