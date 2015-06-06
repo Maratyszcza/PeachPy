@@ -27,7 +27,6 @@ class Loader:
 
         osname = sys.platform.lower()
         if osname == "darwin" or osname.startswith("linux"):
-            import peachpy.util
             import ctypes
 
             if osname == "darwin":
@@ -63,7 +62,7 @@ class Loader:
 
             if self.data_size > 0:
                 # Allocate data segment
-                data_address = mmap_function(None, self.code_size,
+                data_address = mmap_function(None, self.data_size,
                                              mmap.PROT_READ | mmap.PROT_WRITE,
                                              mmap.MAP_ANON | mmap.MAP_PRIVATE,
                                              -1, 0)
