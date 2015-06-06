@@ -1442,8 +1442,12 @@ class EncodedFunction:
 
 class ExecutableFuntion:
     def __init__(self, function):
-        from peachpy.util import roundup
         assert isinstance(function, EncodedFunction), "EncodedFunction object expected"
+        import peachpy.x86_64.abi
+        process_abi = peachpy.x86_64.abi.detect()
+        if process_abi != function.abi:
+            raise ValueError("Function ABI (%s) does not match process ABI (%s)".
+                             format(str(function.abi), str(process_abi)))
 
         self.code_segment = function.as_bytearray
 
