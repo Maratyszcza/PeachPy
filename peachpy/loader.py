@@ -16,26 +16,60 @@ class Loader:
         if data_size < 0:
             raise ValueError("data size must be non-negative")
 
+        import mmap
+        self.allocation_granularity = max(mmap.ALLOCATIONGRANULARITY, mmap.PAGESIZE)
+        self.code_address = None
+        self.code_size = self.allocation_size(code_size)
+        self.data_address = None
+        self.data_size = self.allocation_size(data_size)
+
+        self._release_memory = None
+
         osname = sys.platform.lower()
         if osname == "darwin" or osname.startswith("linux"):
             import peachpy.util
-            import mmap
             import ctypes
-            self.allocation_granularity = max(mmap.ALLOCATIONGRANULARITY, mmap.PAGESIZE)
-            self.code_size = self.allocation_size(code_size)
-            self.data_size = self.allocation_size(data_size)
 
-            self._code_allocation = mmap.mmap(-1, self.code_size, mmap.MAP_PRIVATE,
-                                              mmap.PROT_READ | mmap.PROT_EXEC | mmap.PROT_WRITE)
-            self.code_address = ctypes.addressof(ctypes.c_ubyte.from_buffer(self._code_allocation))
+            if osname == "darwin":
+                libc = ctypes.cdll.LoadLibrary("libc.dylib")
+            else:
+                libc = ctypes.cdll.LoadLibrary("libc.so.6")
+
+            # void* mmap(void* addr, size_t len, int prot, int flags, int fd, off_t offset)
+            mmap_function = libc.mmap
+            mmap_function.restype = ctypes.c_void_p
+            mmap_function.argtype = [ctypes.c_void_p, ctypes.c_size_t,
+                             ctypes.c_int, ctypes.c_int,
+                             ctypes.c_int, ctypes.c_size_t]
+            # int munmap(void* addr, size_t len)
+            munmap_function = libc.munmap
+            munmap_function.restype = ctypes.c_int
+            munmap_function.argtype = [ctypes.c_void_p, ctypes.c_size_t]
+
+            def munmap(address, size):
+                munmap_result = munmap_function(address, size)
+                assert munmap_result == 0
+
+            self._release_memory = lambda address_size: munmap(address_size[0], address_size[1])
+
+            # Allocate code segment
+            code_address = mmap_function(None, self.code_size,
+                                         mmap.PROT_READ | mmap.PROT_WRITE | mmap.PROT_EXEC,
+                                         mmap.MAP_ANON | mmap.MAP_PRIVATE,
+                                         -1, 0)
+            if code_address == -1:
+                raise OSError("Failed to allocate memory for code segment")
+            self.code_address = code_address
 
             if self.data_size > 0:
-                self._data_allocation = mmap.mmap(-1, self.data_size, mmap.MAP_PRIVATE,
-                                              mmap.PROT_READ | mmap.PROT_WRITE)
-                self.data_address = ctypes.addressof(ctypes.c_ubyte.from_buffer(self._data_allocation))
-            else:
-                self._data_allocation = None
-                self.data_address = None
+                # Allocate data segment
+                data_address = mmap_function(None, self.code_size,
+                                             mmap.PROT_READ | mmap.PROT_WRITE,
+                                             mmap.MAP_ANON | mmap.MAP_PRIVATE,
+                                             -1, 0)
+                if data_address == -1:
+                    raise OSError("Failed to allocate memory for data segment")
+                self.data_address = data_address
         elif osname == "win32":
             raise NotImplementedError("Windows")
         elif osname == "nacl":
@@ -50,13 +84,14 @@ class Loader:
     def copy_code(self, code_segment):
         import ctypes
         ctypes.memmove(self.code_address,
-                       ctypes.c_char_p(str(code_segment)),
+                       ctypes.c_char_p(bytes(code_segment)),
                        len(code_segment))
 
     def __del__(self):
-        if self._code_allocation is not None:
-            self._code_allocation.close()
-            self._code_allocation = None
-        if self._data_allocation is not None:
-            self._data_allocation.close()
-            self._data_allocation = None
+        if self._release_memory is not None:
+            if self.code_address is not None:
+                self._release_memory((self.code_address, self.code_size))
+                self.code_address = None
+            if self.data_address is not None:
+                self._release_memory((self.data_address, self.data_size))
+                self.data_address = None
