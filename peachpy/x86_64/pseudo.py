@@ -834,6 +834,7 @@ class STORE:
             text = "\t" if indent else ""
             if assembly_format == "go":
                 from peachpy.x86_64.registers import MMXRegister, XMMRegister
+                from peachpy.x86_64.operand import format_operand
 
                 if isinstance(self.operands[0], MMXRegister):
                     mov_name = {
@@ -859,7 +860,7 @@ class STORE:
                         8: "MOVQ"
                     }[self.destination_size]
                 return text + "%s %s, ret+%d(FP)" % \
-                    (mov_name, self.operands[0].format("go"), self.destination_offset)
+                    (mov_name, format_operand(self.operands[0], "go"), self.destination_offset)
 
             else:
                 return text + str(self)
