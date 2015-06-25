@@ -113,8 +113,7 @@ class Function:
 
         def c_to_go_type(ctype):
             assert isinstance(ctype, peachpy.Type)
-            assert not ctype.is_pointer or not ctype.base.is_pointer
-            if ctype.is_pointer:
+            if ctype.is_pointer and ctype.base is not None:
                 return "*" + c_to_go_type(ctype.base)
             elif ctype.is_bool:
                 return "boolean"
