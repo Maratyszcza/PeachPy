@@ -763,19 +763,13 @@ class Argument(peachpy.Argument):
         assert isinstance(abi, ABI), "ABI object expected"
         from copy import deepcopy
         super(Argument, self).__init__(deepcopy(argument.ctype), argument.name)
+        if self.ctype.size is None:
+            self.ctype.size = self.ctype.get_size(abi)
         self.abi = abi
         self.register = None
         self.address = None
         self.stack_offset = None
         self.save_on_stack = False
-
-    @property
-    def size(self):
-        """Returns argument size in bytes.
-
-        Argument size is ABI-dependent. If the function is finalized for a different ABI, the size might be different.
-        """
-        return self.ctype.get_size(self.abi)
 
     @property
     def passed_on_stack(self):
