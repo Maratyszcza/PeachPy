@@ -47,7 +47,7 @@ cpu_map = {
     "bobcat": peachpy.x86_64.uarch.bobcat,
     "jaguar": peachpy.x86_64.uarch.jaguar
 }
-parser.add_argument("-mcpu", dest="cpu", required=True,
+parser.add_argument("-mcpu", dest="cpu", default="default",
                     choices=("default", "prescott", "conroe", "penryn", "nehalem", "sandybridge", "ivybridge",
                              "haswell", "broadwell", "k8", "k10", "bulldozer", "piledriver", "steamroller",
                              "bonnell", "saltwell", "silvermont", "bobcat", "jaguar"),
