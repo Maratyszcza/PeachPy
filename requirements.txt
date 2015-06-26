@@ -1,2 +1,2 @@
-Opcodes==0.2.5
+Opcodes==0.2.6
 six
