@@ -25,9 +25,9 @@ def filter_instruction_forms(instruction_forms):
 
 
 def aggregate_instruction_forms(instruction_forms):
-    """Hierarhically chains instruction forms"""
+    """Hierarhically chains instruction forms
 
-    """Combines operand types that differ only by a single operand together"""
+    Combines operand types that differ only by a single operand together"""
 
     nested_operand_types = {
         ("1", "imm8"),
@@ -59,16 +59,16 @@ def aggregate_instruction_forms(instruction_forms):
 
     from collections import OrderedDict
     new_instruction_forms = OrderedDict()
-    for (i, form) in enumerate(instruction_forms):
-        for (j, other_form) in enumerate(instruction_forms):
+    for form in instruction_forms:
+        for other_form in instruction_forms:
             n = find_single_operand_difference(form, other_form)
             if n is not None and (form.operands[n].type, other_form.operands[n].type) in nested_operand_types:
                 break
         else:
             new_instruction_forms[form] = []
 
-    for (i, form) in enumerate(instruction_forms):
-        for (j, other_form) in enumerate(instruction_forms):
+    for form in instruction_forms:
+        for other_form in instruction_forms:
             n = find_single_operand_difference(form, other_form)
             if n is not None and (form.operands[n].type, other_form.operands[n].type) in nested_operand_types:
                 assert other_form.isa_extensions == form.isa_extensions
