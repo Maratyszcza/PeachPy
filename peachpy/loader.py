@@ -77,7 +77,6 @@ class Loader:
             PAGE_EXECUTE_READWRITE = 0x40
             MEM_COMMIT = 0x1000
             MEM_RESERVE = 0x2000
-            MEM_DECOMMIT = 0x4000
             MEM_RELEASE = 0x8000
 
             # LPVOID WINAPI VirtualAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect)
@@ -91,7 +90,7 @@ class Loader:
 
             def VirtualFree(address, size):
                 VirtualFree_result = VirtualFree_function(address, size, MEM_RELEASE)
-                #assert VirtualFree_result != 0
+                assert VirtualFree_result != 0
 
             self._release_memory = lambda address_size: VirtualFree(address_size[0], address_size[1])
 
