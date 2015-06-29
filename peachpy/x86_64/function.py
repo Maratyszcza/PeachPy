@@ -432,7 +432,7 @@ class Function:
             def __repr__(self):
                 return str(self)
 
-            def analyze_availability(self, extra_available_registers=dict()):
+            def analyze_availability(self, extra_available_registers):
                 self.availability_analysis_passes += 1
 
                 if self.availability_analysis_passes == 1:
@@ -463,7 +463,7 @@ class Function:
                     # Optimization: do not create a copy of the dict
                     self.output_blocks[0].analyze_availability(extra_available_registers)
 
-            def analyze_liveness(self, extra_live_registers=dict()):
+            def analyze_liveness(self, extra_live_registers):
                 # Update in liveness analysis consists of three steps:
                 # 1. Update live registers for this basic block.
                 # 2. Mark registers which are produced to by the basic block as non-live.
@@ -542,9 +542,9 @@ class Function:
         exit_positions = [block.start_position for block in basic_blocks if not block.output_blocks]
 
         # Analyze register lifetime
-        basic_blocks_map[entry_position].analyze_availability()
+        basic_blocks_map[entry_position].analyze_availability(dict())
         for exit_position in exit_positions:
-            basic_blocks_map[exit_position].analyze_liveness()
+            basic_blocks_map[exit_position].analyze_liveness(dict())
 
         # Reconstruct live and available registers for the whole instruction sequence
         for basic_block in basic_blocks:
