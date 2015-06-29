@@ -9,5 +9,7 @@ ignore-paths:
     - peachpy/arm
 pylint:
     disable:
+        - global-statement
         - global-variable-not-assigned
+        - old-style-class
 
