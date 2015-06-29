@@ -24,7 +24,7 @@ from peachpy.x86_64.function import Function, LocalVariable
 from peachpy.x86_64.operand import byte, word, dword, qword, oword, hword
 
 from peachpy.x86_64.pseudo import Label, Loop, \
-    LABEL, ALIGN, RETURN, LOAD, BROADCAST, STORE, ASSUME, INIT, REDUCE, SWAP
+    LABEL, ALIGN, RETURN, LOAD, STORE, SWAP
 from peachpy.x86_64.nacl import NACLJMP
 
 from peachpy.x86_64.generic import \

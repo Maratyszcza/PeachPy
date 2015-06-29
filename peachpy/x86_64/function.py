@@ -1192,8 +1192,6 @@ class ABIFunction:
         """Formats assembly listing of the function according to specified parameters"""
 
         if assembly_format == "go":
-            import operator
-
             # Arguments for TEXT directive in Go assembler
             package_string = self.package
             if package_string is None:
@@ -1439,8 +1437,8 @@ class ExecutableFuntion:
         import peachpy.x86_64.abi
         process_abi = peachpy.x86_64.abi.detect()
         if process_abi != function.abi:
-            raise ValueError("Function ABI (%s) does not match process ABI (%s)".
-                             format(str(function.abi), str(process_abi)))
+            raise ValueError("Function ABI (%s) does not match process ABI (%s)" %
+                             (str(function.abi), str(process_abi)))
 
         self.code_segment = function.as_bytearray
 
