@@ -336,33 +336,6 @@ class LOAD:
                 return text + str(self)
 
 
-    @staticmethod
-    def ZERO(destination, ctype):
-        from peachpy import Type
-        if isinstance(ctype, Type):
-            from peachpy.x86_64.registers import MMXRegister, SSERegister, AVXRegister
-            from peachpy.x86_64.function import active_function
-            if isinstance(destination, MMXRegister):
-                PXOR(destination, destination)
-            elif isinstance(destination, SSERegister):
-                from peachpy.x86_64.avx import VXORPS, VXORPD, VPXOR
-                from peachpy.x86_64.mmxsse import XORPS, XORPD, PXOR
-                if ctype.is_floating_point:
-                    if active_function.target.has_avx:
-                        SIMD_XOR = {4: VXORPS, 8: VXORPD}[ctype.size]
-                    else:
-                        SIMD_XOR = {4: XORPS, 8: XORPD}[ctype.size]
-                else:
-                    SIMD_XOR = VPXOR if active_function.target.has_avx else PXOR
-                SIMD_XOR(destination, destination)
-            elif isinstance(destination, AVXRegister):
-                LOAD.ZERO(destination.as_oword, ctype)
-            else:
-                raise TypeError("Unsupported regtype of destination register")
-        else:
-            raise TypeError("Type must be a C regtype")
-
-
 class STORE:
     class RESULT(Instruction):
         def __init__(self, *args, **kwargs):

@@ -27,7 +27,8 @@ def filter_instruction_forms(instruction_forms):
 def aggregate_instruction_forms(instruction_forms):
     """Hierarhically chains instruction forms
 
-    Combines operand types that differ only by a single operand together"""
+    Combines operand types that differ only by a single operand together
+    """
 
     nested_operand_types = {
         ("1", "imm8"),

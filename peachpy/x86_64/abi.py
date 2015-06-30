@@ -91,7 +91,7 @@ golang_amd64p32_abi = ABI("Go x32 ABI", endianness=Endianness.Little,
 def detect():
     import platform
     import struct
-    (osname, node, release, version, machine, processor) = platform.uname()
+    (osname, node, release, version, machine, processor) = platform.uname()  # pylint:disable=unpacking-non-sequence
     pointer_size = struct.calcsize("P")
     if osname == "Darwin" and machine == "x86_64" and pointer_size == 8:
         return system_v_x86_64_abi
