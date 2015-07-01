@@ -1027,7 +1027,7 @@ class ABIFunction:
     def _lower_pseudoinstructions(self):
         from peachpy.x86_64.pseudo import RETURN, STORE
         from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
-        from peachpy.util import is_uint32, is_int64
+        from peachpy.util import is_uint32, is_sint32, is_int
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
         instructions = list()
@@ -1049,17 +1049,40 @@ class ABIFunction:
                     # Save return value
                     if instruction.operands:
                         assert len(instruction.operands) == 1
-                        if instruction.operands[0] == 0 and not is_golang_abi:
-                            XOR(eax, eax, prototype=instruction)
-                        elif is_uint32(instruction.operands[0]):
+                        if is_int(instruction.operands[0]):
+                            assert self.result_type.is_integer or self.result_type.is_pointer
+                            # Return immediate constant
                             if is_golang_abi:
-                                STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
+                                # Return value must be saved on stack with STORE.RESULT pseudo-instruction
+                                if self.result_type.size <= 4 or is_sint32(instruction.operands[0]):
+                                    # STORE.RESULT will assemble to one of the forms:
+                                    # - MOV m8, imm8
+                                    # - MOV m16, imm16
+                                    # - MOV m32, imm32
+                                    # - MOV m64, imm32
+                                    STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
+                                else:
+                                    # STORE.RESULT can't be used directly (MOV m64, imm64 doesn't exist), instead use
+                                    # MOV rax, imm64 + MOV m64, rax (STORE.RESULT)
+                                    MOV(eax, instruction.operands[0], prototype=instruction)
+                                    STORE.RESULT(eax, prototype=instruction, target_function=self)
                             else:
-                                MOV(eax, instruction.operands[0], prototype=instruction)
-                        elif is_int64(instruction.operands[0]):
-                            MOV(rax, instruction.operands[0], prototype=instruction)
-                            if is_golang_abi:
-                                STORE.RESULT(rax, prototype=instruction, target_function=self)
+                                # Return value is returned in:
+                                # - eax register if result type is not greater than 4 bytes
+                                # - rax register if result type is greater than 8 bytes
+                                if instruction.operands[0] == 0:
+                                    # - Zero eax register (high 32 bits of rax register clear automatically)
+                                    XOR(eax, eax, prototype=instruction)
+                                elif self.result_type.size <= 4 or is_uint32(instruction.operands[0]):
+                                    # - If the result type is not greater than 4 bytes, directly mov it to eax register
+                                    # - If the result type is greater than 4 bytes, but the result value is
+                                    #   representable as unsigned 32-bit literal, mov it to eax register and the high
+                                    #   32 bits of rax will be cleared automatically
+                                    MOV(eax, instruction.operands[0], prototype=instruction)
+                                else:
+                                    # - Either negative 32-bit constant (would use MOV rax, imm32 form)
+                                    # - Or large 64-bit constant (would use MOV rax, imm64 form)
+                                    MOV(rax, instruction.operands[0], prototype=instruction)
                         elif isinstance(instruction.operands[0], GeneralPurposeRegister):
                             if is_golang_abi and instruction.operands[0].size == self.result_type.size:
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
