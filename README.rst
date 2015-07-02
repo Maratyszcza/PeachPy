@@ -124,6 +124,11 @@ See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ fo
 Using PeachPy as a Python module
 --------------------------------
 
+When command-line tool does not provide sufficient flexibility, Python scripts can import PeachPy objects from ``peachpy`` and ``peachpy.x86_64`` modules and do arbitrary manipulations on output images, program structure, instructions, and bytecodes.
+
+PeachPy as Inline Assembler for Python
+**************************************
+
 PeachPy links assembly and Python: it represents assembly instructions and syntax as Python classes, functions, and objects.
 But it also works the other way around: PeachPy can represent your assembly functions as callable Python functions!
 
@@ -149,6 +154,23 @@ But it also works the other way around: PeachPy can represent your assembly func
   python_function = asm_function.finalize(abi.detect()).encode().load()
 
   print(python_function(2, 2)) # -> prints "4"
+
+PeachPy as Instruction Encoder
+******************************
+
+PeachPy can be used to explore instruction length, opcodes, and alternative encodings:
+
+.. code-block:: python
+
+  from peachpy.x86_64 import *
+
+  ADD(eax, 5).encode() # -> bytearray(b'\x83\xc0\x05')
+
+  MOVAPS(xmm0, xmm1).encode_options() # -> [bytearray(b'\x0f(\xc1'), bytearray(b'\x0f)\xc8')]
+  
+  VPSLLVD(ymm0, ymm1, [rsi + 8]).encode_length_options() # -> {6: bytearray(b'\xc4\xe2uGF\x08'),
+                                                         #     7: bytearray(b'\xc4\xe2uGD&\x08'),
+                                                         #     9: bytearray(b'\xc4\xe2uG\x86\x08\x00\x00\x00')}
 
 Dependencies and Users
 ----------------------
