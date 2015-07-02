@@ -115,9 +115,9 @@ What else? You can convert the program to Plan 9 assembly for use with Go progra
 .. code-block:: bash
 
   # Use Golang ABI with -S flag to generate assembly for Golang x86-64 targets
-  python -m peachpy.x86_64 -mabi=golang -mcpu=default -S -o example_amd64.s example.py
+  python -m peachpy.x86_64 -mabi=golang -S -o example_amd64.s example.py
   # Use Golang-p32 ABI with -S flag to generate assembly for Golang x86-64 targets with 32-bit pointers
-  python -m peachpy.x86_64 -mabi=golang-p32 -mcpu=default -S -o example_amd64p32.s example.py
+  python -m peachpy.x86_64 -mabi=golang-p32 -S -o example_amd64p32.s example.py
 
 See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ for real-world scenarios of using PeachPy with ``make`` and ``go generate`` tools.
 
