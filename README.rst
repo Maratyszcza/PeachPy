@@ -58,7 +58,7 @@ PeachPy is actively developed, and thus there are presently no stable releases o
   cd PeachPy
   pip install -r requirements.txt
   python setup.py generate
-  export PYTHONPATH="$PWD:$PYTHONPATH"
+  pip install .
 
 Using PeachPy as a command-line tool
 ------------------------------------
