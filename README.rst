@@ -103,11 +103,11 @@ Now you can compile this code into a binary object file that you can link into a
 .. code-block:: bash
 
   # Use Mach-O format with SysV ABI for OS X
-  python -m peachpy.x86_64 -mabi=sysv -mcpu=default -mimage-format=mach-o -o example.o example.py
+  python -m peachpy.x86_64 -mabi=sysv -mimage-format=mach-o -o example.o example.py
   # Use ELF format with SysV ABI for Linux x86-64
-  python -m peachpy.x86_64 -mabi=sysv -mcpu=default -mimage-format=elf -o example.o example.py
+  python -m peachpy.x86_64 -mabi=sysv -mimage-format=elf -o example.o example.py
   # Use ELF format with x32 ABI for Linux x32 (x86-64 with 32-bit pointer)
-  python -m peachpy.x86_64 -mabi=sysv -mcpu=default -mimage-format=elf -o example.o example.py
+  python -m peachpy.x86_64 -mabi=x32 -mimage-format=elf -o example.o example.py
   # Code-generation for Windows (MS COFF) and Native Client x86-64 SFI doesn't work yet, but we'll get there
 
 What else? You can convert the program to Plan 9 assembly for use with Go programming language:
