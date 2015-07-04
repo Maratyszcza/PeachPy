@@ -174,6 +174,59 @@ class MachOWriter:
         self.image.symbols.append(function_symbol)
 
 
+class MSCOFFWriter:
+    def __init__(self, output_path, abi, input_path=None):
+        from peachpy.formats.mscoff.image import Image
+        from peachpy.formats.mscoff.section import TextSection
+
+        self.output_path = output_path
+        self.previous_writer = None
+        self.abi = abi
+        self.image = Image(abi, input_path)
+        self.text_section = TextSection()
+        self.image.add_section(self.text_section, ".text")
+
+    def __enter__(self):
+        global active_writer
+        self.previous_writer = active_writer
+        active_writer = self
+        self.output_file = open(self.output_path, "w", buffering=0)
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        global active_writer
+        active_writer = self.previous_writer
+        self.previous_writer = None
+        if exc_type is None:
+            self.output_file.write(self.image.as_bytearray)
+            self.output_file.close()
+            self.output_file = None
+        else:
+            import os
+            os.unlink(self.output_file.name)
+            self.output_file = None
+            raise
+
+    def add_function(self, function):
+        import peachpy.x86_64.function
+        assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
+            "Function must be bindinded to an ABI before its assembly can be used"
+
+        encoded_function = function.encode()
+        function_code = encoded_function.as_bytearray
+
+        function_offset = len(self.text_section.content)
+        self.text_section.write(function_code)
+
+        from peachpy.formats.mscoff.symbol import SymbolEntry, SymbolType, StorageClass
+        function_symbol = SymbolEntry()
+        function_symbol.value = function_offset
+        function_symbol.section_index = self.text_section.index
+        function_symbol.symbol_type = SymbolType.function
+        function_symbol.storage_class = StorageClass.external
+        self.image.add_symbol(function_symbol, function.name)
+
+
 class NullWriter:
     def __init__(self):
         pass
