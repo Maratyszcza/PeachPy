@@ -1009,7 +1009,7 @@ class ABIFunction:
                     # The argument is passed to function in a register
                     ld_reg = load_register(instruction.operands[0],
                                            instruction.operands[1].register,
-                                           instruction.operands[1].ctype,
+                                           instruction.operands[1].ctype.is_signed_integer,
                                            prototype=instruction)
                     if ld_reg is not None:
                         lowered_instructions.append(ld_reg)
@@ -1087,10 +1087,10 @@ class ABIFunction:
                             if is_golang_abi and instruction.operands[0].size == self.result_type.size:
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
-                                result_reg = eax if instruction.operands[0].size <= 4 else rax
+                                result_reg = eax if self.result_type.size <= 4 else rax
                                 stream.add_instruction(load_register(result_reg,
                                                                      instruction.operands[0],
-                                                                     self.result_type,
+                                                                     self.result_type.is_signed_integer,
                                                                      prototype=instruction))
                                 if is_golang_abi:
                                     result_subreg = {
@@ -1103,7 +1103,7 @@ class ABIFunction:
                         elif isinstance(instruction.operands[0], MMXRegister):
                             stream.add_instruction(load_register(mm0,
                                                                  instruction.operands[0],
-                                                                 self.result_type,
+                                                                 self.result_type.is_signed_integer,
                                                                  prototype=instruction))
                         elif isinstance(instruction.operands[0], XMMRegister):
                             if self.result_type.is_floating_point and is_golang_abi:
@@ -1112,12 +1112,12 @@ class ABIFunction:
                             else:
                                 stream.add_instruction(load_register(xmm0,
                                                                      instruction.operands[0],
-                                                                     self.result_type,
+                                                                     self.result_type.is_signed_integer,
                                                                      prototype=instruction))
                         elif isinstance(instruction.operands[0], YMMRegister):
                             stream.add_instruction(load_register(ymm0,
                                                                  instruction.operands[0],
-                                                                 self.result_type,
+                                                                 self.result_type.is_signed_integer,
                                                                  prototype=instruction))
                         else:
                             assert False

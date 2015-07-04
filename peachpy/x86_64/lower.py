@@ -6,21 +6,21 @@ from peachpy.stream import NullStream
 from peachpy import Type
 
 
-def load_register(dst_reg, src_reg, src_type, prototype):
+def load_register(dst_reg, src_reg, is_signed_integer, prototype):
     assert dst_reg.size >= src_reg.size
-    assert isinstance(src_type, Type)
+    assert isinstance(is_signed_integer, bool)
     with NullStream():
         if isinstance(dst_reg, GeneralPurposeRegister):
             if dst_reg.size == src_reg.size:
                 if dst_reg != src_reg or dst_reg.size == 4:
                     return MOV(dst_reg, src_reg, prototype=prototype)
             elif (dst_reg.size, src_reg.size) == (8, 4):
-                if src_type.is_signed_integer:
+                if is_signed_integer:
                     return MOVSXD(dst_reg, src_reg, prototype=prototype)
                 else:
                     return MOV(dst_reg.as_dword, src_reg, prototype=prototype)
             else:
-                if src_type.is_signed_integer:
+                if is_signed_integer:
                     return MOVSX(dst_reg, src_reg, prototype=prototype)
                 else:
                     if dst_reg.size == 8:
