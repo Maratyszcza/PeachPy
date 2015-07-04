@@ -143,6 +143,8 @@ def main():
             writer = peachpy.writer.ELFWriter(options.output, abi, options.input[0])
         elif image_format == "mach-o":
             writer = peachpy.writer.MachOWriter(options.output, abi)
+        elif image_format == "ms-coff":
+            writer = peachpy.writer.MSCOFFWriter(options.output, abi, options.input[0])
         else:
             raise ValueError("Image format %s is not supported" % image_format)
 

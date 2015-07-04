@@ -22,7 +22,7 @@ microsoft_x64_abi = ABI("Microsoft x64 ABI", endianness=Endianness.Little,
                         volatile_registers=[rax, r10, r11,
                                             mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                             xmm4, xmm5],
-                        mscoff_machine_type=peachpy.formats.mscoff.file.MachineType.X86_64)
+                        mscoff_machine_type=peachpy.formats.mscoff.file.MachineType.x86_64)
 
 system_v_x86_64_abi = ABI("SystemV x86-64 ABI", endianness=Endianness.Little,
                           bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,
