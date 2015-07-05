@@ -1,2 +1,3 @@
 Opcodes==0.2.6
 six
+enum34
