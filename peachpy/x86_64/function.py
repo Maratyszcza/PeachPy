@@ -798,6 +798,10 @@ class ABIFunction:
         self.c_signature = function.c_signature
         self.go_signature = function.go_signature
 
+        from peachpy.x86_64.registers import rsp
+        self._stack_base = rsp
+        self._stack_frame_size = 0
+
         self._instructions = deepcopy(function._instructions)
         self._conflicting_registers = function._conflicting_registers.copy()
         self._register_allocations = function._register_allocations.copy()
@@ -821,6 +825,7 @@ class ABIFunction:
         self._bind_registers()
 
         self._clobbered_registers = self._analyze_clobbered_registers()
+        self._update_stack_frame()
         self._update_argument_addresses()
 
         self._lower_argument_loads()
@@ -1027,17 +1032,39 @@ class ABIFunction:
     def _lower_pseudoinstructions(self):
         from peachpy.x86_64.pseudo import RETURN, STORE
         from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp
         from peachpy.util import is_uint32, is_sint32, is_int
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
         instructions = list()
         # Generate prologue
+        cloberred_xmm_registers = list()
+        cloberred_general_purpose_registers = list()
+        with InstructionStream() as prolog_stream:
+            from peachpy.x86_64.generic import PUSH, SUB, ADD
+            # 1. Save clobbered general-purpose registers with PUSH instruction
+            # 2. If there are clobbered XMM registers, allocate space for them on stack (subtract stack pointer)
+            # 3. Save clobbered XMM registers on stack with MOVAPS instruction
+            for reg in self._clobbered_registers:
+                assert isinstance(reg, (GeneralPurposeRegister64, XMMRegister)), \
+                    "Internal error: unexpected register %s in clobber list" % str(reg)
+                if isinstance(reg, GeneralPurposeRegister64):
+                    cloberred_general_purpose_registers.append(reg)
+                    PUSH(reg)
+                else:
+                    cloberred_xmm_registers.append(reg)
+            from peachpy.x86_64.mmxsse import MOVAPS
+            if cloberred_xmm_registers:
+                # Total size of the stack frame less what is already adjusted with PUSH instructions
+                stack_adjustment = \
+                    self._stack_frame_size - len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
+                SUB(rsp, stack_adjustment)
+            for i, xmm_reg in enumerate(cloberred_xmm_registers):
+                MOVAPS([rsp + i * XMMRegister.size], xmm_reg)
+
         # TODO: handle situations when entry point is in the middle of a function
-        for reg in self._clobbered_registers:
-            from peachpy.x86_64.generic import PUSH
-            with InstructionStream() as stream:
-                PUSH(reg)
-            instructions.extend(stream.instructions)
+        instructions.extend(prolog_stream.instructions)
+
         for instruction in self._instructions:
             if isinstance(instruction, RETURN):
                 from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister, \
@@ -1045,7 +1072,7 @@ class ABIFunction:
                 from peachpy.x86_64.generic import XOR, MOV, POP, RET
                 from peachpy.x86_64.lower import load_register
                 is_golang_abi = self.abi in {golang_amd64_abi, golang_amd64p32_abi}
-                with InstructionStream() as stream:
+                with InstructionStream() as epilog_stream:
                     # Save return value
                     if instruction.operands:
                         assert len(instruction.operands) == 1
@@ -1088,7 +1115,7 @@ class ABIFunction:
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
                                 result_reg = eax if self.result_type.size <= 4 else rax
-                                stream.add_instruction(load_register(result_reg,
+                                epilog_stream.add_instruction(load_register(result_reg,
                                                                      instruction.operands[0],
                                                                      self.result_type.is_signed_integer,
                                                                      prototype=instruction))
@@ -1101,7 +1128,7 @@ class ABIFunction:
                                     }[self.result_type.size]
                                     STORE.RESULT(result_subreg, prototype=instruction, target_function=self)
                         elif isinstance(instruction.operands[0], MMXRegister):
-                            stream.add_instruction(load_register(mm0,
+                            epilog_stream.add_instruction(load_register(mm0,
                                                                  instruction.operands[0],
                                                                  self.result_type.is_signed_integer,
                                                                  prototype=instruction))
@@ -1110,19 +1137,26 @@ class ABIFunction:
                                 assert self.result_type.size in {4, 8}
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
-                                stream.add_instruction(load_register(xmm0,
+                                epilog_stream.add_instruction(load_register(xmm0,
                                                                      instruction.operands[0],
                                                                      self.result_type.is_signed_integer,
                                                                      prototype=instruction))
                         elif isinstance(instruction.operands[0], YMMRegister):
-                            stream.add_instruction(load_register(ymm0,
+                            epilog_stream.add_instruction(load_register(ymm0,
                                                                  instruction.operands[0],
                                                                  self.result_type.is_signed_integer,
                                                                  prototype=instruction))
                         else:
                             assert False
                     # Generate epilog
-                    for reg in reversed(self._clobbered_registers):
+                    # 1. Restore clobbered XMM registers on stack with MOVAPS instruction
+                    # 2. If there are clobbered XMM registers, release their space on stack (increment stack pointer)
+                    # 3. Restore clobbered general-purpose registers with PUSH instruction
+                    for i, xmm_reg in enumerate(cloberred_xmm_registers):
+                        MOVAPS([rsp + i * XMMRegister.size], xmm_reg)
+                    if cloberred_xmm_registers:
+                        ADD(rsp, stack_adjustment)
+                    for reg in reversed(cloberred_general_purpose_registers):
                         POP(reg)
                     # Return from the function
                     if self.abi == native_client_x86_64_abi:
@@ -1131,7 +1165,7 @@ class ABIFunction:
                         NACLJMP(ecx)
                     else:
                         RET(prototype=instruction)
-                instructions.extend(stream.instructions)
+                instructions.extend(epilog_stream.instructions)
             elif isinstance(instruction, STORE.RESULT):
                 instruction.destination_offset = self.result_offset
                 instructions.append(instruction)
@@ -1165,8 +1199,10 @@ class ABIFunction:
         from peachpy.x86_64.registers import rsp
         for argument in self.arguments:
             if argument.stack_offset is not None:
+                return_address_size = 8
+                # TODO: consider non-rsp stack frame base
                 argument.address = rsp + \
-                    (len(self._clobbered_registers) * 8 + self.abi.pointer_size + argument.stack_offset)
+                    (self._stack_frame_size + return_address_size + argument.stack_offset)
 
     def _analyze_clobbered_registers(self):
         from peachpy.x86_64.registers import GeneralPurposeRegister, XMMRegister, YMMRegister, ZMMRegister
@@ -1181,6 +1217,29 @@ class ABIFunction:
                 output_registers.add(subreg.as_xmm)
             # Other register types are volatile registers for all x86-64 ABIs
         return list(sorted(filter(lambda reg: reg in self.abi.callee_save_registers, output_registers)))
+
+    def _update_stack_frame(self):
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister
+        clobbered_general_purpose_registers = 0
+        clobbered_xmm_registers = 0
+        for reg in self._clobbered_registers:
+            assert isinstance(reg, (GeneralPurposeRegister64, XMMRegister)), \
+                "Internal error: unexpected register %s in clobber list" % str(reg)
+            if isinstance(reg, GeneralPurposeRegister64):
+                clobbered_general_purpose_registers += 1
+            else:
+                clobbered_xmm_registers += 1
+        self._stack_frame_size = \
+            clobbered_general_purpose_registers * GeneralPurposeRegister64.size + \
+            clobbered_xmm_registers * XMMRegister.size
+        # 1. On function entry stack is misaligned by 8
+        # 2. Each clobbered general-purpose register is pushed as 8 bytes
+        # 3. If the number of clobbered general-purpose registers is odd, the stack will be misaligned by 8 after they
+        #    are pushed on stack
+        # 4. If additionally there are clobbered XMM registers, we need to subtract 8 from stack to make it aligned
+        #    by 16 after the general-purpose registers are pushed
+        if clobbered_xmm_registers != 0 and clobbered_general_purpose_registers % 2 == 0:
+            self._stack_frame_size += 8
 
     def _bind_registers(self):
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
