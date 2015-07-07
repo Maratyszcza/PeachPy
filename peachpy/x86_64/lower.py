@@ -1,8 +1,10 @@
 from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister
 from peachpy.x86_64.generic import MOV, MOVZX, MOVSX, MOVSXD
-from peachpy.x86_64.mmxsse import MOVQ, MOVAPS
+from peachpy.x86_64.mmxsse import MOVQ, MOVAPS, MOVAPD, MOVSS, MOVSD, MOVDQA
+from peachpy.x86_64.avx import VMOVAPS, VMOVAPD, VMOVSS, VMOVSD, VMOVDQA
 from peachpy.x86_64.operand import dword, word, byte
 from peachpy.stream import NullStream
+from peachpy.x86_64 import m128, m128d, m128i
 from peachpy import Type
 
 
@@ -31,7 +33,11 @@ def load_register(dst_reg, src_reg, is_signed_integer, prototype):
             if dst_reg != src_reg:
                 return MOVQ(dst_reg, src_reg, prototype=prototype)
         elif isinstance(dst_reg, XMMRegister):
-            return MOVAPS(dst_reg, src_reg, prototype=prototype)
+            if dst_reg != src_reg:
+                if prototype.avx_mode:
+                    return VMOVAPS(dst_reg, src_reg, prototype=prototype)
+                else:
+                    return MOVAPS(dst_reg, src_reg, prototype=prototype)
 
 
 def load_memory(dst_reg, src_address, src_type, prototype):
@@ -59,3 +65,35 @@ def load_memory(dst_reg, src_address, src_type, prototype):
                         return MOVZX(dst_reg.as_dword, size_spec[src_address], prototype=prototype)
                     else:
                         return MOVZX(dst_reg, size_spec[src_address], prototype=prototype)
+        elif isinstance(dst_reg, MMXRegister):
+            return MOVQ(dst_reg, [src_address], prototype)
+        elif isinstance(dst_reg, XMMRegister):
+            if src_type.is_floating_point:
+                assert src_type.size in [4, 8]
+                if src_type.size == 4:
+                    if prototype.avx_mode:
+                        return VMOVSS(dst_reg, [src_address], prototype=prototype)
+                    else:
+                        return MOVSS(dst_reg, [src_address], prototype=prototype)
+                else:
+                    if prototype.avx_mode:
+                        return VMOVSD(dst_reg, [src_address], prototype=prototype)
+                    else:
+                        return MOVSD(dst_reg, [src_address], prototype=prototype)
+            else:
+                assert src_type in [m128, m128d, m128i]
+                if src_type == m128:
+                    if prototype.avx_mode:
+                        return VMOVAPS(dst_reg, [src_address], prototype=prototype)
+                    else:
+                        return MOVAPS(dst_reg, [src_address], prototype=prototype)
+                elif src_type == m128d:
+                    if prototype.avx_mode:
+                        return VMOVAPD(dst_reg, [src_address], prototype=prototype)
+                    else:
+                        return MOVAPD(dst_reg, [src_address], prototype=prototype)
+                else:
+                    if prototype.avx_mode:
+                        return VMOVDQA(dst_reg, [src_address], prototype=prototype)
+                    else:
+                        return MOVDQA(dst_reg, [src_address], prototype=prototype)

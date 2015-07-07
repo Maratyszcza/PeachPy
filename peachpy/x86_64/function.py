@@ -375,6 +375,9 @@ class Function:
                 self.input_blocks = list()
                 self.output_blocks = list()
 
+                self.processed_input_blocks = set()
+                self.processed_output_blocks = set()
+
                 # Mark available and consumed registers:
                 # - If a register is consumed by an instruction but not produced by preceding instructions of the basic
                 #   block, the register is consumed by the basic block
@@ -387,6 +390,10 @@ class Function:
                             self.consumed_register_masks[input_register_id] |= consumed_mask
                     for (output_register_id, output_register_mask) in six.iteritems(output_registers):
                         self.produced_register_masks[output_register_id] |= output_register_mask
+
+            def reset_processed_blocks(self):
+                self.processed_input_blocks = set()
+                self.processed_output_blocks = set()
 
             @property
             def available_registers_list(self):
@@ -508,6 +515,74 @@ class Function:
                     for output_block in self.output_blocks:
                         output_block.analyze_reachability()
 
+            def forward_pass(self, processing_function, instructions, input_state):
+                output_state = processing_function(self, instructions, input_state)
+                for output_block in self.output_blocks:
+                    if output_block.start_position not in self.processed_output_blocks:
+                        self.processed_output_blocks.add(output_block.start_position)
+                        output_block.forward_pass(processing_function, instructions, output_state)
+
+            def backward_pass(self, processing_function, instructions, input_state):
+                output_state = processing_function(self, instructions, input_state)
+                for input_block in self.input_blocks:
+                    if input_block.start_position not in self.processed_input_blocks:
+                        self.processed_input_blocks.add(input_block.start_position)
+                        input_block.backward_pass(processing_function, instructions, output_state)
+
+            def propogate_sse_avx_state_forward(self, instructions, is_avx_environment):
+                from peachpy.x86_64.avx import VZEROALL, VZEROUPPER
+                from peachpy.x86_64.pseudo import LOAD, STORE
+                avx_state = True if is_avx_environment else None
+
+                def propogate_forward(block, instructions, avx_state):
+                    for instruction in instructions[block.start_position:block.end_position]:
+                        if isinstance(instruction, (VZEROUPPER, VZEROALL)):
+                            avx_state = None
+                        elif instruction.avx_mode is None:
+                            # Instruction without a mode
+                            if isinstance(instruction, (LOAD.ARGUMENT, STORE.RESULT, RETURN, RET, LABEL)):
+                                # Some pseudo-instructions need AVX/SSE mode for lowering
+                                instruction.avx_mode = avx_state
+                        elif instruction.avx_mode:
+                            # AVX-mode instruction
+                            avx_state = True
+                        else:
+                            # SSE-mode instruction
+                            if avx_state:
+                                raise TypeError("AVX-mode instruction {0} follows an SSE-mode instruction".
+                                                format(instruction))
+                            avx_state = False
+                    return avx_state
+                self.forward_pass(propogate_forward, instructions, avx_state)
+
+            def propogate_sse_state_backward(self, instructions, is_avx_environment):
+                from peachpy.x86_64.pseudo import LOAD, STORE
+                avx_state = True if is_avx_environment else None
+
+                def propogate_sse_backward(block, instructions, avx_state):
+                    for instruction in reversed(instructions[block.start_position:block.end_position]):
+                        if instruction.avx_mode is not None:
+                            avx_state = instruction.avx_mode
+                        elif avx_state is not None and not avx_state:
+                            if isinstance(instruction, (LOAD.ARGUMENT, STORE.RESULT, RETURN, RET, LABEL)):
+                                instruction.avx_mode = avx_state
+                    return avx_state
+                self.backward_pass(propogate_sse_backward, instructions, avx_state)
+
+            def propogate_avx_state_backward(self, instructions, is_avx_environment):
+                from peachpy.x86_64.pseudo import LOAD, STORE
+                avx_state = True if is_avx_environment else None
+
+                def propogate_avx_backward(block, instructions, avx_state):
+                    for instruction in reversed(instructions[block.start_position:block.end_position]):
+                        if instruction.avx_mode is not None:
+                            avx_state = instruction.avx_mode
+                        elif avx_state:
+                            if isinstance(instruction, (LOAD.ARGUMENT, STORE.RESULT, RETURN, RET, LABEL)):
+                                instruction.avx_mode = avx_state
+                self.backward_pass(propogate_avx_backward, instructions, avx_state)
+
+
         basic_blocks = list(map(lambda start_end:
                            BasicBlock(start_end[0], start_end[1],
                                       input_registers[start_end[0]:start_end[1]],
@@ -545,6 +620,18 @@ class Function:
         basic_blocks_map[entry_position].analyze_availability(dict())
         for exit_position in exit_positions:
             basic_blocks_map[exit_position].analyze_liveness(dict())
+
+        # Analyze SSE/AVX mode
+        from peachpy.x86_64 import m256, m256d, m256i
+        avx_types = [m256, m256d, m256i]
+        self.avx_environment = any([arg.ctype in avx_types for arg in self.arguments]) or self.result_type in avx_types
+        basic_blocks_map[entry_position].propogate_sse_avx_state_forward(self._instructions, self.avx_environment)
+        for exit_position in exit_positions:
+            basic_blocks_map[exit_position].propogate_sse_state_backward(self._instructions, self.avx_environment)
+        for basic_block in basic_blocks:
+            basic_block.reset_processed_blocks()
+        for exit_position in exit_positions:
+            basic_blocks_map[exit_position].propogate_avx_state_backward(self._instructions, self.avx_environment)
 
         # Reconstruct live and available registers for the whole instruction sequence
         for basic_block in basic_blocks:
