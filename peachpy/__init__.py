@@ -85,7 +85,9 @@ class Type:
             return h
 
     def __eq__(self, other):
-        if self.is_pointer:
+        if not isinstance(other, Type):
+            return False
+        elif self.is_pointer:
             return other.is_pointer and self.base == other.base
         else:
             if self.name == other.name:
