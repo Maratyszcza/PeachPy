@@ -26,7 +26,7 @@ PeachPy is a Python framework for writing high-performance assembly kernels. Pea
 
 - Universal assembly syntax for Windows, Unix, and Golang assembly.
 
-  * PeachPy can directly generate ELF and Mach-O object files and assembly listings for Golang toolchain
+  * PeachPy can directly generate ELF, MS COFF and Mach-O object files and assembly listings for Golang toolchain
 
 - Automatic adaption of function to different calling conventions and ABIs.
   
