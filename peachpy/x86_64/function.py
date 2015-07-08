@@ -993,7 +993,7 @@ class ABIFunction:
                 if argument.size in {4, 8, 16}:
                     pass
                 elif argument.size == 32:
-                    argument.register = argument.register.as_hword
+                    argument.register = argument.register.as_xmm
                 else:
                     assert False
             elif (argument.is_integer or argument.is_pointer or argument.is_codeunit) \
@@ -1101,7 +1101,7 @@ class ABIFunction:
                     # The argument is passed to function in a register
                     ld_reg = load_register(instruction.operands[0],
                                            instruction.operands[1].register,
-                                           instruction.operands[1].ctype.is_signed_integer,
+                                           instruction.operands[1].ctype,
                                            prototype=instruction)
                     if ld_reg is not None:
                         lowered_instructions.append(ld_reg)
@@ -1203,9 +1203,9 @@ class ABIFunction:
                             else:
                                 result_reg = eax if self.result_type.size <= 4 else rax
                                 epilog_stream.add_instruction(load_register(result_reg,
-                                                                     instruction.operands[0],
-                                                                     self.result_type.is_signed_integer,
-                                                                     prototype=instruction))
+                                                              instruction.operands[0],
+                                                              self.result_type,
+                                                              prototype=instruction))
                                 if is_golang_abi:
                                     result_subreg = {
                                         1: al,
@@ -1216,23 +1216,23 @@ class ABIFunction:
                                     STORE.RESULT(result_subreg, prototype=instruction, target_function=self)
                         elif isinstance(instruction.operands[0], MMXRegister):
                             epilog_stream.add_instruction(load_register(mm0,
-                                                                 instruction.operands[0],
-                                                                 self.result_type.is_signed_integer,
-                                                                 prototype=instruction))
+                                                          instruction.operands[0],
+                                                          self.result_type,
+                                                          prototype=instruction))
                         elif isinstance(instruction.operands[0], XMMRegister):
                             if self.result_type.is_floating_point and is_golang_abi:
                                 assert self.result_type.size in {4, 8}
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
                                 epilog_stream.add_instruction(load_register(xmm0,
-                                                                     instruction.operands[0],
-                                                                     self.result_type.is_signed_integer,
-                                                                     prototype=instruction))
+                                                              instruction.operands[0],
+                                                              self.result_type,
+                                                              prototype=instruction))
                         elif isinstance(instruction.operands[0], YMMRegister):
                             epilog_stream.add_instruction(load_register(ymm0,
-                                                                 instruction.operands[0],
-                                                                 self.result_type.is_signed_integer,
-                                                                 prototype=instruction))
+                                                          instruction.operands[0],
+                                                          self.result_type,
+                                                          prototype=instruction))
                         else:
                             assert False
                     # Generate epilog
@@ -1242,7 +1242,11 @@ class ABIFunction:
                     for i, xmm_reg in enumerate(cloberred_xmm_registers):
                         MOVAPS([rsp + i * XMMRegister.size], xmm_reg)
                     if cloberred_xmm_registers:
+                        # Total size of the stack frame less what will be adjusted with POP instructions
+                        stack_adjustment = self._stack_frame_size - \
+                            len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
                         ADD(rsp, stack_adjustment)
+                    # Important: registers must be POPed in reverse order
                     for reg in reversed(cloberred_general_purpose_registers):
                         POP(reg)
                     # Return from the function

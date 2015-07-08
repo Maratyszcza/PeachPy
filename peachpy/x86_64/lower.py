@@ -8,21 +8,21 @@ from peachpy.x86_64 import m128, m128d, m128i
 from peachpy import Type
 
 
-def load_register(dst_reg, src_reg, is_signed_integer, prototype):
+def load_register(dst_reg, src_reg, data_type, prototype):
     assert dst_reg.size >= src_reg.size
-    assert isinstance(is_signed_integer, bool)
+    assert isinstance(data_type, Type)
     with NullStream():
         if isinstance(dst_reg, GeneralPurposeRegister):
             if dst_reg.size == src_reg.size:
                 if dst_reg != src_reg or dst_reg.size == 4:
                     return MOV(dst_reg, src_reg, prototype=prototype)
             elif (dst_reg.size, src_reg.size) == (8, 4):
-                if is_signed_integer:
+                if data_type.is_signed_integer:
                     return MOVSXD(dst_reg, src_reg, prototype=prototype)
                 else:
                     return MOV(dst_reg.as_dword, src_reg, prototype=prototype)
             else:
-                if is_signed_integer:
+                if data_type.is_signed_integer:
                     return MOVSX(dst_reg, src_reg, prototype=prototype)
                 else:
                     if dst_reg.size == 8:
@@ -34,10 +34,26 @@ def load_register(dst_reg, src_reg, is_signed_integer, prototype):
                 return MOVQ(dst_reg, src_reg, prototype=prototype)
         elif isinstance(dst_reg, XMMRegister):
             if dst_reg != src_reg:
-                if prototype.avx_mode:
-                    return VMOVAPS(dst_reg, src_reg, prototype=prototype)
+                if data_type.is_floating_point:
+                    assert data_type.size in [4, 8]
+                    xmm_fp_mov = {
+                        (4, True): VMOVAPS,
+                        (4, False): MOVSS,
+                        (8, True): VMOVAPD,
+                        (8, False): MOVSD
+                    }[(data_type.size, bool(prototype.avx_mode))]
+                    return xmm_fp_mov(dst_reg, src_reg, prototype=prototype)
                 else:
-                    return MOVAPS(dst_reg, src_reg, prototype=prototype)
+                    assert data_type in [m128, m128d, m128i]
+                    xmm_mov = {
+                        (m128, True): VMOVAPS,
+                        (m128, False): MOVAPS,
+                        (m128d, True): VMOVAPD,
+                        (m128d, False): MOVAPD,
+                        (m128i, True): VMOVDQA,
+                        (m128i, False): MOVDQA
+                    }[(data_type, bool(prototype.avx_mode))]
+                    return xmm_mov(dst_reg, src_reg, prototype=prototype)
 
 
 def load_memory(dst_reg, src_address, src_type, prototype):
