@@ -448,3 +448,13 @@ class SWAP:
         else:
             raise TypeError("Arguments must be of register regtype")
 
+
+def REDUCE(reduction_instruction, registers):
+    if not isinstance(registers, (tuple, list)):
+        raise ValueError("List or tuple of registers expected")
+    offset = 1
+    while offset < len(registers):
+        for i in range(offset, len(registers), 2 * offset):
+            reduction_instruction(registers[i - offset], registers[i])
+        offset *= 2
+    return registers[0]
