@@ -1,10 +1,10 @@
-from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister
+from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
 from peachpy.x86_64.generic import MOV, MOVZX, MOVSX, MOVSXD
 from peachpy.x86_64.mmxsse import MOVQ, MOVAPS, MOVAPD, MOVSS, MOVSD, MOVDQA
 from peachpy.x86_64.avx import VMOVAPS, VMOVAPD, VMOVSS, VMOVSD, VMOVDQA
 from peachpy.x86_64.operand import dword, word, byte
 from peachpy.stream import NullStream
-from peachpy.x86_64 import m128, m128d, m128i
+from peachpy.x86_64 import m128, m128d, m128i, m256, m256d, m256i
 from peachpy import Type
 
 
@@ -54,6 +54,16 @@ def load_register(dst_reg, src_reg, data_type, prototype):
                         (m128i, False): MOVDQA
                     }[(data_type, bool(prototype.avx_mode))]
                     return xmm_mov(dst_reg, src_reg, prototype=prototype)
+        elif isinstance(dst_reg, YMMRegister):
+            if dst_reg != src_reg:
+                ymm_mov = {
+                    m256: VMOVAPS,
+                    m256d: VMOVAPD,
+                    m256i: VMOVDQA
+                }[data_type]
+                return ymm_mov(dst_reg, src_reg, prototype=prototype)
+        else:
+            assert False, "Unexpected type: " + dst_reg.__class__
 
 
 def load_memory(dst_reg, src_address, src_type, prototype):
