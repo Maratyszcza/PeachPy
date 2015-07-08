@@ -66,6 +66,7 @@ class Type:
                 h ^= 0x00000300
             if self.is_vector:
                 h ^= 0x00000C00
+                h ^= hash(self.name)
             if self.is_mask:
                 h ^= 0x00003000
             if self.is_short:
@@ -93,21 +94,24 @@ class Type:
             if self.name == other.name:
                 return True
             else:
-                return self.size == other.size and \
-                    self.is_floating_point == other.is_floating_point and \
-                    self.is_signed_integer == other.is_signed_integer and \
-                    self.is_unsigned_integer == other.is_unsigned_integer and \
-                    self.is_pointer_integer == other.is_pointer_integer and \
-                    self.is_size_integer == other.is_size_integer and \
-                    self.is_vector == other.is_vector and \
-                    self.is_mask == other.is_mask and \
-                    self.is_short == other.is_short and \
-                    self.is_char == other.is_char and \
-                    self.is_wchar == other.is_wchar and \
-                    self.is_bool == other.is_bool and \
-                    self.is_int == other.is_int and \
-                    self.is_long == other.is_long and \
-                    self.is_longlong == other.is_longlong
+                if self.is_vector and other.is_vector:
+                    return self.name == other.name
+                else:
+                    return self.size == other.size and \
+                        self.is_floating_point == other.is_floating_point and \
+                        self.is_signed_integer == other.is_signed_integer and \
+                        self.is_unsigned_integer == other.is_unsigned_integer and \
+                        self.is_pointer_integer == other.is_pointer_integer and \
+                        self.is_size_integer == other.is_size_integer and \
+                        self.is_vector == other.is_vector and \
+                        self.is_mask == other.is_mask and \
+                        self.is_short == other.is_short and \
+                        self.is_char == other.is_char and \
+                        self.is_wchar == other.is_wchar and \
+                        self.is_bool == other.is_bool and \
+                        self.is_int == other.is_int and \
+                        self.is_long == other.is_long and \
+                        self.is_longlong == other.is_longlong
 
     def __ne__(self, other):
         return not self == other
