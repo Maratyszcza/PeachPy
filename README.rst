@@ -182,3 +182,8 @@ Dependencies and Users
 - Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
 
 - PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
+
+Publications
+------------
+
+- Marat Dukhan "PeachPy: A Python Framework for Developing High-Performance Assembly Kernels", Python for High-Performance Computing (PyHPC) 2013 (`slides <http://www.yeppp.info/resources/peachpy-slides.pdf>`_, `paper <http://www.yeppp.info/resources/peachpy-paper.pdf>`_, code uses deprecated syntax)
