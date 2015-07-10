@@ -465,6 +465,11 @@ def get_out_operands(instruction_form):
     return tuple(map(operator.attrgetter("is_output"), instruction_form.operands))
 
 
+def get_isa_extensions(instruction_form):
+    """Returns a hashable immutable set with names of ISA extensions required for this instructions form"""
+    return frozenset(map(operator.attrgetter("name"), instruction_form.isa_extensions))
+
+
 def go_name_init(code, instruction_form):
     """Generates initialization code for go_name property"""
     if instruction_form.go_name:
@@ -548,6 +553,24 @@ def xmm_mode_init(code, instruction_form):
         code.line("self.avx_mode = " + str(avx_mode_map[instruction_form.xmm_mode]))
 
 
+def isa_extensions_init(code, instruction_form):
+    """Generates initialization code for isa_extensions attribute"""
+
+    if instruction_form.isa_extensions:
+        isa_extensions_map = {
+            "MMX+": "mmx_plus",
+            "3dnow!": "three_d_now",
+            "3dnow!+": "three_d_now_plus",
+            "3dnow! Prefetch": "three_d_now_prefetch",
+            "SSE4.1": "sse4_1",
+            "SSE4.2": "sse4_2"
+        }
+        isa_extensions = ["peachpy.x86_64.isa." + isa_extensions_map.get(extension.name, extension.name.lower())
+                          for extension in instruction_form.isa_extensions]
+        code.line("self.isa_extensions = frozenset([%s])" %
+                  ", ".join(isa_extensions))
+
+
 def instruction_branch_label_form_init(code, instruction_form, instruction_subforms,
                                        write_gas_name=True, write_in_regs=True):
     """Generates initialization code for a label operand form of a branch instruction"""
@@ -575,7 +598,8 @@ def instruction_branch_label_form_init(code, instruction_form, instruction_subfo
 def instruction_form_init(code, instruction_form, instruction_subforms,
                           write_go_name=True, write_gas_name=True,
                           write_in_regs=True, write_out_regs=True, write_out_operands=True,
-                          write_mmx_mode=True, write_xmm_mode=True):
+                          write_mmx_mode=True, write_xmm_mode=True,
+                          write_isa_extensions=True):
     """Generates initialization code for a particular instruction form"""
     immediate_operands = [(i, op) for (i, op) in enumerate(instruction_form.operands) if op.is_immediate]
     for (i, operand) in immediate_operands:
@@ -627,6 +651,9 @@ def instruction_form_init(code, instruction_form, instruction_subforms,
 
     if write_xmm_mode:
         xmm_mode_init(code, instruction_form)
+
+    if write_isa_extensions:
+        isa_extensions_init(code, instruction_form)
 
     if instruction_form.cancelling_inputs:
         code.line("self._cancelling_inputs = " + str(instruction_form.cancelling_inputs))
@@ -715,7 +742,6 @@ def reduce_operand_types(operand_types_list):
             new_operand_types_list.append(operand_types)
 
     return [operand_types for (operand_types, remove) in zip(new_operand_types_list, is_merged) if not remove]
-
 
 def supported_forms_comment(code, instruction_forms):
     """Generates document comment that describes supported instruction forms"""
@@ -881,6 +907,9 @@ def main(package_root="."):
                                     # Check how many xmm modes exist
                                     xmm_modes = set(map(operator.attrgetter("xmm_mode"), count_operand_forms))
                                     common_xmm_mode = combine_attrs and len(xmm_modes) == 1
+                                    # Check how many ISA extension options exist
+                                    isa_extensions_options = set(map(get_isa_extensions, count_operand_forms))
+                                    common_isa_extensions = combine_attrs and len(isa_extensions_options) == 1
                                     if common_go_name:
                                         # Initialize go_name only once for all forms with `count` operands
                                         go_name_init(code, count_operand_forms[0])
@@ -902,6 +931,9 @@ def main(package_root="."):
                                     if common_xmm_mode:
                                         # Initialize avx_mode only once for all registers with count operands
                                         xmm_mode_init(code, count_operand_forms[0])
+                                    if common_isa_extensions:
+                                        # Initialize isa_extensions only once for all forms with `count` operands
+                                        isa_extensions_init(code, count_operand_forms[0])
                                     if count > 0:
                                         # Instruction form with one or more operands
                                         for (form_index, (instruction_form, instruction_subforms)) \
@@ -913,7 +945,8 @@ def main(package_root="."):
                                                                       not common_go_name, not common_gas_name,
                                                                       not common_in_regs, not common_out_regs,
                                                                       not common_out_operands,
-                                                                      not common_mmx_mode, not common_xmm_mode)
+                                                                      not common_mmx_mode, not common_xmm_mode,
+                                                                      not common_isa_extensions)
                                             # For branch instructions with rel32 operand additionally generate label form
                                             if is_label_branch(instruction_form):
                                                 code.line("elif is_label(self.operands[0]):")
@@ -930,7 +963,8 @@ def main(package_root="."):
                                                               not common_go_name, not common_gas_name,
                                                               not common_in_regs, not common_out_regs,
                                                               not common_out_operands,
-                                                              not common_mmx_mode, not common_xmm_mode)
+                                                              not common_mmx_mode, not common_xmm_mode,
+                                                              not common_isa_extensions)
                             if consider_operand_count:
                                 code.line("else:")
                                 code.indent_line("raise SyntaxError(\"Invalid number of operands for instruction \\\"" + name + "\\\"\")")
@@ -940,3 +974,7 @@ def main(package_root="."):
                             code.line()
 
             print(str(code), file=out)
+
+
+if __name__ == "__main__":
+    main()

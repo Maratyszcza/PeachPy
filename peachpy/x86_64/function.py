@@ -263,7 +263,7 @@ class Function:
 
         # Check that the instruction is supported by the target ISA
         for extension in instruction.isa_extensions:
-            if extension not in self.target.extensions:
+            if self.target is not None and extension not in self.target.extensions:
                 raise ValueError("{0} is not supported on the target microarchitecture".format(extension))
 
         instruction._indent_level = self._indent_level

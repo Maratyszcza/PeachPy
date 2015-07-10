@@ -6,8 +6,7 @@ from six.moves import reduce
 
 
 class Instruction(object):
-    def __init__(self, name, isa_extensions=None, origin=None, prototype=None):
-        import peachpy.x86_64.isa
+    def __init__(self, name, origin=None, prototype=None):
         super(Instruction, self).__init__()
         self.name = name
 
@@ -35,7 +34,7 @@ class Instruction(object):
 
         self._gas_name = None
         self.go_name = None
-        self.isa_extensions = peachpy.x86_64.isa.Extensions(isa_extensions)
+        self.isa_extensions = frozenset()
         self.mmx_mode = None
         self.avx_mode = None
         self._cancelling_inputs = False
