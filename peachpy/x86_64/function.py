@@ -1128,6 +1128,11 @@ class ABIFunction:
 
     def _lower_pseudoinstructions(self):
         from peachpy.x86_64.pseudo import RETURN, STORE
+        from peachpy.x86_64.mmxsse import MOVAPS
+        from peachpy.x86_64.avx import VMOVAPS, VZEROUPPER
+        from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET
+        from peachpy.x86_64.nacl import NACLJMP
+        from peachpy.x86_64.lower import load_register
         from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
         from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp
         from peachpy.util import is_uint32, is_sint32, is_int
@@ -1138,10 +1143,9 @@ class ABIFunction:
         cloberred_xmm_registers = list()
         cloberred_general_purpose_registers = list()
         with InstructionStream() as prolog_stream:
-            from peachpy.x86_64.generic import PUSH, SUB, ADD
             # 1. Save clobbered general-purpose registers with PUSH instruction
             # 2. If there are clobbered XMM registers, allocate space for them on stack (subtract stack pointer)
-            # 3. Save clobbered XMM registers on stack with MOVAPS instruction
+            # 3. Save clobbered XMM registers on stack with (V)MOVAPS instruction
             for reg in self._clobbered_registers:
                 assert isinstance(reg, (GeneralPurposeRegister64, XMMRegister)), \
                     "Internal error: unexpected register %s in clobber list" % str(reg)
@@ -1150,14 +1154,14 @@ class ABIFunction:
                     PUSH(reg)
                 else:
                     cloberred_xmm_registers.append(reg)
-            from peachpy.x86_64.mmxsse import MOVAPS
             if cloberred_xmm_registers:
                 # Total size of the stack frame less what is already adjusted with PUSH instructions
                 stack_adjustment = \
                     self._stack_frame_size - len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
                 SUB(rsp, stack_adjustment)
             for i, xmm_reg in enumerate(cloberred_xmm_registers):
-                MOVAPS([rsp + i * XMMRegister.size], xmm_reg)
+                movaps = VMOVAPS if self._avx_prolog else MOVAPS
+                movaps([rsp + i * XMMRegister.size], xmm_reg)
 
         # TODO: handle situations when entry point is in the middle of a function
         instructions.extend(prolog_stream.instructions)
@@ -1166,8 +1170,6 @@ class ABIFunction:
             if isinstance(instruction, RETURN):
                 from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister, \
                     rax, eax, ax, al, rcx, ecx, mm0, xmm0, ymm0
-                from peachpy.x86_64.generic import XOR, MOV, POP, RET
-                from peachpy.x86_64.lower import load_register
                 is_golang_abi = self.abi in {golang_amd64_abi, golang_amd64p32_abi}
                 with InstructionStream() as epilog_stream:
                     # Save return value
@@ -1245,12 +1247,15 @@ class ABIFunction:
                                                           prototype=instruction))
                         else:
                             assert False
+                    if instruction.avx_mode and not self.avx_environment:
+                        VZEROUPPER()
                     # Generate epilog
-                    # 1. Restore clobbered XMM registers on stack with MOVAPS instruction
+                    # 1. Restore clobbered XMM registers on stack with (V)MOVAPS instruction
                     # 2. If there are clobbered XMM registers, release their space on stack (increment stack pointer)
                     # 3. Restore clobbered general-purpose registers with PUSH instruction
                     for i, xmm_reg in enumerate(cloberred_xmm_registers):
-                        MOVAPS([rsp + i * XMMRegister.size], xmm_reg)
+                        movaps = VMOVAPS if self.avx_environment else MOVAPS
+                        movaps([rsp + i * XMMRegister.size], xmm_reg)
                     if cloberred_xmm_registers:
                         # Total size of the stack frame less what will be adjusted with POP instructions
                         stack_adjustment = self._stack_frame_size - \
@@ -1261,7 +1266,6 @@ class ABIFunction:
                         POP(reg)
                     # Return from the function
                     if self.abi == native_client_x86_64_abi:
-                        from peachpy.x86_64.nacl import NACLJMP
                         POP(rcx, prototype=instruction)
                         NACLJMP(ecx)
                     else:
