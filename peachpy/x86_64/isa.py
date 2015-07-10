@@ -25,11 +25,15 @@ class Extension:
     @property
     def prerequisites(self):
         return {
+            "RDTSC": (rdtsc,),
+            "RDTSCP": (rdtsc, rdtscp),
+            "CPUID": (cpuid,),
             "MMX": (mmx,),
             "MMX+": (mmx, mmx_plus),
             "3dnow!": (mmx, three_d_now, three_d_now_prefetch),
             "3dnow!+": (mmx, three_d_now, three_d_now_prefetch, three_d_now_plus),
             "3dnow! Prefetch": (three_d_now_prefetch,),
+            "FEMMS": (mmx, femms),
             "SSE": (mmx, mmx_plus, sse),
             "SSE2": (mmx, mmx_plus, sse, sse2),
             "SSE3": (mmx, mmx_plus, sse, sse2, sse3),
@@ -39,6 +43,8 @@ class Extension:
             "SSE4.2": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2),
             "AES": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, aes),
             "PCLMULQDQ": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, pclmulqdq),
+            "RDRAND": (rdrand,),
+            "RDSEED": (rdrand, rdseed),
             "AVX": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, avx),
             "F16C": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, avx, f16c),
             "AVX2": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2),
@@ -59,11 +65,15 @@ class Extension:
     @property
     def ancestors(self):
         return {
+            "RDTSC": (rdtsc,),
+            "RDTSCP": (rdtsc, rdtscp),
+            "CPUID": (cpuid,),
             "MMX": (mmx,),
             "MMX+": (mmx, mmx_plus),
             "3dnow!": (mmx, three_d_now),
             "3dnow!+": (mmx, three_d_now, three_d_now_plus),
             "3dnow! Prefetch": (three_d_now_prefetch,),
+            "FEMMS": (femms,),
             "SSE": (sse,),
             "SSE2": (sse, sse2),
             "SSE3": (sse, sse2, sse3),
@@ -73,6 +83,8 @@ class Extension:
             "SSE4.2": (sse, sse2, sse3, ssse3, sse4_1, sse4_2),
             "AES": (aes,),
             "PCLMULQDQ": (pclmulqdq,),
+            "RDRAND": (rdrand,),
+            "RDSEED": (rdrand, rdseed),
             "AVX": (avx,),
             "F16C": (f16c,),
             "AVX2": (avx, avx2),
@@ -96,11 +108,18 @@ class Extension:
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return str(self)
+
+rdtsc = Extension("RDTSC")
+rdtscp = Extension("RDTSCP")
+cpuid = Extension("CPUID")
 mmx = Extension("MMX")
 mmx_plus = Extension("MMX+")
 three_d_now = Extension("3dnow!")
 three_d_now_plus = Extension("3dnow!+")
 three_d_now_prefetch = Extension("3dnow! Prefetch")
+femms = Extension("FEMMS")
 sse = Extension("SSE")
 sse2 = Extension("SSE2")
 sse3 = Extension("SSE3")
@@ -110,6 +129,8 @@ sse4_1 = Extension("SSE4.1")
 sse4_2 = Extension("SSE4.2")
 aes = Extension("AES")
 pclmulqdq = Extension("PCLMULQDQ")
+rdrand = Extension("RDRAND")
+rdseed = Extension("RDSEED")
 sha = Extension("SHA")
 avx = Extension("AVX")
 avx2 = Extension("AVX2")
