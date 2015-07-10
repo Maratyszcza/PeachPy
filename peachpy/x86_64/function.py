@@ -157,6 +157,14 @@ class Function:
             else:
                 return "func %s(%s) %s" % (self.name, ", ".join(go_arguments), go_result_type)
 
+    @property
+    def isa_extensions(self):
+        from peachpy.x86_64.isa import Extensions
+        extensions = set()
+        for instruction in self._instructions:
+            extensions.update(instruction.isa_extensions)
+        return Extensions(*extensions)
+
     def __enter__(self):
         self.attach()
         return self
