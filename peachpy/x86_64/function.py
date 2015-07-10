@@ -81,6 +81,11 @@ class Function:
         self._virtual_mmx_registers_count = 0
         self._virtual_xmm_registers_count = 0
 
+        from peachpy.x86_64 import m256, m256d, m256i
+        avx_types = [m256, m256d, m256i]
+        self.avx_environment = any([arg.ctype in avx_types for arg in self.arguments]) or self.result_type in avx_types
+        self._avx_prolog = None
+
         from collections import defaultdict
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister
         self._conflicting_registers = {
@@ -630,9 +635,6 @@ class Function:
             basic_blocks_map[exit_position].analyze_liveness(dict())
 
         # Analyze SSE/AVX mode
-        from peachpy.x86_64 import m256, m256d, m256i
-        avx_types = [m256, m256d, m256i]
-        self.avx_environment = any([arg.ctype in avx_types for arg in self.arguments]) or self.result_type in avx_types
         basic_blocks_map[entry_position].propogate_sse_avx_state_forward(self._instructions, self.avx_environment)
         for exit_position in exit_positions:
             basic_blocks_map[exit_position].propogate_sse_state_backward(self._instructions, self.avx_environment)
@@ -640,6 +642,7 @@ class Function:
             basic_block.reset_processed_blocks()
         for exit_position in exit_positions:
             basic_blocks_map[exit_position].propogate_avx_state_backward(self._instructions, self.avx_environment)
+        self._avx_prolog = self._instructions[entry_position].avx_mode
 
         # Reconstruct live and available registers for the whole instruction sequence
         for basic_block in basic_blocks:
@@ -892,6 +895,9 @@ class ABIFunction:
         self.abi = abi
         self.c_signature = function.c_signature
         self.go_signature = function.go_signature
+
+        self.avx_environment = function.avx_environment
+        self._avx_prolog = function._avx_prolog
 
         from peachpy.x86_64.registers import rsp
         self._stack_base = rsp
