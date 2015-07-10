@@ -907,10 +907,6 @@ class ABIFunction:
         self._conflicting_registers = function._conflicting_registers.copy()
         self._register_allocations = function._register_allocations.copy()
 
-        # if any(map(bool, self._conflicting_registers.itervalues())):
-        #     from peachpy import RegisterAllocationError
-        #     raise RegisterAllocationError("Register allocation is not supported yet")
-
         if abi == microsoft_x64_abi:
             self._setup_windows_arguments()
         elif abi in {system_v_x86_64_abi, linux_x32_abi, native_client_x86_64_abi}:
