@@ -81,7 +81,5 @@ with Function("DotProduct", (x, y, length), float_) as function:
     VHADDPS(xmm_acc, xmm_acc, xmm_acc)
     VHADDPS(xmm_acc, xmm_acc, xmm_acc)
 
-    VZEROUPPER()
-
     RETURN(xmm_acc)
 
