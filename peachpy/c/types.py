@@ -44,7 +44,9 @@ class Type:
             h = hash(self.base)
             return (h >> 5) | ((h & 0x07FFFFFF) << 27)
         else:
-            h = hash(self.size)
+            h = 0
+            if self.is_fixed_size:
+                h = hash(self.size)
             if self.is_floating_point:
                 h ^= 0x00000003
             if self.is_signed_integer:
@@ -88,21 +90,26 @@ class Type:
                 if self.is_vector and other.is_vector:
                     return self.name == other.name
                 else:
-                    return self.size == other.size and \
-                        self.is_floating_point == other.is_floating_point and \
-                        self.is_signed_integer == other.is_signed_integer and \
-                        self.is_unsigned_integer == other.is_unsigned_integer and \
-                        self.is_pointer_integer == other.is_pointer_integer and \
-                        self.is_size_integer == other.is_size_integer and \
-                        self.is_vector == other.is_vector and \
-                        self.is_mask == other.is_mask and \
-                        self.is_short == other.is_short and \
-                        self.is_char == other.is_char and \
-                        self.is_wchar == other.is_wchar and \
-                        self.is_bool == other.is_bool and \
-                        self.is_int == other.is_int and \
-                        self.is_long == other.is_long and \
-                        self.is_longlong == other.is_longlong
+                    # If both types have size, check it. If any doesn't have type, ignore size altogether.
+                    # This is important because the size of ABI-specific types (size_t, etc) is updated after binding
+                    # to ABI and it is important to ensure that e.g. size_t == size_t after ABI binding too
+                    if self.size is not None and other.size is not None and self.size != other.size:
+                        return False
+                    else:
+                        return self.is_floating_point == other.is_floating_point and \
+                            self.is_signed_integer == other.is_signed_integer and \
+                            self.is_unsigned_integer == other.is_unsigned_integer and \
+                            self.is_pointer_integer == other.is_pointer_integer and \
+                            self.is_size_integer == other.is_size_integer and \
+                            self.is_vector == other.is_vector and \
+                            self.is_mask == other.is_mask and \
+                            self.is_short == other.is_short and \
+                            self.is_char == other.is_char and \
+                            self.is_wchar == other.is_wchar and \
+                            self.is_bool == other.is_bool and \
+                            self.is_int == other.is_int and \
+                            self.is_long == other.is_long and \
+                            self.is_longlong == other.is_longlong
 
     def __ne__(self, other):
         return not self == other
@@ -129,6 +136,11 @@ class Type:
                 assert False
         else:
             return self.size
+
+    @property
+    def is_fixed_size(self):
+        return not (self.is_pointer or self.is_size_integer or self.is_wchar or self.is_bool or
+                    self.is_short or self.is_int or self.is_long or self.is_longlong)
 
     @property
     def is_integer(self):
@@ -164,7 +176,8 @@ class Type:
                 int32_t: ctypes.c_int32,
                 int64_t: ctypes.c_int64,
                 size_t: ctypes.c_size_t,
-                ptrdiff_t: ctypes.c_ssize_t, # Not exactly the same, but seems to match on all supported platforms
+                # Not exactly the same, but seems to match on all supported platforms
+                ptrdiff_t: ctypes.c_ssize_t,
                 char: ctypes.c_char,
                 signed_char: ctypes.c_byte,
                 unsigned_char: ctypes.c_ubyte,
