@@ -288,10 +288,12 @@ class Instruction(object):
         encodings = []
         from peachpy.x86_64.encoding import Flags
         for (flags, encoding) in self.encodings:
-            if flags & Flags.AccumulatorOp0 != 0 and self.operands[0].physical_id == 0:
-                encodings.append((flags, encoding))
-            elif flags & Flags.AccumulatorOp1 != 0 and self.operands[1].physical_id == 0:
-                encodings.append((flags, encoding))
+            if flags & Flags.AccumulatorOp0 != 0:
+                if self.operands[0].physical_id == 0:
+                    encodings.append((flags, encoding))
+            elif flags & Flags.AccumulatorOp1 != 0:
+                if self.operands[1].physical_id == 0:
+                    encodings.append((flags, encoding))
             else:
                 encodings.append((flags, encoding))
         return encodings
