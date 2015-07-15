@@ -84,10 +84,7 @@ class Instruction(object):
     def format_encoding(self, indent):
         if self.bytecode:
             text = "\t" * self._indent_level if indent else ""
-            try:
-                return text + "# " + ", ".join(map(str, sorted(self.encode_length_options().iterkeys())))
-            except Exception:
-                return text + "# " + " ".join("%02X" % byte for byte in self.bytecode)
+            return text + "# " + " ".join("%02X" % byte for byte in self.bytecode)
 
     @property
     def registers(self):
@@ -196,7 +193,7 @@ class Instruction(object):
         from peachpy.x86_64.encoding import Flags, Options
         length_encoding_map = {}
         encode_options = []
-        for (flags, encode) in self.encodings:
+        for (flags, encode) in self._filter_encodings():
             options = 0
             baseline = encode(self.operands)
             if flags & Flags.ModRMSIBDisp != 0:
