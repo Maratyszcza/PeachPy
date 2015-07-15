@@ -149,6 +149,8 @@ def main():
             raise ValueError("Image format %s is not supported" % image_format)
 
     with writer:
+        import os
+        sys.path.append(os.path.dirname(options.input[0]))
         with open(options.input[0]) as input_file:
             code = compile(input_file.read(), options.input[0], 'exec')
             exec(code, globals())
