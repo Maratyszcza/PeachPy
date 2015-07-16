@@ -1531,14 +1531,18 @@ class EncodedFunction:
         long_branches = set()
 
         has_updated_branches = True
-        while has_updated_branches:
+        has_unresolved_labels = True
+        while has_updated_branches or has_unresolved_labels:
             code_address = 0
             has_updated_branches = False
+            has_unresolved_labels = False
             for (i, instruction) in enumerate(self._instructions):
                 if isinstance(instruction, LABEL):
                     label_address_map[instruction.identifier] = code_address
                 elif isinstance(instruction, BranchInstruction) and instruction.label_name:
                     label_address = label_address_map.get(instruction.label_name)
+                    if label_address is None:
+                        has_unresolved_labels = True
                     was_long = i in long_branches
                     is_long, instruction.bytecode = instruction._encode_label_branch(code_address, label_address,
                                                                                      long_encoding=was_long)
