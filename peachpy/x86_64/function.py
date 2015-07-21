@@ -665,6 +665,11 @@ class Function:
                                    if reg_mask & virtual_register.mask != 0]
                 self._conflicting_registers[virtual_register.kind][-virtual_register.virtual_id]\
                     .update(conflicting_ids)
+                # Make sure that conflicting registers are mutually conflicting
+                for conflicting_id in conflicting_ids:
+                    if conflicting_id < 0:
+                        self._conflicting_registers[virtual_register.kind][conflicting_id].\
+                            add(-virtual_register.virtual_id)
 
     def _check_live_registers(self):
         """Checks that the number of live registers does not exceed the number of physical registers for each insruction
@@ -1075,7 +1080,6 @@ class ABIFunction:
                 for conflicting_reg_id in self._conflicting_registers[vreg_kind][vreg_id]:
                     if conflicting_reg_id >= 0 and conflicting_reg_id in allocation_options[vreg_kind][vreg_id]:
                         allocation_options[vreg_kind][vreg_id].remove(conflicting_reg_id)
-                # print("%d -> %s" % (vreg_id, str(allocation_options[vreg_kind][vreg_id])))
 
         # Allocate registers
         for vreg_kind, vreg_ids in six.iteritems(allocation_options):
