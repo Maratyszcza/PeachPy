@@ -440,8 +440,9 @@ class SWAP:
     def REGISTERS(register_x, register_y):
         from peachpy.x86_64.registers import Register
         if isinstance(register_x, Register) and isinstance(register_y, Register):
-            if register_x.type == register_y.type and register_x.size == register_y.size:
-                register_x.number, register_y.number = register_y.number, register_x.number
+            if register_x.kind == register_y.kind and register_x.size == register_y.size:
+                register_x.virtual_id, register_y.virtual_id = register_y.virtual_id, register_x.virtual_id
+                register_x.physical_id, register_y.physical_id = register_y.physical_id, register_x.physical_id
             else:
                 raise ValueError("Registers {0} and {1} have incompatible register types"
                                  .format(register_x, register_y))
