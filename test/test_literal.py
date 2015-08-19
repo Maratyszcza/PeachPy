@@ -60,3 +60,35 @@ class UInt64x8(unittest.TestCase):
     def runTest(self):
         Constant.uint64x8(1)
         Constant.uint64x8(-1, 2, -3, 4, -5, 6, -7, 8)
+
+
+class Float64(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(Constant.float64(0.0).data,           (0x0000000000000000,))
+        self.assertEqual(Constant.float64(1.0).data,           (0x3FF0000000000000,))
+        self.assertEqual(Constant.float64(0.5).data,           (0x3FE0000000000000,))
+        self.assertEqual(Constant.float64(0.75).data,          (0x3FE8000000000000,))
+        self.assertEqual(Constant.float64(2.0).data,           (0x4000000000000000,))
+        self.assertEqual(Constant.float64(float("inf")).data,  (0x7FF0000000000000,))
+        self.assertEqual(Constant.float64(-0.0).data,          (0x8000000000000000,))
+        self.assertEqual(Constant.float64(-1.0).data,          (0xBFF0000000000000,))
+        self.assertEqual(Constant.float64(-0.5).data,          (0xBFE0000000000000,))
+        self.assertEqual(Constant.float64(-0.75).data,         (0xBFE8000000000000,))
+        self.assertEqual(Constant.float64(-2.0).data,          (0xC000000000000000,))
+        self.assertEqual(Constant.float64(-float("inf")).data, (0xFFF0000000000000,))
+
+
+class Float32(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(Constant.float32(0.0).data,           (0x00000000,))
+        self.assertEqual(Constant.float32(1.0).data,           (0x3F800000,))
+        self.assertEqual(Constant.float32(0.5).data,           (0x3F000000,))
+        self.assertEqual(Constant.float32(0.75).data,          (0x3F400000,))
+        self.assertEqual(Constant.float32(2.0).data,           (0x40000000,))
+        self.assertEqual(Constant.float32(float("inf")).data,  (0x7F800000,))
+        self.assertEqual(Constant.float32(-0.0).data,          (0x80000000,))
+        self.assertEqual(Constant.float32(-1.0).data,          (0xBF800000,))
+        self.assertEqual(Constant.float32(-0.5).data,          (0xBF000000,))
+        self.assertEqual(Constant.float32(-0.75).data,         (0xBF400000,))
+        self.assertEqual(Constant.float32(-2.0).data,          (0xC0000000,))
+        self.assertEqual(Constant.float32(-float("inf")).data, (0xFF800000,))
