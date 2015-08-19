@@ -115,7 +115,7 @@ class Constant(object):
             if not is_int64(number):
                 raise ValueError("The number %d is not a 64-bit integer" % number)
             if number < 0:
-                args[i] += 0x10000000000000000L
+                args[i] += 0x10000000000000000
         if len(args) == 1:
             args = [args[0]] * n
         return Constant(8 * n, n, tuple(args), uint64_t)
@@ -135,7 +135,7 @@ class Constant(object):
             if not is_int32(number):
                 raise ValueError("The number %d is not a 32-bit integer" % number)
             if number < 0:
-                args[i] += 0x100000000L
+                args[i] += 0x100000000
         if len(args) == 1:
             args = [args[0]] * n
         return Constant(4 * n, n, tuple(args), uint32_t)
@@ -147,7 +147,7 @@ class Constant(object):
             raise ValueError("At least one constant value must be specified")
         if len(args) != 1 and len(args) != n:
             raise ValueError("Either 1 or %d values must be specified" % n)
-        args = map(Constant._parse_float64, args)
+        args = [Constant._parse_float64(arg) for arg in args]
         if len(args) == 1:
             args = [args[0]] * n
         return Constant(8 * n, n, tuple(args), double_)
@@ -159,7 +159,7 @@ class Constant(object):
             raise ValueError("At least one constant value must be specified")
         if len(args) != 1 and len(args) != n:
             raise ValueError("Either 1 or %d values must be specified" % n)
-        args = map(Constant._parse_float32, args)
+        args = [Constant._parse_float32(arg) for arg in args]
         if len(args) == 1:
             args = [args[0]] * n
         return Constant(4 * n, n, tuple(args), double_)
@@ -260,22 +260,22 @@ class Constant(object):
         mantissa = number[point_position + 1:exp_position]
         if number_prefix == '0x0' and int(mantissa) == 0:
             # Zero
-            return long(is_negative) << 31
+            return int(is_negative) << 31
         else:
             exponent = number[exp_position + 1:]
             mantissa_bits = len(mantissa) * 4
             if mantissa_bits == 23:
-                mantissa = long(mantissa, 16)
+                mantissa = int(mantissa, 16)
             elif mantissa_bits < 23:
-                mantissa = long(mantissa, 16) << (23 - mantissa_bits)
+                mantissa = int(mantissa, 16) << (23 - mantissa_bits)
             else:
-                mantissa = long(mantissa, 16) >> (mantissa_bits - 23)
+                mantissa = int(mantissa, 16) >> (mantissa_bits - 23)
             exponent = int(exponent)
             if exponent <= -127:
                 # Denormals
                 mantissa = (mantissa + (1 << 23)) >> -(exponent + 126)
                 exponent = -127
-            return mantissa + (long(exponent + 127) << 23) + (long(is_negative) << 31)
+            return mantissa + (int(exponent + 127) << 23) + (int(is_negative) << 31)
 
     @staticmethod
     def _parse_float64(number):
@@ -304,16 +304,16 @@ class Constant(object):
         if number_prefix == '0x0':
             # Zero
             assert int(mantissa) == 0
-            return long(is_negative) << 63
+            return int(is_negative) << 63
         else:
             exponent = number[exp_position + 1:]
             mantissa_bits = len(mantissa) * 4
             if mantissa_bits == 52:
-                mantissa = long(mantissa, 16)
+                mantissa = int(mantissa, 16)
             elif mantissa_bits < 52:
-                mantissa = long(mantissa, 16) << (52 - mantissa_bits)
+                mantissa = int(mantissa, 16) << (52 - mantissa_bits)
             else:
-                mantissa = long(mantissa, 16) >> (mantissa_bits - 52)
+                mantissa = int(mantissa, 16) >> (mantissa_bits - 52)
             exponent = int(exponent)
             if exponent <= -1023:
                 # Denormals
@@ -323,4 +323,4 @@ class Constant(object):
                 # Infinity
                 mantissa = 0
                 exponent = 1023
-            return mantissa + (long(exponent + 1023) << 52) + (long(is_negative) << 63)
+            return mantissa + (int(exponent + 1023) << 52) + (int(is_negative) << 63)
