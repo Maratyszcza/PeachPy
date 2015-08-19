@@ -239,20 +239,19 @@ class Constant(object):
         if isinstance(number, float):
             number = float.hex(Constant._convert_to_float32(number))
         elif isinstance(number, str):
-            if number == "inf" or number == "+inf":
-                return 0x7F800000
-            elif number == "-inf":
-                return 0xFF800000
-            elif number == "nan":
-                return 0x7FC00000
-            else:
-                # Validity check
-                try:
-                    number = float.hex(Constant._convert_to_float32(float.fromhex(number)))
-                except ValueError:
-                    raise ValueError("The string %s is not a hexadecimal floating-point number" % number)
+            # Validity check
+            try:
+                number = float.hex(Constant._convert_to_float32(float.fromhex(number)))
+            except ValueError:
+                raise ValueError("The string %s is not a hexadecimal floating-point number" % number)
         else:
             raise TypeError("Unsupported type of constant number %s" % str(number))
+        if number == "inf" or number == "+inf":
+            return 0x7F800000
+        elif number == "-inf":
+            return 0xFF800000
+        elif number == "nan":
+            return 0x7FC00000
         is_negative = number.startswith("-")
         point_position = number.index('.')
         exp_position = number.rindex('p')
@@ -283,20 +282,19 @@ class Constant(object):
         if isinstance(number, float):
             number = float.hex(number)
         elif isinstance(number, str):
-            if number == "inf" or number == "+inf":
-                return 0x7FF0000000000000
-            elif number == "-inf":
-                return 0xFFF0000000000000
-            elif number == "nan":
-                return 0x7FF8000000000000
-            else:
-                # Validity check
-                try:
-                    number = float.hex(float.fromhex(number))
-                except ValueError:
-                    raise ValueError("The string %s is not a hexadecimal floating-point number" % number)
+            # Validity check
+            try:
+                number = float.hex(float.fromhex(number))
+            except ValueError:
+                raise ValueError("The string %s is not a hexadecimal floating-point number" % number)
         else:
             raise TypeError("Unsupported type of constant number %s" % str(number))
+        if number == "inf" or number == "+inf":
+            return 0x7FF0000000000000
+        if number == "-inf":
+            return 0xFFF0000000000000
+        if number == "nan":
+            return 0x7FF8000000000000
         is_negative = number.startswith("-")
         point_position = number.index('.')
         exp_position = number.rindex('p')
