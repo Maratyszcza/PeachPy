@@ -1613,7 +1613,7 @@ class EncodedFunction:
         if line_separator is None:
             return code
         else:
-            return str(line_separator).join(code)
+            return str(line_separator).join(filter(bool, code))
 
     def load(self):
         return ExecutableFuntion(self)

@@ -8,7 +8,8 @@ def check_operand(operand):
     from peachpy.x86_64.registers import Register
     from peachpy.x86_64.pseudo import Label
     from peachpy.x86_64.function import LocalVariable
-    from peachpy import Constant, Argument
+    from peachpy.literal import Constant
+    from peachpy import Argument
     from peachpy.util import is_int, is_int64
     if isinstance(operand, (Register, Constant, MemoryOperand, LocalVariable, Argument, RIPRelativeOffset, Label)):
         return operand
@@ -374,15 +375,21 @@ def is_m8(operand, strict=False):
 
 
 def is_m16(operand, strict=False):
-    return is_m(operand) and (operand.size is None and not strict or operand.size == 2)
+    import peachpy.literal
+    return is_m(operand) and (operand.size is None and not strict or operand.size == 2) or \
+        isinstance(operand, peachpy.literal.Constant) and operand.size == 2
 
 
 def is_m32(operand, strict=False):
-    return is_m(operand) and (operand.size is None and not strict or operand.size == 4)
+    import peachpy.literal
+    return is_m(operand) and (operand.size is None and not strict or operand.size == 4) or \
+        isinstance(operand, peachpy.literal.Constant) and operand.size == 4
 
 
 def is_m64(operand, strict=False):
-    return is_m(operand) and (operand.size is None and not strict or operand.size == 8)
+    import peachpy.literal
+    return is_m(operand) and (operand.size is None and not strict or operand.size == 8) or \
+        isinstance(operand, peachpy.literal.Constant) and operand.size == 8
 
 
 def is_m80(operand, strict=False):
@@ -390,11 +397,15 @@ def is_m80(operand, strict=False):
 
 
 def is_m128(operand, strict=False):
-    return is_m(operand) and (operand.size is None and not strict or operand.size == 16)
+    import peachpy.literal
+    return is_m(operand) and (operand.size is None and not strict or operand.size == 16) or \
+        isinstance(operand, peachpy.literal.Constant) and operand.size == 16
 
 
 def is_m256(operand, strict=False):
-    return is_m(operand) and (operand.size is None and not strict or operand.size == 32)
+    import peachpy.literal
+    return is_m(operand) and (operand.size is None and not strict or operand.size == 32) or \
+        isinstance(operand, peachpy.literal.Constant) and operand.size == 32
 
 
 def is_vm32x(operand, strict=False):
