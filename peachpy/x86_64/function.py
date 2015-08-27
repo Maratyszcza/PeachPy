@@ -34,7 +34,7 @@ class Function:
         """
         :param str name: name of the function without mangling (as in C language).
         :param tuple arguments: a tuple of :class:`peachpy.Argument` objects.
-        :param Type return_type: the return type of the function. None if the function returns no value (void function).
+        :param Type result_type: the return type of the function. None if the function returns no value (void function).
         :param str package: the name of the Go package containing this function.
         :param Microarchitecture target: the target microarchitecture for this function.
         :param int debug_level: the verbosity level for debug information collected for instructions. 0 means no
@@ -892,7 +892,7 @@ class ABIFunction:
         assert isinstance(function, Function), "Function object expected"
         assert isinstance(abi, ABI), "ABI object expected"
         self.name = function.name
-        self.arguments = list(map(lambda arg: Argument(arg, abi), function.arguments))
+        self.arguments = [Argument(argument, abi) for argument in function.arguments]
         self.result_type = function.result_type
         self.result_offset = None
         self.package = function.package
