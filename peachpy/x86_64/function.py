@@ -1795,9 +1795,9 @@ class LocalVariable:
 
     def __str__(self):
         if self.address is not None:
-            return "[{0}]".format(self.address)
+            return "[" + str(self.address) + "]"
         else:
-            return "local-variable<{0}>".format(self._id)
+            return "local-variable<%d>" % self._id
 
     def __repr__(self):
         return str(self)
@@ -1823,7 +1823,7 @@ class LocalVariable:
         return node._address + offset
 
     @property
-    def low_half(self):
+    def lo(self):
         assert self.size % 2 == 0
         child = LocalVariable(self.size // 2)
         child.parent = self
@@ -1831,7 +1831,7 @@ class LocalVariable:
         return child
 
     @property
-    def high_half(self):
+    def hi(self):
         assert self.size % 2 == 0
         child = LocalVariable(self.size // 2)
         child.parent = self
