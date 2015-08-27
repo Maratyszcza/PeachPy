@@ -173,6 +173,14 @@ class Instruction(object):
                         registers_masks.get(register_id, 0) | register_mask
         return registers_masks
 
+    @property
+    def constant_operand(self):
+        import peachpy.literal
+        constant_operands = [operand for operand in self.operands if isinstance(operand, peachpy.literal.Constant)]
+        if constant_operands:
+            assert len(constant_operands) == 1, "At most one literal Constant operand in an instruction expected"
+            return constant_operands[0]
+
     def encode(self):
         encodings = self._filter_encodings()
         if encodings:
