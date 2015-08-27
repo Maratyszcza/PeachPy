@@ -1630,7 +1630,6 @@ class EncodedFunction:
         self.abi = function.abi
 
         self._instructions = deepcopy(function._instructions)
-        self._register_allocations = function._register_allocations.copy()
 
         self._encode()
 
