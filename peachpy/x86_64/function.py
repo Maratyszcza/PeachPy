@@ -1020,8 +1020,11 @@ class ABIFunction:
             if constant is not None:
                 self._constants.append(constant)
 
-        max_constant_size = max(0, *[constant.size for constant in self._constants])
-        max_constant_alignment = max(0, *[constant.alignment for constant in self._constants])
+        max_constant_size = 0
+        max_constant_alignment = 0
+        if self._constants:
+            max_constant_size = max(constant.size for constant in self._constants)
+            max_constant_alignment = max(constant.alignment for constant in self._constants)
 
         if max_constant_size != 0:
             # Map from constant value (as bytes) to address in the const data section
