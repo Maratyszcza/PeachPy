@@ -50,6 +50,9 @@ class Function:
 
         :ivar set _label_names: a set of string names of LABEL quasi-instructions in the function. The set is populated
             as instructions are added and is intended to track duplicate labels.
+
+        :ivar dict _named_constants: a dictionary that maps names of literal constants to Constant objects.
+            As instructions are added the dictionary is used to track constants with same names, but different content.
         """
         self.name = name
         self.arguments = arguments
@@ -75,6 +78,7 @@ class Function:
         self._instructions = list()
 
         self._label_names = set()
+        self._named_constants = dict()
 
         self._local_variables_count = 0
         self._virtual_general_purpose_registers_count = 0
@@ -184,6 +188,7 @@ class Function:
             self._check_live_registers()
             self._preallocate_registers()
             self._bind_registers()
+            self._name_constants()
             if peachpy.x86_64.options.abi is not None:
                 abi_function = self.finalize(peachpy.x86_64.options.abi)
 
@@ -273,6 +278,12 @@ class Function:
             if instruction.identifier in self._label_names:
                 raise ValueError("A label named %s already exists in the function" % instruction.identifier)
             self._label_names.add(instruction.identifier)
+
+        constant_operand = instruction.constant_operand
+        if constant_operand is not None and constant_operand.name is not None:
+            self._named_constants.setdefault(constant_operand.name, constant_operand)
+            if self._named_constants[constant_operand.name] != constant_operand:
+                raise ValueError("A constant named %s already exists in the function" % constant_operand.name)
 
         # Check that the instruction is supported by the target ISA
         for extension in instruction.isa_extensions:
@@ -788,6 +799,68 @@ class Function:
                     register.physical_id = \
                         self._register_allocations[register.kind].get(register._internal_id, register.physical_id)
 
+    def _name_constants(self):
+        """Assigns names to constants that do not have a name"""
+
+        # Step 0: collect constants that need names
+        prenamed_constants_list = list()
+        unnamed_constants_list = list()
+        for instruction in self._instructions:
+            constant_operand = instruction.constant_operand
+            if constant_operand is not None:
+                if constant_operand.prename is None:
+                    if constant_operand.name is None:
+                        unnamed_constants_list.append(constant_operand)
+                else:
+                    prenamed_constants_list.append(constant_operand)
+
+        # Step 1: assign names to constants with prenames
+
+        # Set of prenames (as strings) that are used for different constants.
+        prename_collisions = set()
+        # Map from prename to Constant objects. Used to detect collisions.
+        prenamed_constants_map = dict()
+        for prenamed_constant in prenamed_constants_list:
+            prenamed_constants_map.setdefault(prenamed_constant.prename, prenamed_constant)
+            if prenamed_constants_map[prenamed_constant.prename] != prenamed_constant:
+                prename_collisions.add(prenamed_constant.prename)
+
+        # Map from Constant object to its assigned name.
+        # Only objects with prename collisions are added to the list.
+        # Prenamed objects without collisions just use their prename as a name.
+        constant_names = dict()
+
+        # Map from prename to the number of non-equal Constant objects with this prename that were processed
+        prename_collisions_counts = dict()
+
+        for prenamed_constant in prenamed_constants_list:
+            if prenamed_constant.prename in prename_collisions:
+                if prenamed_constant in constant_names:
+                    # Name already assigned: re-use it
+                    prenamed_constant.name = constant_names[prenamed_constant]
+                else:
+                    # Assign a new name of the form prename.$count
+                    prename_collisions_counts.setdefault(prenamed_constant.prename, 0)
+                    name = prenamed_constant.prename + "." + str(prename_collisions_counts[prenamed_constant.prename])
+                    prename_collisions_counts[prenamed_constant.prename] += 1
+                    prenamed_constant.name = name
+                    constant_names[prenamed_constant] = name
+            else:
+                # No prename collision: use prename as the name
+                prenamed_constant.name = prenamed_constant.prename
+
+        # Step 2: assign names to Constants without names or prenames
+
+        # Map from Constant object to its assigned name.
+        constant_names = dict()
+
+        for unnamed_constant in unnamed_constants_list:
+            if unnamed_constant in constant_names:
+                unnamed_constant.name = constant_names[unnamed_constant]
+            else:
+                unnamed_constant.name = ".LC" + str(len(constant_names))
+                constant_names[unnamed_constant] = unnamed_constant.name
+
     def _allocate_local_variable(self):
         """Returns a new unique ID for a local variable"""
         self._local_variables_count += 1
@@ -912,6 +985,10 @@ class ABIFunction:
         self._conflicting_registers = function._conflicting_registers.copy()
         self._register_allocations = function._register_allocations.copy()
 
+        self._constants = list()
+        self._constant_data = bytearray()
+        self._analyze_literal_constants()
+
         if abi == microsoft_x64_abi:
             self._setup_windows_arguments()
         elif abi in {system_v_x86_64_abi, linux_x32_abi, native_client_x86_64_abi}:
@@ -932,10 +1009,39 @@ class ABIFunction:
 
         self._lower_argument_loads()
         self._lower_pseudoinstructions()
-        # self._lower_complex_instructions
         self._filter_instruction_encodings()
 
-        # self.stack_frame = StackFrame(self.abi)
+    def _analyze_literal_constants(self):
+        from peachpy.encoder import Encoder
+        encoder = Encoder(self.abi.endianness)
+
+        for instruction in self._instructions:
+            constant = instruction.constant_operand
+            if constant is not None:
+                self._constants.append(constant)
+
+        max_constant_size = max(0, *[constant.size for constant in self._constants])
+        max_constant_alignment = max(0, *[constant.alignment for constant in self._constants])
+
+        if max_constant_size != 0:
+            # Map from constant value (as bytes) to address in the const data section
+            constants_address_map = dict()
+
+            for instruction in self._instructions:
+                constant_operand = instruction.constant_operand
+                if constant_operand is not None:
+                    constant_value = bytes(constant_operand.encode(encoder))
+                    if constant_value in constants_address_map:
+                        constant_operand.address = constants_address_map[constant_value]
+                    else:
+                        # Add the new constant to the section
+                        assert constant_operand.size == max_constant_size, \
+                            "Handling of functions with constant literals of different size is not implemented"
+                        assert constant_operand.alignment == max_constant_alignment, \
+                            "Handling of functions with constant literals of different alignment is not implemented"
+                        constant_operand.address = len(self._constant_data)
+                        constants_address_map[constant_value] = constant_operand.address
+                        self._constant_data += constant_value
 
     def _update_argument_loads(self, arguments):
         from peachpy.x86_64.pseudo import LOAD
