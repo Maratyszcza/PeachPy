@@ -6,13 +6,13 @@ def optional_rex(r, rm, force_rex=False):
     assert r in {0, 1}, "REX.R must be 0 or 1"
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import Register
-    assert isinstance(rm, (Register, MemoryAddress)), \
+    assert isinstance(rm, (Register, MemoryAddress, int)), \
         "rm is expected to be a register or a memory address"
     b = 0
     x = 0
     if isinstance(rm, Register):
         b = rm.hcode
-    else:
+    elif isinstance(rm, MemoryAddress):
         if rm.base is not None:
             b = rm.base.hcode
         if rm.index is not None:
@@ -28,14 +28,15 @@ def rex(w, r, rm):
     assert w in {0, 1}, "REX.W must be 0 or 1"
     assert r in {0, 1}, "REX.R must be 0 or 1"
     from peachpy.x86_64.operand import MemoryAddress
-    assert isinstance(rm, MemoryAddress), \
+    assert isinstance(rm, (MemoryAddress, int)), \
         "rm is expected to be a memory address"
     b = 0
-    if rm.base is not None:
-        b = rm.base.hcode
     x = 0
-    if rm.index is not None:
-        x = rm.index.hcode
+    if isinstance(rm, MemoryAddress):
+        if rm.base is not None:
+            b = rm.base.hcode
+        if rm.index is not None:
+            x = rm.index.hcode
     return bytearray([0x40 | (w << 3) | (r << 2) | (x << 1) | b])
 
 
@@ -68,14 +69,14 @@ def vex2(lpp, r, rm, vvvv=0, force_vex3=False):
     assert vvvv & ~0b1111 == 0, "VEX.vvvv must be a 4-bit mask"
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import Register
-    assert rm is None or isinstance(rm, (Register, MemoryAddress)), \
+    assert rm is None or isinstance(rm, (Register, MemoryAddress, int)), \
         "rm is expected to be a register, a memory address, or None"
     b = 0
     x = 0
     if rm is not None:
         if isinstance(rm, Register):
             b = rm.hcode
-        else:
+        elif isinstance(rm, MemoryAddress):
             if rm.base is not None:
                 b = rm.base.hcode
             if rm.index is not None:
@@ -106,14 +107,15 @@ def vex3(escape, mmmmm, w____lpp, r, rm, vvvv=0):
     assert r & ~0b1 == 0, "VEX.R must be a single-bit mask"
     assert vvvv & ~0b1111 == 0, "VEX.vvvv must be a 4-bit mask"
     from peachpy.x86_64.operand import MemoryAddress
-    assert isinstance(rm, MemoryAddress), \
+    assert isinstance(rm, (MemoryAddress, int)), \
         "rm is expected to be a memory address"
     b = 0
     x = 0
-    if rm.base is not None:
-        b = rm.base.hcode
-    if rm.index is not None:
-        x = rm.index.hcode
+    if isinstance(rm, MemoryAddress):
+        if rm.base is not None:
+            b = rm.base.hcode
+        if rm.index is not None:
+            x = rm.index.hcode
     return bytearray([escape, 0xE0 ^ (r << 7) ^ (x << 6) ^ (b << 5) ^ mmmmm, 0x78 ^ (vvvv << 3) ^ w____lpp])
 
 
@@ -124,11 +126,7 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
 
     assert is_int(reg) and 0 <= reg <= 7, \
         "Constant reg value expected, got " + str(reg)
-    assert isinstance(rm, MemoryAddress)
-
-    # TODO: support global addresses, including rip-relative addresses
-    assert rm.base is not None or rm.index is not None, \
-        "Global addressing is not yet supported"
+    assert isinstance(rm, (MemoryAddress, int))
 
     #                    ModR/M byte
     # +----------------+---------------+--------------+
@@ -139,56 +137,68 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
     # +-----------------+-----------------+----------------+
     # | Bits 6-7: scale | Bits 3-5: index | Bits 0-2: base |
     # +-----------------+-----------------+----------------+
-    if not force_sib and rm.index is None and rm.base.lcode != 0b100:
-        # No SIB byte
-        if rm.displacement == 0 and rm.base != rbp and rm.base != r13 and min_disp <= 0:
-            # ModRM.mode = 0 (no displacement)
+    if isinstance(rm, MemoryAddress):
+        # TODO: support global addresses, including rip-relative addresses
+        assert rm.base is not None or rm.index is not None, \
+            "Global addressing is not yet supported"
+        if not force_sib and rm.index is None and rm.base.lcode != 0b100:
+            # No SIB byte
+            if rm.displacement == 0 and rm.base != rbp and rm.base != r13 and min_disp <= 0:
+                # ModRM.mode = 0 (no displacement)
 
-            assert rm.base.lcode != 0b100, "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
-            assert rm.base.lcode != 0b101, "rbp/r13 is not encodable as a base register (interpreted as disp32 address)"
-            return bytearray([(reg << 3) | rm.base.lcode])
-        elif is_sint8(rm.displacement) and min_disp <= 1:
-            # ModRM.mode = 1 (8-bit displacement)
-
-            assert rm.base.lcode != 0b100, "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
-            return bytearray([0x40 | (reg << 3) | rm.base.lcode, rm.displacement & 0xFF])
-        else:
-            # ModRM.mode == 2 (32-bit displacement)
-
-            assert rm.base.lcode != 0b100, "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
-            return bytearray([0x80 | (reg << 3) | rm.base.lcode,
-                             rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
-                             (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
-    else:
-        # All encodings below use ModRM.rm = 4 (0b100) to indicate the presence of SIB
-
-        assert rsp != rm.index, "rsp is not encodable as an index register (interpreted as no index)"
-        # Index = 4 (0b100) denotes no-index encoding
-        index = 0x4 if rm.index is None else rm.index.lcode
-        scale = 0 if rm.scale is None else ilog2(rm.scale)
-        if rm.base is None:
-            # SIB.base = 5 (0b101) and ModRM.mode = 0 indicates no-base encoding with disp32
-
-            return bytearray([(reg << 3) | 0x4, (scale << 6) | (index << 3) | 0x5,
-                             rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
-                             (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
-        else:
-            if rm.displacement == 0 and rm.base.lcode != 0b101 and min_disp <= 0:
-                # ModRM.mode == 0 (no displacement)
-
+                assert rm.base.lcode != 0b100, \
+                    "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
                 assert rm.base.lcode != 0b101, \
                     "rbp/r13 is not encodable as a base register (interpreted as disp32 address)"
-                return bytearray([(reg << 3) | 0x4, (scale << 6) | (index << 3) | rm.base.lcode])
+                return bytearray([(reg << 3) | rm.base.lcode])
             elif is_sint8(rm.displacement) and min_disp <= 1:
-                # ModRM.mode == 1 (8-bit displacement)
+                # ModRM.mode = 1 (8-bit displacement)
 
-                return bytearray([(reg << 3) | 0x44, (scale << 6) | (index << 3) | rm.base.lcode, rm.displacement & 0xFF])
+                assert rm.base.lcode != 0b100, \
+                    "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
+                return bytearray([0x40 | (reg << 3) | rm.base.lcode, rm.displacement & 0xFF])
             else:
                 # ModRM.mode == 2 (32-bit displacement)
 
-                return bytearray([(reg << 3) | 0x84, (scale << 6) | (index << 3) | rm.base.lcode,
+                assert rm.base.lcode != 0b100, \
+                    "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
+                return bytearray([0x80 | (reg << 3) | rm.base.lcode,
                                  rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
                                  (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
+        else:
+            # All encodings below use ModRM.rm = 4 (0b100) to indicate the presence of SIB
+
+            assert rsp != rm.index, "rsp is not encodable as an index register (interpreted as no index)"
+            # Index = 4 (0b100) denotes no-index encoding
+            index = 0x4 if rm.index is None else rm.index.lcode
+            scale = 0 if rm.scale is None else ilog2(rm.scale)
+            if rm.base is None:
+                # SIB.base = 5 (0b101) and ModRM.mode = 0 indicates no-base encoding with disp32
+
+                return bytearray([(reg << 3) | 0x4, (scale << 6) | (index << 3) | 0x5,
+                                 rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
+                                 (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
+            else:
+                if rm.displacement == 0 and rm.base.lcode != 0b101 and min_disp <= 0:
+                    # ModRM.mode == 0 (no displacement)
+
+                    assert rm.base.lcode != 0b101, \
+                        "rbp/r13 is not encodable as a base register (interpreted as disp32 address)"
+                    return bytearray([(reg << 3) | 0x4, (scale << 6) | (index << 3) | rm.base.lcode])
+                elif is_sint8(rm.displacement) and min_disp <= 1:
+                    # ModRM.mode == 1 (8-bit displacement)
+
+                    return bytearray([(reg << 3) | 0x44, (scale << 6) | (index << 3) | rm.base.lcode,
+                                      rm.displacement & 0xFF])
+                else:
+                    # ModRM.mode == 2 (32-bit displacement)
+
+                    return bytearray([(reg << 3) | 0x84, (scale << 6) | (index << 3) | rm.base.lcode,
+                                     rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
+                                     (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
+    else:
+        # ModRM.mode == 0 and ModeRM.rm == 5 (0b101) indicates (rip + disp32) addressing
+        return bytearray([0b00000101 | (reg << 3), rm & 0xFF, (rm >> 8) & 0xFF, (rm >> 16) & 0xFF, (rm >> 24) & 0xFF])
 
 
 def nop(length):
