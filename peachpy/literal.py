@@ -3,61 +3,16 @@ from peachpy.c.types import Type, \
     int8_t, int16_t, int32_t, int64_t, \
     uint8_t, uint16_t, uint32_t, uint64_t, \
     float_, double_
+from peachpy.parse import parse_assigned_variable_name
 
 
-class ConstantBucket(object):
-    supported_capacity = [1, 2, 4, 8, 16, 32, 64, 128]
-
-    def __init__(self, capacity):
-        super(ConstantBucket, self).__init__()
-        if isinstance(capacity, int):
-            if capacity in ConstantBucket.supported_capacity:
-                self.capacity = capacity
-            else:
-                raise ValueError("Capacity value {0} is not among the supports capacities ({1})".format(
-                    capacity, ConstantBucket.supported_capacity))
-        else:
-            raise TypeError("Constant capacity {0} must be an integer".format(capacity))
-        self.size = 0
-        self.constants = list()
-
-    def add(self, constant):
-        if isinstance(constant, Constant):
-            if constant.get_alignment() > self.get_capacity() * 8:
-                raise ValueError("Constants alignment exceeds constant bucket alignment")
-            elif (self.size * 8) % constant.get_alignment() != 0:
-                raise ValueError("Constant alignment is not compatible with the internal constant bucket alignment")
-            elif self.size + constant.size * constant.repeats / 8 > self.capacity:
-                raise ValueError("Constant bucket is overflowed")
-            else:
-                self.constants.append(constant)
-                self.size += constant.size * constant.repeats / 8
-        else:
-            raise TypeError("Only Constant objects can be added to a constant bucket")
-
-    def get_capacity(self):
-        return self.capacity
-
-    def is_empty(self):
-        return self.size == 0
-
-    def is_full(self):
-        return self.size == self.capacity
-
-    def empty(self):
-        constants = self.constants
-        self.constants = list()
-        return constants
-
-
-class Constant(object):
+class Constant:
     _supported_sizes = [1, 2, 4, 8, 16, 32, 64]
     _supported_types = [uint8_t, uint16_t, uint32_t, uint64_t,
                         int8_t, int16_t, int32_t, int64_t,
                         float_, double_]
 
-    def __init__(self, size, repeats, data, element_ctype):
-        super(Constant, self).__init__()
+    def __init__(self, size, repeats, data, element_ctype, name=None, prename=None):
         assert isinstance(size, six.integer_types), "Constant size must be an integer"
         assert size in Constant._supported_sizes, "Unsupported size %s: the only supported sizes are %s" \
             % (str(size), ", ".join(map(str, sorted(Constant._supported_sizes))))
@@ -72,23 +27,34 @@ class Constant(object):
         self.element_ctype = element_ctype
         self.data = data
 
+        self.name = name
+        self.prename = prename
+
+        self.address = None
+
         self.label = None
         self.prefix = None
 
     def __str__(self):
-        return "<" + ", ".join("%016X" % data for data in self.data) + ">"
+        format_spec = "%%0%dX" % (self.size / self.repeats * 2)
+        return "<" + ", ".join(format_spec % data for data in self.data) + ">"
 
     def __hash__(self):
         return hash(self.data) ^ hash(self.size) ^ hash(self.repeats)
 
     def __eq__(self, other):
-        if isinstance(other, Constant):
-            if self.size == other.size and self.repeats == other.repeats:
-                return self.data == other.data
-            else:
-                return False
-        else:
-            return False
+        return isinstance(other, Constant) and self.data == other.data and self.element_ctype == other.element_ctype
+
+    def encode(self, encoder):
+        from peachpy.encoder import Encoder
+        assert isinstance(encoder, Encoder)
+        encode_function = {
+            1: encoder.uint8,
+            2: encoder.uint16,
+            4: encoder.uint32,
+            8: encoder.uint64
+        }[self.size / self.repeats]
+        return sum([encode_function(data) for data in self.data], bytearray())
 
     @property
     def alignment(self):
@@ -97,11 +63,20 @@ class Constant(object):
         else:
             return self.size
 
+    @property
+    def as_hex(self):
+        from peachpy.encoder import Encoder, Endianness
+        bytestring = self.encode(Encoder(Endianness.Little))
+        return "".join("%02X" % byte for byte in bytestring)
+
     def format(self, assembly_format):
-        return str(self)
+        if assembly_format == "go":
+            return "const0x" + self.as_hex + "(SB)"
+        else:
+            return str(self)
 
     @staticmethod
-    def _uint64xN(n, *args):
+    def _uint64xN(name, prename, n, *args):
         from peachpy.util import is_int, is_int64
         assert is_int(n)
         args = [arg for arg in args if arg is not None]
@@ -121,7 +96,7 @@ class Constant(object):
         return Constant(8 * n, n, tuple(args), uint64_t)
 
     @staticmethod
-    def _uint32xN(n, *args):
+    def _uint32xN(name, prename, n, *args):
         from peachpy.util import is_int, is_int32
         assert is_int(n)
         args = [arg for arg in args if arg is not None]
@@ -141,7 +116,7 @@ class Constant(object):
         return Constant(4 * n, n, tuple(args), uint32_t)
 
     @staticmethod
-    def _float64xN(n, *args):
+    def _float64xN(name, prename, n, *args):
         args = [arg for arg in args if arg is not None]
         if len(args) == 0:
             raise ValueError("At least one constant value must be specified")
@@ -153,7 +128,7 @@ class Constant(object):
         return Constant(8 * n, n, tuple(args), double_)
 
     @staticmethod
-    def _float32xN(n, *args):
+    def _float32xN(name, prename, n, *args):
         args = [arg for arg in args if arg is not None]
         if len(args) == 0:
             raise ValueError("At least one constant value must be specified")
@@ -165,68 +140,163 @@ class Constant(object):
         return Constant(4 * n, n, tuple(args), double_)
 
     @staticmethod
-    def uint64(number):
-        return Constant._uint64xN(1, number)
+    def uint64(number, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64")
+
+        return Constant._uint64xN(name, prename, 1, number)
 
     @staticmethod
-    def uint64x2(number1, number2=None):
-        return Constant._uint64xN(2, number1, number2)
+    def uint64x2(number1, number2=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x2")
+
+        return Constant._uint64xN(name, prename, 2, number1, number2)
 
     @staticmethod
-    def uint64x4(number1, number2=None, number3=None, number4=None):
-        return Constant._uint64xN(4, number1, number2, number3, number4)
+    def uint64x4(number1, number2=None, number3=None, number4=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x4")
+
+        return Constant._uint64xN(name, prename, 4, number1, number2, number3, number4)
 
     @staticmethod
-    def uint64x8(*numbers8):
-        return Constant._uint64xN(8, *numbers8)
+    def uint64x8(number1, number2=None, number3=None, number4=None,
+                 number5=None, number6=None, number7=None, number8=None,
+                 name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x8")
+
+        return Constant._uint64xN(name, prename, 8,
+                                  number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod
-    def uint32(number1):
-        return Constant._uint32xN(1, number1)
+    def uint32(number, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32")
+
+        return Constant._uint32xN(name, prename, 1, number)
 
     @staticmethod
-    def uint32x2(number1, number2=None):
-        return Constant._uint32xN(2, number1, number2)
+    def uint32x2(number1, number2=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x2")
+
+        return Constant._uint32xN(name, prename, 2, number1, number2)
 
     @staticmethod
-    def uint32x4(number1, number2=None, number3=None, number4=None):
-        return Constant._uint32xN(4, number1, number2, number3, number4)
+    def uint32x4(number1, number2=None, number3=None, number4=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x4")
+
+        return Constant._uint32xN(name, prename, 4, number1, number2, number3, number4)
 
     @staticmethod
-    def uint32x8(*numbers8):
-        return Constant._uint32xN(8, *numbers8)
+    def uint32x8(number1, number2=None, number3=None, number4=None,
+                 number5=None, number6=None, number7=None, number8=None,
+                 name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x8")
+
+        return Constant._uint32xN(name, prename, 8,
+                                  number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod
-    def uint32x16(*numbers16):
-        return Constant._uint32xN(16, *numbers16)
+    def uint32x16(number1, number2=None, number3=None, number4=None,
+                  number5=None, number6=None, number7=None, number8=None,
+                  number9=None, number10=None, number11=None, number12=None,
+                  number13=None, number14=None, number15=None, number16=None,
+                  name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x16")
+
+        return Constant._uint32xN(name, prename, 16,
+                                  number1, number2, number3, number4, number5, number6, number7, number8,
+                                  number9, number10, number11, number12, number13, number14, number15, number16)
 
     @staticmethod
-    def float64(number):
-        return Constant._float64xN(1, number)
+    def float64(number, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64")
+
+        return Constant._float64xN(name, prename, 1, number)
 
     @staticmethod
-    def float64x2(number1, number2=None):
-        return Constant._float64xN(2, number1, number2)
+    def float64x2(number1, number2=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64x2")
+
+        return Constant._float64xN(name, prename, 2, number1, number2)
 
     @staticmethod
-    def float64x4(number1, number2=None, number3=None, number4=None):
-        return Constant._float64xN(4, number1, number2, number3, number4)
+    def float64x4(number1, number2=None, number3=None, number4=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64x4")
+
+        return Constant._float64xN(name, prename, 4, number1, number2, number3, number4)
 
     @staticmethod
-    def float32(number):
-        return Constant._float32xN(1, number)
+    def float32(number, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32")
+
+        return Constant._float32xN(name, prename, 1, number)
 
     @staticmethod
-    def float32x2(number1, number2=None):
-        return Constant._float32xN(2, number1, number2)
+    def float32x2(number1, number2=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x2")
+
+        return Constant._float32xN(name, prename, 2, number1, number2)
 
     @staticmethod
-    def float32x4(number1, number2=None, number3=None, number4=None):
-        return Constant._float32xN(4, number1, number2, number3, number4)
+    def float32x4(number1, number2=None, number3=None, number4=None, name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x4")
+
+        return Constant._float32xN(name, prename, 4, number1, number2, number3, number4)
 
     @staticmethod
-    def float32x8(*numbers8):
-        return Constant._float32xN(8, *numbers8)
+    def float32x8(number1, number2=None, number3=None, number4=None,
+                  number5=None, number6=None, number7=None, number8=None,
+                  name=None):
+        prename = None
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x8")
+
+        return Constant._float32xN(name, prename, 8,
+                                   number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod
     def _convert_to_float32(number):
