@@ -985,10 +985,6 @@ class ABIFunction:
         self._conflicting_registers = function._conflicting_registers.copy()
         self._register_allocations = function._register_allocations.copy()
 
-        self._constants = list()
-        self._constant_data = bytearray()
-        self._analyze_literal_constants()
-
         if abi == microsoft_x64_abi:
             self._setup_windows_arguments()
         elif abi in {system_v_x86_64_abi, linux_x32_abi, native_client_x86_64_abi}:
@@ -1010,41 +1006,6 @@ class ABIFunction:
         self._lower_argument_loads()
         self._lower_pseudoinstructions()
         self._filter_instruction_encodings()
-
-    def _analyze_literal_constants(self):
-        from peachpy.encoder import Encoder
-        encoder = Encoder(self.abi.endianness)
-
-        for instruction in self._instructions:
-            constant = instruction.constant_operand
-            if constant is not None:
-                self._constants.append(constant)
-
-        max_constant_size = 0
-        max_constant_alignment = 0
-        if self._constants:
-            max_constant_size = max(constant.size for constant in self._constants)
-            max_constant_alignment = max(constant.alignment for constant in self._constants)
-
-        if max_constant_size != 0:
-            # Map from constant value (as bytes) to address in the const data section
-            constants_address_map = dict()
-
-            for instruction in self._instructions:
-                constant_operand = instruction.constant_operand
-                if constant_operand is not None:
-                    constant_value = bytes(constant_operand.encode(encoder))
-                    if constant_value in constants_address_map:
-                        constant_operand.address = constants_address_map[constant_value]
-                    else:
-                        # Add the new constant to the section
-                        assert constant_operand.size == max_constant_size, \
-                            "Handling of functions with constant literals of different size is not implemented"
-                        assert constant_operand.alignment == max_constant_alignment, \
-                            "Handling of functions with constant literals of different alignment is not implemented"
-                        constant_operand.address = len(self._constant_data)
-                        constants_address_map[constant_value] = constant_operand.address
-                        self._constant_data += constant_value
 
     def _update_argument_loads(self, arguments):
         from peachpy.x86_64.pseudo import LOAD
@@ -1632,9 +1593,61 @@ class EncodedFunction:
         self.target = function.target
         self.abi = function.abi
 
+        self.code_content = bytearray()
+        self.code_relocations = list()
+        self.const_content = bytearray()
+        self.const_symbols = list()
+
         self._instructions = deepcopy(function._instructions)
 
+        self._layout_literal_constants()
         self._encode()
+
+    def _layout_literal_constants(self):
+        from peachpy.encoder import Encoder
+        from peachpy.x86_64.meta import Symbol, SymbolType
+        import operator
+        encoder = Encoder(self.abi.endianness)
+
+        constants = list()
+        for instruction in self._instructions:
+            constant = instruction.constant_operand
+            if constant is not None:
+                constants.append(constant)
+
+        max_constant_size = 0
+        max_constant_alignment = 0
+        if constants:
+            max_constant_size = max(constant.size for constant in constants)
+            max_constant_alignment = max(constant.alignment for constant in constants)
+
+        constant_symbols_set = set()
+        if max_constant_size != 0:
+            # Map from constant value (as bytes) to address in the const data section
+            constants_address_map = dict()
+
+            for instruction in self._instructions:
+                constant_operand = instruction.constant_operand
+                if constant_operand is not None:
+                    constant_value = bytes(constant_operand.encode(encoder))
+                    if constant_value in constants_address_map:
+                        constant_operand.address = constants_address_map[constant_value]
+                    else:
+                        # Add the new constant to the section
+                        assert constant_operand.size == max_constant_size, \
+                            "Handling of functions with constant literals of different size is not implemented"
+                        assert constant_operand.alignment == max_constant_alignment, \
+                            "Handling of functions with constant literals of different alignment is not implemented"
+                        constant_operand.address = len(self.const_content)
+                        constants_address_map[constant_value] = constant_operand.address
+                        self.const_content += constant_value
+                    if constant_operand.name not in constant_symbols_set:
+                        constant_symbols_set.add(constant_operand.name)
+                        const_symbol = Symbol(constant_operand.address, SymbolType.literal_constant,
+                                              name=constant_operand.name,
+                                              size=constant_operand.size)
+                        self.const_symbols.append(const_symbol)
+        self.const_symbols = sorted(self.const_symbols, key=lambda sym: (sym.offset, -sym.size))
 
     def _encode(self):
         from peachpy.x86_64.pseudo import LABEL
@@ -1665,6 +1678,22 @@ class EncodedFunction:
                     instruction.bytecode = instruction.encode()
                 if instruction.bytecode:
                     code_address += len(instruction.bytecode)
+
+        from peachpy.x86_64.meta import Relocation, RelocationType
+        for instruction in self._instructions:
+            bytecode = instruction.bytecode
+            constant_operand = instruction.constant_operand
+            if constant_operand:
+                assert len(bytecode) > 4, \
+                    "The instruction encoding can't be smaller than 4 bytes as disp32 is encoded in 4 bytes"
+                for index in range(len(bytecode) - 4, len(bytecode)):
+                    bytecode[index] = 0
+                offset = len(self.code_content) + len(bytecode) - 4
+                relocation = Relocation(offset, RelocationType.rip_disp32, symbol=constant_operand.name)
+                self.code_relocations.append(relocation)
+
+            if bytecode:
+                self.code_content += bytecode
 
     def _encode_nops(self, length):
         assert 1 <= length <= 31
@@ -1726,13 +1755,6 @@ class EncodedFunction:
     def load(self):
         return ExecutableFuntion(self)
 
-    @property
-    def as_bytearray(self):
-        if six.PY3:
-            return b"".join(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)))
-        else:
-            return sum(filter(bool, map(operator.attrgetter("bytecode"), self._instructions)), bytearray())
-
 
 class ExecutableFuntion:
     def __init__(self, function):
@@ -1743,7 +1765,7 @@ class ExecutableFuntion:
             raise ValueError("Function ABI (%s) does not match process ABI (%s)" %
                              (str(function.abi), str(process_abi)))
 
-        self.code_segment = function.as_bytearray
+        self.code_segment = function.code_content
 
         import peachpy.loader
         self.loader = peachpy.loader.Loader(len(self.code_segment))

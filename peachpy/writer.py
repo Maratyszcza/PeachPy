@@ -75,6 +75,8 @@ class ELFWriter:
         self.image = Image(abi, input_path)
         self.text_section = TextSection(abi)
         self.image.bind_section(self.text_section, ".text")
+        self.text_rela_section = None
+        self.rodata_section = None
 
     def __enter__(self):
         global active_writer
@@ -104,16 +106,60 @@ class ELFWriter:
             "Function must be bindinded to an ABI before its assembly can be used"
 
         encoded_function = function.encode()
-        function_code = encoded_function.as_bytearray
 
         function_offset = len(self.text_section.content)
-        self.text_section.append(function_code)
+        self.text_section.append(encoded_function.code_content)
 
+        function_rodata_offset = 0
+        if encoded_function.const_content:
+            if self.rodata_section is None:
+                from peachpy.formats.elf.section import ProgramBitsSection
+                self.rodata_section = ProgramBitsSection(self.abi, allocate=True)
+                self.image.bind_section(self.rodata_section, ".rodata")
+            function_rodata_offset = len(self.rodata_section.content)
+            self.rodata_section.append(encoded_function.const_content)
+
+        # Map from symbol name to symbol index
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
+        symbol_map = dict()
+        for symbol in encoded_function.const_symbols:
+            const_symbol = Symbol(self.abi)
+            const_symbol.name_index = self.image.strtab.add(symbol.name)
+            const_symbol.value = function_rodata_offset + symbol.offset
+            const_symbol.content_size = symbol.size
+            const_symbol.section_index = self.rodata_section.index
+            const_symbol.binding = SymbolBinding.Local
+            const_symbol.type = SymbolType.DataObject
+            const_symbol_index = self.image.symtab.add(const_symbol)
+            symbol_map[symbol.name] = const_symbol_index
+
+        if encoded_function.code_relocations:
+            if self.text_rela_section is None:
+                from peachpy.formats.elf.section import Section, SectionType
+                self.text_rela_section = Section(self.abi)
+                self.text_rela_section.header.content_type = SectionType.AddendRelocations
+                self.text_rela_section.header.content_size = 0
+                self.text_rela_section.header.link_index = self.image.symtab.index
+                self.text_rela_section.header.info = self.text_section.index
+                self.text_rela_section.header.entry_size = 24 if self.abi.elf_bitness == 64 else 12
+                self.image.bind_section(self.text_rela_section, ".rela.text")
+
+            from peachpy.encoder import Encoder
+            encoder = Encoder(self.abi.endianness, self.abi.elf_bitness)
+            for relocation in encoded_function.code_relocations:
+                offset = relocation.offset
+                R_X86_64_PC32 = 2
+                symbol_index = symbol_map[relocation.symbol]
+                info = (symbol_index << 32) | R_X86_64_PC32
+                addend = -4
+                relocation = encoder.uint64(offset) + encoder.uint64(info) + encoder.uint64(addend & 0xFFFFFFFFFFFFFFFF)
+                self.text_rela_section._content += relocation
+                self.text_rela_section.header.content_size += len(relocation)
+
         function_symbol = Symbol(self.abi)
         function_symbol.name_index = self.image.strtab.add(function.name)
         function_symbol.value = function_offset
-        function_symbol.content_size = len(function_code)
+        function_symbol.content_size = len(encoded_function.code_content)
         function_symbol.section_index = self.text_section.index
         function_symbol.binding = SymbolBinding.Global
         function_symbol.type = SymbolType.Function

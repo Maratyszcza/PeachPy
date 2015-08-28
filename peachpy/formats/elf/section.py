@@ -209,6 +209,7 @@ class SymbolSection(Section):
         self._symbols.append(symbol)
         if symbol.binding == SymbolBinding.Local:
             self.header.info += 1
+        return len(self._symbols) - 1
 
     def bind(self):
         from peachpy.formats.elf.symbol import SymbolBinding
