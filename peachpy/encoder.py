@@ -8,13 +8,20 @@ class Encoder:
     def __init__(self, endianness, bitness=None):
         assert endianness in {Endianness.Little, Endianness.Big}
         if endianness == Endianness.Little:
+            self.int16 = Encoder.int16le
             self.uint16 = Encoder.uint16le
+            self.int32 = Encoder.int32le
             self.uint32 = Encoder.uint32le
+            self.int64 = Encoder.int64le
             self.uint64 = Encoder.uint64le
         else:
+            self.int16 = Encoder.int16be
             self.uint16 = Encoder.uint16be
+            self.int32 = Encoder.int32be
             self.uint32 = Encoder.uint32be
+            self.int64 = Encoder.int64be
             self.uint64 = Encoder.uint64be
+        self.bitness = bitness
         if bitness is not None:
             assert bitness in {32, 64}, "Only 32-bit and 64-bit encoders are supported"
             if bitness == 32:
@@ -114,12 +121,24 @@ class Encoder:
         return bytearray([(n >> 56) & 0xFF, (n >> 48) & 0xFF, (n >> 40) & 0xFF, (n >> 32) & 0xFF,
                          (n >> 24) & 0xFF, (n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF])
 
+    def int16(self, n):
+        """Converts signed 16-bit integer to bytearray representation according to encoder endianness"""
+        pass
+
     def uint16(self, n):
         """Converts unsigned 16-bit integer to bytearray representation according to encoder endianness"""
         pass
 
+    def int32(self, n):
+        """Converts signed 32-bit integer to bytearray representation according to encoder endianness"""
+        pass
+
     def uint32(self, n):
         """Converts unsigned 32-bit integer to bytearray representation according to encoder endianness"""
+        pass
+
+    def int64(self, n):
+        """Converts signed 64-bit integer to bytearray representation according to encoder endianness"""
         pass
 
     def uint64(self, n):
