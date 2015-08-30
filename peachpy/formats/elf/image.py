@@ -4,48 +4,43 @@
 
 class Image:
     def __init__(self, abi, source=None):
-        from peachpy.formats.elf.section import NullSection, StringSection, SymbolSection, SectionIndex
+        from peachpy.formats.elf.section import null_section, StringSection, SymbolSection, SectionIndex
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
         self.abi = abi
-        self.sections = []
-        null = NullSection(abi)
-        self.bind_section(null)
-        shstrtab = StringSection(abi)
-        self.bind_section(shstrtab, ".shstrtab")
-        strtab = StringSection(abi)
-        self.bind_section(strtab, ".strtab")
-        symtab = SymbolSection(abi)
-        symtab.header.link_index = strtab.index
-        symtab.header.info = 0
-        self.bind_section(symtab, ".symtab")
+        self.shstrtab = StringSection(".shstrtab")
+        self.strtab = StringSection(".strtab")
+        self.symtab = SymbolSection(string_table=self.strtab)
+        self.sections = [null_section, self.shstrtab, self.strtab, self.symtab]
+        self._section_names = set([self.shstrtab.name, self.strtab.name, self.symtab.name])
         if source:
-            source_symbol = Symbol(abi)
+            source_symbol = Symbol()
             source_symbol.value = 0
-            source_symbol.binding = SymbolBinding.Local
-            source_symbol.type = SymbolType.File
-            source_symbol.name_index = strtab.add(source)
-            source_symbol.content_size = 0
-            source_symbol.section_index = SectionIndex.Absolute
-            symtab.add(source_symbol)
+            source_symbol.binding = SymbolBinding.local
+            source_symbol.type = SymbolType.file
+            source_symbol.name = source
+            source_symbol.size = 0
+            source_symbol.section = SectionIndex.absolute
+            self.symtab.add(source_symbol)
 
-    @property
-    def strtab(self):
-        return self.sections[2]
-
-    @property
-    def symtab(self):
-        return self.sections[3]
-
-    def bind_section(self, section, section_name=None):
-        section.index = len(self.sections)
+    def add_section(self, section):
+        from peachpy.formats.elf.section import Section
+        if not isinstance(section, Section):
+            raise TypeError("%s is not a Section object" % str(section))
+        if section.name is not None and section.name in self._section_names:
+            raise ValueError("Section %s is already present in the image" % section.name)
         self.sections.append(section)
-        if section_name is not None:
-            section.header.name_index = self.sections[1].add(section_name)
-        return section.index
+        self._section_names.add(section.name)
+
+    def find_section(self, section_name):
+        for section in self.sections:
+            if section.name == section_name:
+                return section
 
     @property
     def as_bytearray(self):
+        import six
         from peachpy.formats.elf.file import FileHeader
+        from peachpy.formats.elf.section import Section, StringSection, SymbolSection
 
         file_header = FileHeader(self.abi)
         file_header.section_header_table_offset = file_header.size
@@ -53,27 +48,43 @@ class Image:
         file_header.section_name_string_table_index = 1
         data = file_header.as_bytearray
 
-        # Update section offsets
-        data_offset = file_header.size + self.sections[0].header.size * len(self.sections)
+        # Collect strings from sections
         for section in self.sections:
-            if section.header.address_alignment != 0:
-                if data_offset % section.header.address_alignment != 0:
-                    padding_length = section.header.address_alignment - data_offset % section.header.address_alignment
-                    data_offset += padding_length
-            section.header.offset = data_offset
-            data_offset += section.header.content_size
+            self.shstrtab.add(section.name)
+            if isinstance(section, StringSection):
+                pass
+            elif isinstance(section, SymbolSection):
+                for symbol in six.iterkeys(section.symbol_index_map):
+                    self.strtab.add(symbol.name)
 
-        # Write section headers
+        # Update section offsets
+        data_offset = file_header.size + Section.get_header_size(self.abi) * len(self.sections)
+        section_offsets = []
         for section in self.sections:
-            data += section.header.as_bytearray
+            if section.alignment != 0:
+                if data_offset % section.alignment != 0:
+                    padding_length = section.alignment - data_offset % section.alignment
+                    data_offset += padding_length
+            section_offsets.append(data_offset)
+            data_offset += section.get_content_size(self.abi)
+
+        from peachpy.encoder import Encoder
+        encoder = Encoder(self.abi.endianness, self.abi.elf_bitness)
+
+        section_index_map = {section: index for index, section in enumerate(self.sections)}
+        # Write section headers
+        for section, offset in zip(self.sections, section_offsets):
+            data += section.encode_header(encoder, self.shstrtab._string_index_map, section_index_map, offset)
 
         # Write section content
         for section in self.sections:
-            if section.header.address_alignment != 0:
-                if len(data) % section.header.address_alignment != 0:
-                    padding_length = section.header.address_alignment - len(data) % section.header.address_alignment
+            if section.alignment != 0:
+                if len(data) % section.alignment != 0:
+                    padding_length = section.header.alignment - len(data) % section.alignment
                     padding_data = bytearray([0] * padding_length)
                     data += padding_data
-            data += section.content
+            data += section.encode_content(encoder,
+                                           self.strtab._string_index_map, section_index_map,
+                                           self.symtab.symbol_index_map)
 
         return data

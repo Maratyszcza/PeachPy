@@ -128,7 +128,7 @@ class FileHeader:
         self.section_header_entries_count = 0
         # Index of the section header for a section which contains section name string table.
         # Usually this section is called ".shstrtab"
-        self.section_name_string_table_index = peachpy.formats.elf.section.SectionIndex.Undefined
+        self.section_name_string_table_index = peachpy.formats.elf.section.SectionIndex.undefined
 
     @property
     def as_bytearray(self):
@@ -139,9 +139,9 @@ class FileHeader:
             encoder.uint16(self.file_type) + \
             encoder.uint16(self.abi.elf_machine_type) + \
             encoder.uint32(self.file_version) + \
-            encoder.address(self.entry_address or 0) + \
-            encoder.offset(self.program_header_table_offset or 0) + \
-            encoder.offset(self.section_header_table_offset or 0) + \
+            encoder.unsigned_offset(self.entry_address or 0) + \
+            encoder.unsigned_offset(self.program_header_table_offset or 0) + \
+            encoder.unsigned_offset(self.section_header_table_offset or 0) + \
             encoder.uint32(self.flags) + \
             encoder.uint16(self.file_header_size) + \
             encoder.uint16(self.program_header_entry_size) + \

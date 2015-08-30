@@ -25,11 +25,11 @@ class Encoder:
         if bitness is not None:
             assert bitness in {32, 64}, "Only 32-bit and 64-bit encoders are supported"
             if bitness == 32:
-                self.address = self.uint32
-                self.offset = self.uint32
+                self.signed_offset = self.int32
+                self.unsigned_offset = self.uint32
             else:
-                self.address = self.uint64
-                self.offset = self.uint64
+                self.signed_offset = self.int64
+                self.unsigned_offset = self.uint64
 
     @staticmethod
     def int8(n):
@@ -160,10 +160,10 @@ class Encoder:
         else:
             return byte_string + bytearray(size - len(byte_string))
 
-    def address(self, n):
-        """Converts integer address to bytearray representation according to encoder bitness and endianness"""
-        raise ValueError("Can not encode address: encoder bitness not specified")
+    def signed_offset(self, n):
+        """Converts signed integer offset to bytearray representation according to encoder bitness and endianness"""
+        raise ValueError("Can not encode signed offset: encoder bitness not specified")
 
-    def offset(self, n):
-        """Converts integer offset to bytearray representation according to encoder bitness and endianness"""
-        raise ValueError("Can not encode offset: encoder bitness not specified")
+    def unsigned_offset(self, n):
+        """Converts unsigned integer offset to bytearray representation according to encoder bitness and endianness"""
+        raise ValueError("Can not encode unsigned offset: encoder bitness not specified")
