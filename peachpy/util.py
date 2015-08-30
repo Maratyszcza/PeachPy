@@ -24,6 +24,14 @@ def is_int64(n):
     return isinstance(n, six.integer_types) and -9223372036854775808 <= n <= 18446744073709551615
 
 
+def is_sint64(n):
+    return isinstance(n, six.integer_types) and -9223372036854775808 <= n <= 9223372036854775807
+
+
+def is_uint64(n):
+    return isinstance(n, six.integer_types) and 0 <= n <= 18446744073709551615
+
+
 def is_int32(n):
     return isinstance(n, six.integer_types) and -2147483648 <= n <= 4294967295
 
