@@ -20,9 +20,9 @@ arm_gnueabi = ABI("GNU Soft-Float ARM EABI", endianness=Endianness.Little,
                                       d0, d1, d2, d3, d4, d5, d6, d7,
                                       d16, d17, d18, d19, d20, d21, d22, d23,
                                       d24, d25, d26, d27, d28, d29, d30, d31],
-                  elf_class=ElfClass.Class32,
-                  elf_data_encoding=DataEncoding.LittleEndian,
-                  elf_machine_type=MachineType.ARM)
+                  elf_class=ElfClass.class32,
+                  elf_data_encoding=DataEncoding.little_endian,
+                  elf_machine_type=MachineType.arm)
 
 arm_gnueabihf = ABI("GNU Hard-Float ARM EABI", endianness=Endianness.Little,
                     bool_size=1, wchar_size=2, short_size=2, int_size=4, long_size=4, longlong_size=8,
@@ -35,6 +35,6 @@ arm_gnueabihf = ABI("GNU Hard-Float ARM EABI", endianness=Endianness.Little,
                                         d0, d1, d2, d3, d4, d5, d6, d7,
                                         d16, d17, d18, d19, d20, d21, d22, d23,
                                         d24, d25, d26, d27, d28, d29, d30, d31],
-                    elf_class=ElfClass.Class32,
-                    elf_data_encoding=DataEncoding.LittleEndian,
-                    elf_machine_type=MachineType.ARM)
+                    elf_class=ElfClass.class32,
+                    elf_data_encoding=DataEncoding.little_endian,
+                    elf_machine_type=MachineType.arm)

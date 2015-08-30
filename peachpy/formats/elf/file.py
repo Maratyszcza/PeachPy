@@ -1,80 +1,82 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+from enum import IntEnum
 
-class FileType:
+
+class FileType(IntEnum):
     # No file type
-    Null = 0
+    null = 0
     # Relocatable file
-    Object = 1
+    object = 1
     # Executable file
-    Executable = 2
+    executable = 2
     # Shared object file
-    DynamicSharedObject = 3
+    dynamic_shared_object = 3
     # Core dump file
-    CoreDump = 4
+    core_dump = 4
 
 
-class MachineType:
+class MachineType(IntEnum):
     # Not specified
-    Unspecified = 0
+    unspecified = 0
     # SPARC
-    SPARC = 2
+    sparc = 2
     # IA32 (x86)
-    X86 = 3
+    x86 = 3
     # MIPS
-    MIPS = 8
+    mips = 8
     # 32-bit subset of SPARC V9
-    SPARC32Plus = 18
+    sparc32plus = 18
     # IBM POWER and PowerPC
-    PPC = 20
+    ppc = 20
     # IBM PowerPC 64
-    PPC64 = 21
+    ppc64 = 21
     # ARM
-    ARM = 40
+    arm = 40
     # SPARC V9 (64-bit)
-    SPARC64 = 43
+    sparc64 = 43
     # IA64 (Itanium)
-    IA64 = 50
+    ia64 = 50
     # x86-64 (AMD64, Intel64, x64)
-    X86_64 = 62
+    x86_64 = 62
     # Intel Knights Ferry
-    L1OM = 180
+    l1om = 180
     # Intel Knights Corner
-    K1OM = 181
+    k1om = 181
     # ARMv8 AArch64
-    ARM64 = 183
+    arm64 = 183
 
 
-class FormatVersion:
+class FormatVersion(IntEnum):
     # Invalid version
-    Invalid = 0
+    invalid = 0
     # Current version
-    Current = 1
+    current = 1
 
 
-class ElfClass:
+class ElfClass(IntEnum):
     # Invalid class
-    Invalid = 0
+    invalid = 0
     # 32-bit ELF
-    Class32 = 1
+    class32 = 1
     # 64-bit ELF
-    Class64 = 2
+    class64 = 2
 
 
-class DataEncoding:
+class DataEncoding(IntEnum):
     # Invalid data encoding
-    Invalid = 0
+    invalid = 0
     # Least significant byte first (Little-Endian)
-    LittleEndian = 1
+    little_endian = 1
     # Most significant byte first (Big-Endian)
-    BigEndian = 2
+    big_endian = 2
 
 
 class FileIdentification:
     def __init__(self, abi):
         self.abi = abi
-        self.file_version = FormatVersion.Current
+        self.file_version = FormatVersion.current
 
     @property
     def as_bytearray(self):
@@ -100,7 +102,7 @@ class FileHeader:
         self.abi = abi
 
         self.identification = FileIdentification(self.abi)
-        if self.abi.elf_class == ElfClass.Class32:
+        if self.abi.elf_class == ElfClass.class32:
             # Size of ELF32 file header, in bytes
             self.file_header_size = 52
             # Size of program header, in bytes. All program headers have the same size.
@@ -116,8 +118,8 @@ class FileHeader:
             self.section_header_entry_size = 64
 
         self.size = self.file_header_size
-        self.file_type = FileType.Object
-        self.file_version = FormatVersion.Current
+        self.file_type = FileType.object
+        self.file_version = FormatVersion.current
         self.entry_address = None
         self.program_header_table_offset = None
         self.section_header_table_offset = None

@@ -33,9 +33,9 @@ system_v_x86_64_abi = ABI("SystemV x86-64 ABI", endianness=Endianness.Little,
                           volatile_registers=[rax, r10, r11,
                                               mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                               xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15],
-                          elf_class=peachpy.formats.elf.file.ElfClass.Class64,
-                          elf_data_encoding=peachpy.formats.elf.file.DataEncoding.LittleEndian,
-                          elf_machine_type=peachpy.formats.elf.file.MachineType.X86_64)
+                          elf_class=peachpy.formats.elf.file.ElfClass.class64,
+                          elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
+                          elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64)
 
 linux_x32_abi = ABI("Linux X32 ABI", endianness=Endianness.Little,
                     bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=4, longlong_size=8,
@@ -47,9 +47,9 @@ linux_x32_abi = ABI("Linux X32 ABI", endianness=Endianness.Little,
                     volatile_registers=[rax, r10, r11,
                                         mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                         xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15],
-                    elf_class=peachpy.formats.elf.file.ElfClass.Class32,
-                    elf_data_encoding=peachpy.formats.elf.file.DataEncoding.LittleEndian,
-                    elf_machine_type=peachpy.formats.elf.file.MachineType.X86_64)
+                    elf_class=peachpy.formats.elf.file.ElfClass.class32,
+                    elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
+                    elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64)
 
 native_client_x86_64_abi = ABI("Native Client x86-64 ABI", endianness=Endianness.Little,
                                bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=4, longlong_size=8,
@@ -61,9 +61,9 @@ native_client_x86_64_abi = ABI("Native Client x86-64 ABI", endianness=Endianness
                                volatile_registers=[rax, r10, r11,
                                                    mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                                    xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15],
-                               elf_class=peachpy.formats.elf.file.ElfClass.Class64,
-                               elf_data_encoding=peachpy.formats.elf.file.DataEncoding.LittleEndian,
-                               elf_machine_type=peachpy.formats.elf.file.MachineType.X86_64)
+                               elf_class=peachpy.formats.elf.file.ElfClass.class64,
+                               elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
+                               elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64)
 
 golang_amd64_abi = ABI("Go x86-64 ABI", endianness=Endianness.Little,
                        bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,

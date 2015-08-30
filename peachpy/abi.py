@@ -66,4 +66,4 @@ class ABI(object):
     def elf_bitness(self):
         if self.elf_class is not None:
             from peachpy.formats.elf.file import ElfClass
-            return {ElfClass.Class32: 32, ElfClass.Class64: 64}[self.elf_class]
+            return {ElfClass.class32: 32, ElfClass.class64: 64}[self.elf_class]
