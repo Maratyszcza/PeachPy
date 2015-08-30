@@ -108,7 +108,7 @@ class ELFWriter:
         encoded_function = function.encode()
 
         function_offset = len(self.text_section.content)
-        self.text_section.append(encoded_function.code_content)
+        self.text_section.content += encoded_function.code_content
 
         function_rodata_offset = 0
         if encoded_function.const_content:
@@ -202,7 +202,7 @@ class MachOWriter:
             "Function must be bindinded to an ABI before its assembly can be used"
 
         encoded_function = function.encode()
-        function_code = encoded_function.as_bytearray
+        function_code = encoded_function.code_content
 
         function_offset = len(self.image.text_section.content)
 
@@ -259,7 +259,7 @@ class MSCOFFWriter:
             "Function must be bindinded to an ABI before its assembly can be used"
 
         encoded_function = function.encode()
-        function_code = encoded_function.as_bytearray
+        function_code = encoded_function.code_content
 
         function_offset = len(self.text_section.content)
         self.text_section.write(function_code)
