@@ -6,7 +6,7 @@ from enum import IntEnum
 
 class MachineType(IntEnum):
     # Machine-independent
-    Unknown = 0
+    unknown = 0
     # IA32 (x86)
     x86 = 0x14C
     # x86-64 (AMD64, Intel64, x64)
