@@ -1,47 +1,49 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-
-class SectionIndex:
-    NoSection = 0
+from enum import IntEnum
 
 
-class SectionType:
-    Regular = 0x00
-    ZeroFill = 0x01
-    GBZeroFill = 0x0C
-    CStringLiterals = 0x02
-    FourByteLiterals = 0x03
-    EightByteLiterals = 0x04
-    SixteenByteLiterals = 0x0E
-    LiteralPointers = 0x05
-    NonLazySymbolPointers = 0x06
-    LazySymbolPointers = 0x07
-    SymbolStubs = 0x08
-    ModuleInitFunctionPointers = 0x09
-    ModuleTerminateFunctionPointers = 0x0A
-    CoalescedSymbols = 0x0B
-    Interposing = 0x0D
-    DTraceObjectFormat = 0x0F
-    LazyDylibSymbolPointers = 0x10
-    ThreadLocalRegular = 0x11
-    ThreadLocalZeroFill = 0x12
-    ThreadLocalVariableDescriptors = 0x13
-    ThreadLocalVariablePointers = 0x14
-    ThreadLocalFunctionPointers = 0x15
+class SectionIndex(IntEnum):
+    no_section = 0
 
 
-class SectionAttributes:
-    OnlyInstructions = 0x80000000
-    CoalescedSymbols = 0x40000000
-    StripStaticSymbols = 0x20000000
-    NoDeadStripping = 0x10000000
-    LiveSupport = 0x08000000
-    SelfModifyingCode = 0x04000000
-    Debug = 0x02000000
-    SomeInstructions = 0x00000400
-    ExternalRelocations = 0x00000200
-    LocalRelocations = 0x00000100
+class SectionType(IntEnum):
+    regular = 0x00
+    zero_fill = 0x01
+    gb_zero_fill = 0x0C
+    cstring_literals = 0x02
+    four_byte_literals = 0x03
+    eight_byte_literals = 0x04
+    sixteen_byte_literals = 0x0E
+    literal_pointers = 0x05
+    non_lazy_symbol_pointers = 0x06
+    lazy_symbol_pointers = 0x07
+    symbol_stubs = 0x08
+    module_init_function_pointers = 0x09
+    module_terminate_function_pointers = 0x0A
+    coalesced_symbols = 0x0B
+    interposing = 0x0D
+    dtrace_object_format = 0x0F
+    lazy_dylib_symbol_pointers = 0x10
+    thread_local_regular = 0x11
+    thread_local_zero_fill = 0x12
+    thread_local_variable_descriptors = 0x13
+    thread_local_variable_pointers = 0x14
+    thread_local_function_pointers = 0x15
+
+
+class SectionAttributes(IntEnum):
+    only_instructions = 0x80000000
+    coalesced_symbols = 0x40000000
+    strip_static_symbols = 0x20000000
+    no_dead_stripping = 0x10000000
+    live_support = 0x08000000
+    self_modifying_code = 0x04000000
+    debug = 0x02000000
+    some_instructions = 0x00000400
+    external_relocations = 0x00000200
+    local_relocations = 0x00000100
 
 
 class SectionHeader:
@@ -104,7 +106,7 @@ class Section(object):
 class RegularSection(Section):
     def __init__(self, abi, name, segment_name):
         super(RegularSection, self).__init__(abi, name, segment_name)
-        self.header.type = SectionType.Regular
+        self.header.type = SectionType.regular
 
     def append(self, bytes):
         self.header.content_size += len(bytes)
@@ -123,7 +125,7 @@ class RegularSection(Section):
 class TextSection(RegularSection):
     def __init__(self, abi):
         super(TextSection, self).__init__(abi, "__TEXT", "__text")
-        self.header.attributes = SectionAttributes.OnlyInstructions | SectionAttributes.SomeInstructions
+        self.header.attributes = SectionAttributes.only_instructions | SectionAttributes.some_instructions
 
 
 class ConstSection(RegularSection):

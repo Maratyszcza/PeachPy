@@ -1,88 +1,90 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+from enum import IntEnum
 
-class FileType:
+
+class FileType(IntEnum):
     # No file type
-    Null = 0
+    null = 0
     # Relocatable file
-    Object = 1
+    object = 1
     # Executable file
-    Executable = 2
+    executable = 2
     # Fixed VM shared library (?)
-    FixedVMLibrary = 3
+    fixed_vm_library = 3
     # Core dump file
-    CoreDump = 4
+    core_dump = 4
     # Preloaded executable file
-    PreloadedExecutable = 5
+    preloaded_executable = 5
     # Dynamically bound shared library
-    DynamicLibrary = 6
+    dynamic_library = 6
     # Dynamic linker (dyld)
-    DynamicLinker = 7
+    dynamic_linker = 7
     # Dynamically bound bundle file
-    DynamicBundle = 8
+    dynamic_bundle = 8
     # Shared library stub for build-time linking (no section content)
-    DynamicLibraryStub = 9
+    dynamic_library_stub = 9
     # Companion file with debug sections only
-    DebugSymbols = 10
+    debug_symbols = 10
     # Kernel-mode driver
-    KExtBundle = 11
+    kext_bundle = 11
 
 
-class MemoryProtection:
-    Read = 0x01
-    Write = 0x02
-    Execute = 0x04
-    Default = 0x07
+class MemoryProtection(IntEnum):
+    read = 0x01
+    write = 0x02
+    execute = 0x04
+    default = 0x07
 
 
-class CpuType:
-    X86 = 0x00000007
-    X86_64 = 0x01000007
-    ARM = 0x0000000C
-    ARM64 = 0x0100000C
-    PPC = 0x00000012
-    PPC64 = 0x01000012
+class CpuType(IntEnum):
+    x86 = 0x00000007
+    x86_64 = 0x01000007
+    arm = 0x0000000C
+    arm64 = 0x0100000C
+    ppc = 0x00000012
+    ppc64 = 0x01000012
 
-    ABI64 = 0x01000000
+    abi64 = 0x01000000
 
 
-class PPCCpuSubType:
-    All = 0
+class PPCCpuSubType(IntEnum):
+    all = 0
     # PowerPC G3
-    PowerPC750 = 9
+    powerpc750 = 9
     # PowerPC G4
-    PowerPC7400 = 10
+    powerpc7400 = 10
     # PowerPC G4+
-    PowerPC7450 = 11
+    powerpc7450 = 11
     # PowerPC G5
-    PowerPC970 = 100
+    powerpc970 = 100
 
 
-class X86CpuSubType:
-    All = 3
+class X86CpuSubType(IntEnum):
+    all = 3
 
 
-class ARMCpuSubType:
-    All = 0
+class ARMCpuSubType(IntEnum):
+    all = 0
     # ARM 1176
-    V6 = 6
+    v6 = 6
     # ARM Cortex-A8
-    V7 = 9
+    v7 = 9
     # Cortex-A9 (ARMv7 + MP extension + NEON-HP, de-facto useless, removed from Clang)
-    V7F = 10
+    v7f = 10
     # Swift (ARMv7 + MP extension + VFPv4/NEONv2 + DIV)
-    V7S = 11
+    v7s = 11
     # Marvell Kirkwood (ARMv7 + XScale extension + WMMXv2 + Armada extension, no NEON)
-    V7K = 12
+    v7k = 12
     # Cyclone
-    V8 = 13
+    v8 = 13
 
 
-class ARM64CpuSubType:
-    All = 0
+class ARM64CpuSubType(IntEnum):
+    all = 0
     # Cyclone
-    V8 = 1
+    v8 = 1
 
 
 class MachHeader:
@@ -95,11 +97,11 @@ class MachHeader:
         if abi == peachpy.x86_64.abi.system_v_x86_64_abi:
             # 64-bit
             self.magic = 0xFEEDFACF
-            self.cpu_type = CpuType.X86_64
-            self.cpu_subtype = X86CpuSubType.All
+            self.cpu_type = CpuType.x86_64
+            self.cpu_subtype = X86CpuSubType.all
         else:
             raise ValueError("Unsupported ABI: %s" % str(abi))
-        self.file_type = FileType.Object
+        self.file_type = FileType.object
         self.command_count = 0
         self.command_size = 0
         self.flags = 0
@@ -184,8 +186,8 @@ class SegmentCommand(LoadCommand):
                    encoder.uint32(self.memory_size) + \
                    encoder.uint32(self.offset) + \
                    encoder.uint32(self.file_size) + \
-                   encoder.uint32(MemoryProtection.Default) + \
-                   encoder.uint32(MemoryProtection.Default) + \
+                   encoder.uint32(MemoryProtection.default) + \
+                   encoder.uint32(MemoryProtection.default) + \
                    encoder.uint32(self.section_count) + \
                    encoder.uint32(self.flags)
         else:
@@ -196,8 +198,8 @@ class SegmentCommand(LoadCommand):
                    encoder.uint64(self.memory_size) + \
                    encoder.uint64(self.offset) + \
                    encoder.uint64(self.file_size) + \
-                   encoder.uint32(MemoryProtection.Default) + \
-                   encoder.uint32(MemoryProtection.Default) + \
+                   encoder.uint32(MemoryProtection.default) + \
+                   encoder.uint32(MemoryProtection.default) + \
                    encoder.uint32(self.section_count) + \
                    encoder.uint32(self.flags)
 

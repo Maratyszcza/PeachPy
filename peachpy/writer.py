@@ -201,9 +201,9 @@ class MachOWriter:
         from peachpy.formats.macho.symbol import Symbol, SymbolDescription, SymbolType, SymbolVisibility
 
         function_symbol = Symbol(self.abi)
-        function_symbol.description = SymbolDescription.Defined
-        function_symbol.type = SymbolType.SectionRelative
-        function_symbol.visibility = SymbolVisibility.External
+        function_symbol.description = SymbolDescription.defined
+        function_symbol.type = SymbolType.section_relative
+        function_symbol.visibility = SymbolVisibility.external
         function_symbol.string_index = self.image.string_table.add("_" + function.name)
         function_symbol.section_index = self.image.text_section.index
         function_symbol.value = function_offset

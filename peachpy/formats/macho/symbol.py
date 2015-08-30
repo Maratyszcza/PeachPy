@@ -1,34 +1,36 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-
-class SymbolVisibility:
-    External = 0x01
-    PrivateExternal = 0x10
+from enum import IntEnum
 
 
-class SymbolType:
-    Undefined = 0x00
-    PreboundUndefined = 0x0C
-    Absolute = 0x02
-    SectionRelative = 0x0E
-    Indirect = 0x0A
+class SymbolVisibility(IntEnum):
+    external = 0x01
+    private_external = 0x10
 
 
-class SymbolDescription:
-    UndefinedLazy = 0x00
-    UndefinedNonLazy = 0x01
-    Defined = 0x02
-    PrivateDefined = 0x03
-    PrivateUndefinedLazy = 0x05
-    PrivateUndefinedNonLazy = 0x04
+class SymbolType(IntEnum):
+    undefined = 0x00
+    prebound_undefined = 0x0C
+    absolute = 0x02
+    section_relative = 0x0E
+    indirect = 0x0A
 
 
-class SymbolFlags:
-    ReferencedDynamically = 0x10
-    NoDeadStrip = 0x20
-    WeakReference = 0x40
-    WeakDefinition = 0x80
+class SymbolDescription(IntEnum):
+    undefined_lazy = 0x00
+    undefined_non_lazy = 0x01
+    defined = 0x02
+    private_defined = 0x03
+    private_undefined_lazy = 0x05
+    private_undefined_non_lazy = 0x04
+
+
+class SymbolFlags(IntEnum):
+    referenced_dynamically = 0x10
+    no_dead_strip = 0x20
+    weak_reference = 0x40
+    weak_definition = 0x80
 
 
 class Symbol:
