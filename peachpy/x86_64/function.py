@@ -1768,7 +1768,7 @@ class ExecutableFuntion:
             raise ValueError("Function ABI (%s) does not match process ABI (%s)" %
                              (str(function.abi), str(process_abi)))
 
-        self.code_segment = function.code_content
+        self.code_segment = function.code_section.content
 
         import peachpy.loader
         self.loader = peachpy.loader.Loader(len(self.code_segment))
