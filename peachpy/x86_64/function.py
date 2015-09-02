@@ -1600,6 +1600,7 @@ class EncodedFunction:
 
         self._instructions = deepcopy(function._instructions)
 
+        self._constant_symbol_map = dict()
         self._layout_literal_constants()
         self._encode()
 
@@ -1647,6 +1648,7 @@ class EncodedFunction:
                                               name=constant_operand.name,
                                               size=constant_operand.size)
                         self.const_symbols.append(const_symbol)
+                        self._constant_symbol_map[constant_operand] = const_symbol
         self.const_symbols = sorted(self.const_symbols, key=lambda sym: (sym.offset, -sym.size))
 
     def _encode(self):
@@ -1689,7 +1691,8 @@ class EncodedFunction:
                 for index in range(len(bytecode) - 4, len(bytecode)):
                     bytecode[index] = 0
                 offset = len(self.code_content) + len(bytecode) - 4
-                relocation = Relocation(offset, RelocationType.rip_disp32, symbol=constant_operand.name)
+                relocation = Relocation(offset, RelocationType.rip_disp32,
+                                        symbol=self._constant_symbol_map[constant_operand])
                 self.code_relocations.append(relocation)
 
             if bytecode:

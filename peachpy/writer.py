@@ -130,7 +130,7 @@ class ELFWriter:
             const_symbol.binding = SymbolBinding.local
             const_symbol.type = SymbolType.data_object
             self.image.symtab.add(const_symbol)
-            symbol_map[symbol.name] = const_symbol
+            symbol_map[symbol] = const_symbol
 
         if encoded_function.code_relocations:
             if self.text_rela_section is None:
