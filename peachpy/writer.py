@@ -177,7 +177,7 @@ class MachOWriter:
         active_writer = self.previous_writer
         self.previous_writer = None
         if exc_type is None:
-            self.output_file.write(self.image.as_bytearray)
+            self.output_file.write(self.image.encode())
             self.output_file.close()
             self.output_file = None
         else:
@@ -191,23 +191,37 @@ class MachOWriter:
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
             "Function must be bindinded to an ABI before its assembly can be used"
 
+        from peachpy.formats.macho.symbol import Symbol, SymbolType, SymbolDescription, SymbolVisibility, \
+            Relocation, RelocationType
+
         encoded_function = function.encode()
-        function_code = encoded_function.code_content
 
         function_offset = len(self.image.text_section.content)
+        self.image.text_section.content += encoded_function.code_content
 
-        self.image.text_section.append(function_code)
+        function_rodata_offset = self.image.const_section.content_size
+        self.image.const_section.content += encoded_function.const_content
 
-        from peachpy.formats.macho.symbol import Symbol, SymbolDescription, SymbolType, SymbolVisibility
+        # Map from symbol name to symbol index
+        symbol_map = dict()
+        for symbol in encoded_function.const_symbols:
+            macho_symbol = Symbol(symbol.name,
+                                  SymbolType.section_relative, self.image.const_section,
+                                  function_rodata_offset + symbol.offset)
+            macho_symbol.description = SymbolDescription.defined
+            self.image.symbol_table.add_symbol(macho_symbol)
+            symbol_map[symbol] = macho_symbol
 
-        function_symbol = Symbol(self.abi)
+        for relocation in encoded_function.code_relocations:
+            macho_relocation = Relocation(RelocationType.x86_64_signed, function_offset + relocation.offset, 4,
+                                          symbol_map[relocation.symbol], is_pc_relative=True)
+            self.image.text_section.relocations.append(macho_relocation)
+
+        function_symbol = Symbol("_" + function.name, SymbolType.section_relative, self.image.text_section,
+                                 value=function_offset)
         function_symbol.description = SymbolDescription.defined
-        function_symbol.type = SymbolType.section_relative
         function_symbol.visibility = SymbolVisibility.external
-        function_symbol.string_index = self.image.string_table.add("_" + function.name)
-        function_symbol.section_index = self.image.text_section.index
-        function_symbol.value = function_offset
-        self.image.symbols.append(function_symbol)
+        self.image.symbol_table.add_symbol(function_symbol)
 
 
 class MSCOFFWriter:

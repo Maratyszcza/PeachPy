@@ -31,13 +31,6 @@ class FileType(IntEnum):
     kext_bundle = 11
 
 
-class MemoryProtection(IntEnum):
-    read = 0x01
-    write = 0x02
-    execute = 0x04
-    default = 0x07
-
-
 class CpuType(IntEnum):
     x86 = 0x00000007
     x86_64 = 0x01000007
@@ -102,105 +95,26 @@ class MachHeader:
         else:
             raise ValueError("Unsupported ABI: %s" % str(abi))
         self.file_type = FileType.object
-        self.command_count = 0
-        self.command_size = 0
+        self.commands_count = 0
+        self.commands_size = 0
         self.flags = 0
 
-    @property
-    def as_bytearray(self):
-        import peachpy.encoder
+    @staticmethod
+    def get_size(abi):
+        from peachpy.abi import ABI
+        assert isinstance(abi, ABI)
+        assert abi.pointer_size in [4, 8]
 
-        encoder = peachpy.encoder.Encoder(self.abi.endianness)
+        return {4: 24, 8: 32}[abi.pointer_size]
 
+    def encode(self, encoder):
         bytes = encoder.uint32(self.magic) + \
-                encoder.uint32(self.cpu_type) + \
-                encoder.uint32(self.cpu_subtype) + \
-                encoder.uint32(self.file_type) + \
-                encoder.uint32(self.command_count) + \
-                encoder.uint32(self.command_size) + \
-                encoder.uint32(self.flags)
+            encoder.uint32(self.cpu_type) + \
+            encoder.uint32(self.cpu_subtype) + \
+            encoder.uint32(self.file_type) + \
+            encoder.uint32(self.commands_count) + \
+            encoder.uint32(self.commands_size) + \
+            encoder.uint32(self.flags)
         if self.abi.pointer_size == 8:
             bytes += bytearray(4)
         return bytes
-
-
-class LoadCommand(object):
-    def __init__(self, abi, id, size):
-        super(LoadCommand, self).__init__()
-        self.abi = abi
-        self.id = id
-        self.size = size
-
-    @property
-    def as_bytearray(self):
-        import peachpy.encoder
-        encoder = peachpy.encoder.Encoder(self.abi.endianness)
-
-        return encoder.uint32(self.id) + encoder.uint32(self.size)
-
-
-class SymbolTableCommand(LoadCommand):
-    def __init__(self, abi):
-        super(SymbolTableCommand, self).__init__(abi, id=0x2, size=24)
-        self.symbol_offset = None
-        self.symbol_count = 0
-        self.string_offset = None
-        self.string_size = 0
-
-    @property
-    def as_bytearray(self):
-        import peachpy.encoder
-        encoder = peachpy.encoder.Encoder(self.abi.endianness)
-
-        return encoder.uint32(self.id) + \
-            encoder.uint32(self.size) + \
-            encoder.uint32(self.symbol_offset or 0) + \
-            encoder.uint32(self.symbol_count) + \
-            encoder.uint32(self.string_offset or 0) + \
-            encoder.uint32(self.string_size)
-
-
-class SegmentCommand(LoadCommand):
-    def __init__(self, abi):
-        super(SegmentCommand, self).__init__(abi,
-                                             id={4: 0x1, 8: 0x19}[abi.pointer_size],
-                                             size={4: 56, 8: 72}[abi.pointer_size])
-        self.name = None
-        self.address = None
-        self.memory_size = 0
-        self.offset = None
-        self.file_size = 0
-        self.section_count = 0
-        self.flags = 0
-
-    @property
-    def as_bytearray(self):
-        import peachpy.encoder
-        encoder = peachpy.encoder.Encoder(self.abi.endianness)
-
-        if self.abi.pointer_size == 4:
-            return encoder.uint32(self.id) + \
-                   encoder.uint32(self.size) + \
-                   encoder.fixed_string(self.name, 16) + \
-                   encoder.uint32(self.address or 0) + \
-                   encoder.uint32(self.memory_size) + \
-                   encoder.uint32(self.offset) + \
-                   encoder.uint32(self.file_size) + \
-                   encoder.uint32(MemoryProtection.default) + \
-                   encoder.uint32(MemoryProtection.default) + \
-                   encoder.uint32(self.section_count) + \
-                   encoder.uint32(self.flags)
-        else:
-            return encoder.uint32(self.id) + \
-                   encoder.uint32(self.size) + \
-                   encoder.fixed_string(self.name, 16) + \
-                   encoder.uint64(self.address or 0) + \
-                   encoder.uint64(self.memory_size) + \
-                   encoder.uint64(self.offset) + \
-                   encoder.uint64(self.file_size) + \
-                   encoder.uint32(MemoryProtection.default) + \
-                   encoder.uint32(MemoryProtection.default) + \
-                   encoder.uint32(self.section_count) + \
-                   encoder.uint32(self.flags)
-
-
