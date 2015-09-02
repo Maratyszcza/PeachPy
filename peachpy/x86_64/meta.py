@@ -12,11 +12,17 @@ class SectionType(Enum):
 class Section(object):
     max_alignment = 4096
 
-    def __init__(self, type):
+    def __init__(self, type, alignment_byte=None):
+        from peachpy.util import is_uint8
         if not isinstance(type, SectionType):
             raise TypeError("Type %s is not in SectionType enumeration" % str(type))
+        if alignment_byte is None:
+            alignment_byte = 0
+        elif not is_uint8(alignment_byte):
+            raise TypeError("Alignment byte %s is not an 8-bit unsigned integer" % str(alignment_byte))
 
         self.type = type
+        self.alignment_byte = alignment_byte
         self.content = bytearray()
         self.symbols = list()
         self.relocations = list()
@@ -34,12 +40,13 @@ class Section(object):
         from peachpy.util import is_int
         if not is_int(alignment):
             raise TypeError("Alignment %s is not an integer" % str(alignment))
-        if alignment > 0:
+        if alignment < 0:
             raise ValueError("Alignment %d is not a positive integer" % alignment)
         if alignment & (alignment - 1) != 0:
             raise ValueError("Alignment %d is not a power of 2" % alignment)
         if alignment > Section.max_alignment:
             raise ValueError("Alignment %d exceeds maximum alignment (%d)" % (alignment, Section.max_alignment))
+        self._alignment = alignment
 
     def add_symbol(self, symbol):
         if not isinstance(symbol, Symbol):

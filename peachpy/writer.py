@@ -101,22 +101,33 @@ class ELFWriter:
 
     def add_function(self, function):
         import peachpy.x86_64.function
+        from peachpy.util import roundup
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
             "Function must be bindinded to an ABI before its assembly can be used"
 
         encoded_function = function.encode()
 
         code_offset = len(self.text_section.content)
+        code_padding = bytearray([encoded_function.code_section.alignment_byte] *
+                                 (roundup(code_offset, encoded_function.code_section.alignment) - code_offset))
+        self.text_section.content += code_padding
+        code_offset += len(code_padding)
         self.text_section.content += encoded_function.code_section.content
+        self.text_section.alignment = max(self.text_section.alignment, encoded_function.code_section.alignment)
 
-        const_data_offset = 0
+        const_offset = 0
         if encoded_function.const_section.content:
             if self.rodata_section is None:
                 from peachpy.formats.elf.section import ReadOnlyDataSection
                 self.rodata_section = ReadOnlyDataSection()
                 self.image.add_section(self.rodata_section)
-            const_data_offset = self.rodata_section.get_content_size(self.abi)
+            const_offset = self.rodata_section.get_content_size(self.abi)
+            const_padding = bytearray([encoded_function.const_section.alignment_byte] *
+                                      (roundup(const_offset, encoded_function.const_section.alignment) - const_offset))
+            self.rodata_section.content += const_padding
+            const_offset += len(const_padding)
             self.rodata_section.content += encoded_function.const_section.content
+            self.rodata_section.alignment = max(self.rodata_section.alignment, encoded_function.const_section.alignment)
 
         # Map from symbol name to symbol index
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
@@ -124,7 +135,7 @@ class ELFWriter:
         for symbol in encoded_function.const_section.symbols:
             const_symbol = Symbol()
             const_symbol.name = symbol.name
-            const_symbol.value = const_data_offset + symbol.offset
+            const_symbol.value = const_offset + symbol.offset
             const_symbol.size = symbol.size
             const_symbol.section = self.rodata_section
             const_symbol.binding = SymbolBinding.local
@@ -193,21 +204,34 @@ class MachOWriter:
 
         from peachpy.formats.macho.symbol import Symbol, SymbolType, SymbolDescription, SymbolVisibility, \
             Relocation, RelocationType
+        from peachpy.util import roundup
 
         encoded_function = function.encode()
 
         code_offset = len(self.image.text_section.content)
+        code_padding = bytearray([encoded_function.code_section.alignment_byte] *
+                                 (roundup(code_offset, encoded_function.code_section.alignment) - code_offset))
+        self.image.text_section.content += code_padding
+        code_offset += len(code_padding)
         self.image.text_section.content += encoded_function.code_section.content
+        self.image.text_section.alignment = \
+            max(self.image.text_section.alignment, encoded_function.code_section.alignment)
 
-        const_data_offset = self.image.const_section.content_size
+        const_offset = self.image.const_section.content_size
+        const_padding = bytearray([encoded_function.const_section.alignment_byte] *
+                                  (roundup(const_offset, encoded_function.const_section.alignment) - const_offset))
+        self.image.text_section.content += const_padding
+        const_offset += len(const_padding)
         self.image.const_section.content += encoded_function.const_section.content
+        self.image.const_section.alignment = \
+            max(self.image.const_section.alignment, encoded_function.const_section.alignment)
 
         # Map from PeachPy symbol to Mach-O symbol
         symbol_map = dict()
         for symbol in encoded_function.const_section.symbols:
             macho_symbol = Symbol(symbol.name,
                                   SymbolType.section_relative, self.image.const_section,
-                                  const_data_offset + symbol.offset)
+                                  const_offset + symbol.offset)
             macho_symbol.description = SymbolDescription.defined
             self.image.symbol_table.add_symbol(macho_symbol)
             symbol_map[symbol] = macho_symbol

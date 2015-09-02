@@ -1619,6 +1619,7 @@ class EncodedFunction:
         if constants:
             max_constant_size = max(constant.size for constant in constants)
             max_constant_alignment = max(constant.alignment for constant in constants)
+        self.const_section.alignment = max_constant_alignment
 
         constant_symbols = list()
         constant_symbols_set = set()

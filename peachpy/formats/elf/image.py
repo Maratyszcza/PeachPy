@@ -41,6 +41,7 @@ class Image:
         import six
         from peachpy.formats.elf.file import FileHeader
         from peachpy.formats.elf.section import Section, StringSection, SymbolSection
+        from peachpy.util import roundup
 
         file_header = FileHeader(self.abi)
         file_header.section_header_table_offset = file_header.size
@@ -57,14 +58,12 @@ class Image:
                 for symbol in six.iterkeys(section.symbol_index_map):
                     self.strtab.add(symbol.name)
 
-        # Update section offsets
+        # Layout sections
         data_offset = file_header.size + Section.get_header_size(self.abi) * len(self.sections)
         section_offsets = []
         for section in self.sections:
             if section.alignment != 0:
-                if data_offset % section.alignment != 0:
-                    padding_length = section.alignment - data_offset % section.alignment
-                    data_offset += padding_length
+                data_offset = roundup(data_offset, section.alignment)
             section_offsets.append(data_offset)
             data_offset += section.get_content_size(self.abi)
 
@@ -78,11 +77,8 @@ class Image:
 
         # Write section content
         for section in self.sections:
-            if section.alignment != 0:
-                if len(data) % section.alignment != 0:
-                    padding_length = section.header.alignment - len(data) % section.alignment
-                    padding_data = bytearray([0] * padding_length)
-                    data += padding_data
+            padding = bytearray(roundup(len(data), section.alignment) - len(data))
+            data += padding
             data += section.encode_content(encoder,
                                            self.strtab._string_index_map, section_index_map,
                                            self.symtab.symbol_index_map)
