@@ -1593,10 +1593,9 @@ class EncodedFunction:
         self.target = function.target
         self.abi = function.abi
 
-        self.code_content = bytearray()
-        self.code_relocations = list()
-        self.const_content = bytearray()
-        self.const_symbols = list()
+        from peachpy.x86_64.meta import Section, SectionType
+        self.code_section = Section(SectionType.code)
+        self.const_section = Section(SectionType.const_data)
 
         self._instructions = deepcopy(function._instructions)
 
@@ -1607,7 +1606,6 @@ class EncodedFunction:
     def _layout_literal_constants(self):
         from peachpy.encoder import Encoder
         from peachpy.x86_64.meta import Symbol, SymbolType
-        import operator
         encoder = Encoder(self.abi.endianness)
 
         constants = list()
@@ -1622,6 +1620,7 @@ class EncodedFunction:
             max_constant_size = max(constant.size for constant in constants)
             max_constant_alignment = max(constant.alignment for constant in constants)
 
+        constant_symbols = list()
         constant_symbols_set = set()
         if max_constant_size != 0:
             # Map from constant value (as bytes) to address in the const data section
@@ -1639,17 +1638,18 @@ class EncodedFunction:
                             "Handling of functions with constant literals of different size is not implemented"
                         assert constant_operand.alignment == max_constant_alignment, \
                             "Handling of functions with constant literals of different alignment is not implemented"
-                        constant_operand.address = len(self.const_content)
+                        constant_operand.address = len(self.const_section)
                         constants_address_map[constant_value] = constant_operand.address
-                        self.const_content += constant_value
+                        self.const_section.content += constant_value
                     if constant_operand.name not in constant_symbols_set:
                         constant_symbols_set.add(constant_operand.name)
                         const_symbol = Symbol(constant_operand.address, SymbolType.literal_constant,
                                               name=constant_operand.name,
                                               size=constant_operand.size)
-                        self.const_symbols.append(const_symbol)
+                        constant_symbols.append(const_symbol)
                         self._constant_symbol_map[constant_operand] = const_symbol
-        self.const_symbols = sorted(self.const_symbols, key=lambda sym: (sym.offset, -sym.size))
+        for constant_symbol in sorted(constant_symbols, key=lambda sym: (sym.offset, -sym.size)):
+            self.const_section.add_symbol(constant_symbol)
 
     def _encode(self):
         from peachpy.x86_64.pseudo import LABEL
@@ -1690,13 +1690,13 @@ class EncodedFunction:
                     "The instruction encoding can't be smaller than 4 bytes as disp32 is encoded in 4 bytes"
                 for index in range(len(bytecode) - 4, len(bytecode)):
                     bytecode[index] = 0
-                offset = len(self.code_content) + len(bytecode) - 4
+                offset = len(self.code_section) + len(bytecode) - 4
                 relocation = Relocation(offset, RelocationType.rip_disp32,
                                         symbol=self._constant_symbol_map[constant_operand])
-                self.code_relocations.append(relocation)
+                self.code_section.add_relocation(relocation)
 
             if bytecode:
-                self.code_content += bytecode
+                self.code_section.content += bytecode
 
     def _encode_nops(self, length):
         assert 1 <= length <= 31

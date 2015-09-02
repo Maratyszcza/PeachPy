@@ -106,25 +106,25 @@ class ELFWriter:
 
         encoded_function = function.encode()
 
-        function_offset = len(self.text_section.content)
-        self.text_section.content += encoded_function.code_content
+        code_offset = len(self.text_section.content)
+        self.text_section.content += encoded_function.code_section.content
 
-        function_rodata_offset = 0
-        if encoded_function.const_content:
+        const_data_offset = 0
+        if encoded_function.const_section.content:
             if self.rodata_section is None:
                 from peachpy.formats.elf.section import ReadOnlyDataSection
                 self.rodata_section = ReadOnlyDataSection()
                 self.image.add_section(self.rodata_section)
-            function_rodata_offset = self.rodata_section.get_content_size(self.abi)
-            self.rodata_section.content += encoded_function.const_content
+            const_data_offset = self.rodata_section.get_content_size(self.abi)
+            self.rodata_section.content += encoded_function.const_section.content
 
         # Map from symbol name to symbol index
         from peachpy.formats.elf.symbol import Symbol, SymbolBinding, SymbolType
         symbol_map = dict()
-        for symbol in encoded_function.const_symbols:
+        for symbol in encoded_function.const_section.symbols:
             const_symbol = Symbol()
             const_symbol.name = symbol.name
-            const_symbol.value = function_rodata_offset + symbol.offset
+            const_symbol.value = const_data_offset + symbol.offset
             const_symbol.size = symbol.size
             const_symbol.section = self.rodata_section
             const_symbol.binding = SymbolBinding.local
@@ -132,14 +132,14 @@ class ELFWriter:
             self.image.symtab.add(const_symbol)
             symbol_map[symbol] = const_symbol
 
-        if encoded_function.code_relocations:
+        if encoded_function.code_section.relocations:
             if self.text_rela_section is None:
                 from peachpy.formats.elf.section import RelocationsWithAddendSection
                 self.text_rela_section = RelocationsWithAddendSection(self.text_section, self.image.symtab)
                 self.image.add_section(self.text_rela_section)
 
             from peachpy.formats.elf.symbol import RelocationWithAddend, RelocationType
-            for relocation in encoded_function.code_relocations:
+            for relocation in encoded_function.code_section.relocations:
                 elf_relocation = RelocationWithAddend(RelocationType.x86_64_pc32,
                                                       relocation.offset,
                                                       symbol_map[relocation.symbol],
@@ -148,8 +148,8 @@ class ELFWriter:
 
         function_symbol = Symbol()
         function_symbol.name = function.name
-        function_symbol.value = function_offset
-        function_symbol.content_size = len(encoded_function.code_content)
+        function_symbol.value = code_offset
+        function_symbol.content_size = len(encoded_function.code_section)
         function_symbol.section = self.text_section
         function_symbol.binding = SymbolBinding.global_
         function_symbol.type = SymbolType.function
@@ -196,29 +196,29 @@ class MachOWriter:
 
         encoded_function = function.encode()
 
-        function_offset = len(self.image.text_section.content)
-        self.image.text_section.content += encoded_function.code_content
+        code_offset = len(self.image.text_section.content)
+        self.image.text_section.content += encoded_function.code_section.content
 
-        function_rodata_offset = self.image.const_section.content_size
-        self.image.const_section.content += encoded_function.const_content
+        const_data_offset = self.image.const_section.content_size
+        self.image.const_section.content += encoded_function.const_section.content
 
-        # Map from symbol name to symbol index
+        # Map from PeachPy symbol to Mach-O symbol
         symbol_map = dict()
-        for symbol in encoded_function.const_symbols:
+        for symbol in encoded_function.const_section.symbols:
             macho_symbol = Symbol(symbol.name,
                                   SymbolType.section_relative, self.image.const_section,
-                                  function_rodata_offset + symbol.offset)
+                                  const_data_offset + symbol.offset)
             macho_symbol.description = SymbolDescription.defined
             self.image.symbol_table.add_symbol(macho_symbol)
             symbol_map[symbol] = macho_symbol
 
-        for relocation in encoded_function.code_relocations:
-            macho_relocation = Relocation(RelocationType.x86_64_signed, function_offset + relocation.offset, 4,
+        for relocation in encoded_function.code_section.relocations:
+            macho_relocation = Relocation(RelocationType.x86_64_signed, code_offset + relocation.offset, 4,
                                           symbol_map[relocation.symbol], is_pc_relative=True)
             self.image.text_section.relocations.append(macho_relocation)
 
         function_symbol = Symbol("_" + function.name, SymbolType.section_relative, self.image.text_section,
-                                 value=function_offset)
+                                 value=code_offset)
         function_symbol.description = SymbolDescription.defined
         function_symbol.visibility = SymbolVisibility.external
         self.image.symbol_table.add_symbol(function_symbol)
