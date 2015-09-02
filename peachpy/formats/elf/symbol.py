@@ -53,7 +53,6 @@ class Symbol:
         assert self.name in name_index_map
         from peachpy.formats.elf.section import SectionIndex
         assert self.section is None or isinstance(self.section, SectionIndex) or self.section in section_index_map
-        from peachpy.formats.elf.section import SectionIndex
 
         name_index = name_index_map[self.name]
         section_index = SectionIndex.absolute
