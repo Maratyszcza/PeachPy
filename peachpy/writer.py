@@ -285,16 +285,21 @@ class MSCOFFWriter:
         import peachpy.x86_64.function
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
             "Function must be bindinded to an ABI before its assembly can be used"
+        from peachpy.util import roundup
 
         encoded_function = function.encode()
-        function_code = encoded_function.code_content
 
-        function_offset = len(self.text_section.content)
-        self.text_section.write(function_code)
+        code_offset = len(self.text_section.content)
+        code_padding = bytearray([encoded_function.code_section.alignment_byte] *
+                                 (roundup(code_offset, encoded_function.code_section.alignment) - code_offset))
+        code_offset += len(code_padding)
+        self.text_section.content += encoded_function.code_section.content
+        self.text_section.header.alignment = \
+            max(self.text_section.header.alignment, encoded_function.code_section.alignment)
 
         from peachpy.formats.mscoff.symbol import SymbolEntry, SymbolType, StorageClass
         function_symbol = SymbolEntry()
-        function_symbol.value = function_offset
+        function_symbol.value = code_offset
         function_symbol.section_index = self.text_section.index
         function_symbol.symbol_type = SymbolType.function
         function_symbol.storage_class = StorageClass.external
