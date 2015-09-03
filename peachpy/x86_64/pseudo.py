@@ -37,14 +37,8 @@ class Label:
             "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
 
         if assembly_format == "go":
-            # Go assembler rejects label names with a dot, so we replace it with Unicode middle dot symbol
-            import six
-            if six.PY2:
-                return self.name.replace(".", "\xC2\xB7")
-            else:
-                import six
-                return self.name.replace(".", six.unichr(0xB7))
-
+            # Go assembler rejects label names with a dot, so we replace it with underscore symbol
+            return self.name.replace(".", "_")
         else:
             return str(self)
 
@@ -80,12 +74,8 @@ class LABEL(Instruction):
             "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
 
         if assembly_format == "go":
-            # Go assembler rejects label names with a dot, so we replace it with Unicode middle dot symbol
-            import six
-            if six.PY2:
-                return self.identifier.replace(".", "\xC2\xB7") + ":"
-            else:
-                return self.identifier.replace(".", "\u00B7") + ":"
+            # Go assembler rejects label names with a dot, so we replace it with underscore symbol
+            return self.identifier.replace(".", "_") + ":"
         else:
             return str(self)
 
