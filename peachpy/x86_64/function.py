@@ -959,8 +959,9 @@ class ABIFunction:
     """
 
     def __init__(self, function, abi):
-        from peachpy.x86_64.abi import ABI, microsoft_x64_abi, system_v_x86_64_abi, linux_x32_abi, \
-            native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
+        from peachpy.x86_64.abi import ABI, \
+            microsoft_x64_abi, system_v_x86_64_abi, linux_x32_abi, native_client_x86_64_abi, \
+            gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi
         from copy import deepcopy
         assert isinstance(function, Function), "Function object expected"
         assert isinstance(abi, ABI), "ABI object expected"
@@ -989,7 +990,7 @@ class ABIFunction:
             self._setup_windows_arguments()
         elif abi in {system_v_x86_64_abi, linux_x32_abi, native_client_x86_64_abi}:
             self._setup_unix_arguments()
-        elif abi in {golang_amd64_abi, golang_amd64p32_abi}:
+        elif abi in {gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi}:
             self._setup_golang_arguments()
         else:
             raise ValueError("Unsupported ABI: %s" % str(abi))
@@ -1097,8 +1098,8 @@ class ABIFunction:
                 stack_offset += 8
 
     def _setup_golang_arguments(self):
-        from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
-        assert self.abi in {golang_amd64_abi, golang_amd64p32_abi}, \
+        from peachpy.x86_64.abi import gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi
+        assert self.abi in {gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi}, \
             "This function must only be used with Golang AMD64 or AMD64p32 ABI"
 
         from peachpy.util import roundup
@@ -1169,10 +1170,10 @@ class ABIFunction:
 
     def _lower_argument_loads(self):
         from peachpy.x86_64.pseudo import LOAD
-        from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
+        from peachpy.x86_64.abi import goasm_amd64_abi, goasm_amd64p32_abi
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
         from peachpy.x86_64.lower import load_register, load_memory
-        if self.abi == golang_amd64_abi or self.abi == golang_amd64p32_abi:
+        if self.abi == goasm_amd64_abi or self.abi == goasm_amd64p32_abi:
             # Like Peach-Py, Go assembler uses pseudo-instructions for argument loads
             return
         lowered_instructions = []
@@ -1207,7 +1208,8 @@ class ABIFunction:
         from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET
         from peachpy.x86_64.nacl import NACLJMP
         from peachpy.x86_64.lower import load_register
-        from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
+        from peachpy.x86_64.abi import native_client_x86_64_abi, \
+            gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi
         from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp
         from peachpy.util import is_uint32, is_sint32, is_int
         from peachpy.stream import InstructionStream
@@ -1244,7 +1246,8 @@ class ABIFunction:
             if isinstance(instruction, RETURN):
                 from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister, \
                     rax, eax, ax, al, rcx, ecx, mm0, xmm0, ymm0
-                is_golang_abi = self.abi in {golang_amd64_abi, golang_amd64p32_abi}
+                is_goasm_abi = self.abi in {goasm_amd64_abi, goasm_amd64p32_abi}
+                is_gosyso_abi = self.abi in {gosyso_amd64_abi, gosyso_amd64p32_abi}
                 with InstructionStream() as epilog_stream:
                     # Save return value
                     if instruction.operands:
@@ -1252,7 +1255,7 @@ class ABIFunction:
                         if is_int(instruction.operands[0]):
                             assert self.result_type.is_integer or self.result_type.is_pointer
                             # Return immediate constant
-                            if is_golang_abi:
+                            if is_goasm_abi:
                                 # Return value must be saved on stack with STORE.RESULT pseudo-instruction
                                 if self.result_type.size <= 4 or is_sint32(instruction.operands[0]):
                                     # STORE.RESULT will assemble to one of the forms:
@@ -1284,7 +1287,7 @@ class ABIFunction:
                                     # - Or large 64-bit constant (would use MOV rax, imm64 form)
                                     MOV(rax, instruction.operands[0], prototype=instruction)
                         elif isinstance(instruction.operands[0], GeneralPurposeRegister):
-                            if is_golang_abi and instruction.operands[0].size == self.result_type.size:
+                            if is_goasm_abi and instruction.operands[0].size == self.result_type.size:
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
                                 result_reg = eax if self.result_type.size <= 4 else rax
@@ -1292,7 +1295,7 @@ class ABIFunction:
                                                               instruction.operands[0],
                                                               self.result_type,
                                                               prototype=instruction))
-                                if is_golang_abi:
+                                if is_goasm_abi:
                                     result_subreg = {
                                         1: al,
                                         2: ax,
@@ -1306,7 +1309,7 @@ class ABIFunction:
                                                           self.result_type,
                                                           prototype=instruction))
                         elif isinstance(instruction.operands[0], XMMRegister):
-                            if self.result_type.is_floating_point and is_golang_abi:
+                            if self.result_type.is_floating_point and is_goasm_abi:
                                 assert self.result_type.size in {4, 8}
                                 STORE.RESULT(instruction.operands[0], prototype=instruction, target_function=self)
                             else:
@@ -1710,11 +1713,11 @@ class EncodedFunction:
             return nop(8) + nop(8) + nop(15)
 
     def _encode_abort(self, length):
-        from peachpy.x86_64.abi import native_client_x86_64_abi, golang_amd64_abi, golang_amd64p32_abi
+        from peachpy.x86_64.abi import native_client_x86_64_abi, goasm_amd64_abi, goasm_amd64p32_abi
         if self.abi == native_client_x86_64_abi:
             # Use HLT instructions
             return bytearray([0xF4] * length)
-        elif self.abi in {golang_amd64_abi, golang_amd64p32_abi}:
+        elif self.abi in {goasm_amd64_abi, goasm_amd64p32_abi}:
             # Use a single INT 3 instruction as alignment is not supported anyway
             return bytearray([0xCD])
         else:

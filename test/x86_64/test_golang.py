@@ -10,7 +10,7 @@ class Empty(unittest.TestCase):
         with Function("empty", tuple()) as function:
             RETURN()
 
-        code = function.finalize(abi.golang_amd64_abi).format("go")
+        code = function.finalize(abi.goasm_amd64_abi).format("go")
         ref_code = """
 // func empty()
 TEXT \xc2\xB7empty(SB),4,$0
@@ -31,7 +31,7 @@ class ReturnIntegerArgument(unittest.TestCase):
             STORE.RESULT(n)
             RETURN()
 
-        code = function.finalize(abi.golang_amd64_abi).format("go")
+        code = function.finalize(abi.goasm_amd64_abi).format("go")
         ref_code = """
 // func return_int_arg(n uint32) uint32
 TEXT \xc2\xB7return_int_arg(SB),4,$0-8
@@ -59,7 +59,7 @@ class ComputeIntegerSum(unittest.TestCase):
             STORE.RESULT(x)
             RETURN()
 
-        code = function.finalize(abi.golang_amd64_abi).format("go")
+        code = function.finalize(abi.goasm_amd64_abi).format("go")
         ref_code = """
 // func integer_sum(x uint32, y uint32) uint32
 TEXT \xc2\xB7integer_sum(SB),4,$0-12

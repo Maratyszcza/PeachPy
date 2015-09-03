@@ -332,7 +332,7 @@ class STORE:
             from peachpy.x86_64.function import active_function
             from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
             from peachpy.util import is_int16, is_int32
-            from peachpy.x86_64.abi import golang_amd64_abi, golang_amd64p32_abi
+            from peachpy.x86_64.abi import goasm_amd64_abi, goasm_amd64p32_abi
 
             origin = kwargs.get("origin")
             prototype = kwargs.get("prototype")
@@ -349,7 +349,7 @@ class STORE:
             destination_offset = None
             if target_function is None:
                 target_function = kwargs.get("target_function")
-                assert target_function.abi in {golang_amd64_abi, golang_amd64p32_abi}
+                assert target_function.abi in {goasm_amd64_abi, goasm_amd64p32_abi}
                 destination_offset = target_function.result_offset
             if target_function.result_type is None:
                 raise ValueError("STORE.RESULT can't be used with void functions")
