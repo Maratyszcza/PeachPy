@@ -19,10 +19,10 @@ abi_map = {
     "sysv": (peachpy.x86_64.abi.system_v_x86_64_abi, ["gas", "nasm"], ["elf", "mach-o"]),
     "x32": (peachpy.x86_64.abi.linux_x32_abi, ["gas"], ["elf"]),
     "nacl": (peachpy.x86_64.abi.native_client_x86_64_abi, ["gas"], ["elf"]),
-    "gosyso": (peachpy.x86_64.abi.goasm_amd64_abi, ["go"], []),
-    "goasm": (peachpy.x86_64.abi.gosyso_amd64_abi, ["go"], []),
-    "gosyso-p32": (peachpy.x86_64.abi.gosyso_amd64p32_abi, ["gas"], []),
-    "goasm-p32": (peachpy.x86_64.abi.goasm_amd64p32_abi, ["gas"], [])
+    "gosyso": (peachpy.x86_64.abi.gosyso_amd64_abi, ["gas"], ["elf", "mach-o", "ms-coff"]),
+    "goasm": (peachpy.x86_64.abi.goasm_amd64_abi, ["go"], []),
+    "gosyso-p32": (peachpy.x86_64.abi.gosyso_amd64p32_abi, ["gas"], ["elf", "mach-o", "ms-coff"]),
+    "goasm-p32": (peachpy.x86_64.abi.goasm_amd64p32_abi, ["go"], [])
 }
 parser.add_argument("-mabi", dest="abi", required=True,
                     choices=("ms", "sysv", "x32", "nacl", "gosyso", "gosyso-p32", "goasm", "goasm-p32"),
