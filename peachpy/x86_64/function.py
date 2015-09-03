@@ -1357,7 +1357,7 @@ class ABIFunction:
                             "x86-64 instructions can not have more than 1 explicit memory operand"
                         memory_address = memory_operands[0].address
                         if memory_address.index is not None:
-                            raise ValueError("NaCl does allow index addressing")
+                            raise ValueError("NaCl does not allow index addressing")
                         from peachpy.x86_64.registers import rbp, rsp, r15
                         if memory_address.base is not None and memory_address.base not in {rbp, rsp, r15}:
                             # Base register is not a restricted register: needs transformation
