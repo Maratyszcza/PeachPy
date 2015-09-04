@@ -181,6 +181,15 @@ class Instruction(object):
             assert len(constant_operands) == 1, "At most one literal Constant operand in an instruction expected"
             return constant_operands[0]
 
+    @property
+    def memory_address(self):
+        from peachpy.x86_64.operand import MemoryOperand
+        memory_operands = [operand for operand in self.operands if isinstance(operand, MemoryOperand)]
+        if memory_operands:
+            assert len(memory_operands) == 1, \
+                "x86-64 instructions can not have more than 1 explicit memory operand"
+            return memory_operands[0].address
+
     def encode(self):
         encodings = self._filter_encodings()
         if encodings:
