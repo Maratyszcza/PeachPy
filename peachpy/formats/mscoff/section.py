@@ -2,11 +2,10 @@
 # See license.rst for the full text of the license.
 
 
-from enum import IntEnum
 import six
 
 
-class SectionFlags(IntEnum):
+class SectionFlags:
     # Section contains executable code
     code = 0x00000020
     # Section contains initialized data
