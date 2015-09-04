@@ -117,8 +117,10 @@ goasm_amd64p32_abi = ABI("Go/Asm x32 ABI", endianness=Endianness.Little,
                                              xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8,
                                              xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15])
 
+
 def detect():
     import platform
+    import os
     import struct
     (osname, node, release, version, machine, processor) = platform.uname()  # pylint:disable=unpacking-non-sequence
     pointer_size = struct.calcsize("P")
@@ -131,3 +133,5 @@ def detect():
             return linux_x32_abi
     elif osname == "Windows" and machine == "AMD64" and pointer_size == 8:
         return microsoft_x64_abi
+    elif osname == "NaCl" and os.environ.get("NACL_ARCH") == "x86_64" and pointer_size == 4:
+        return native_client_x86_64_abi
