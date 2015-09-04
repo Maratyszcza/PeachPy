@@ -46,6 +46,8 @@ class Section(object):
             raise ValueError("Alignment %d is not a power of 2" % alignment)
         if alignment > Section.max_alignment:
             raise ValueError("Alignment %d exceeds maximum alignment (%d)" % (alignment, Section.max_alignment))
+        if alignment == 0:
+            alignment = 1
         self._alignment = alignment
 
     def add_symbol(self, symbol):
