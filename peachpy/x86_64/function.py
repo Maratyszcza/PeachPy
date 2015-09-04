@@ -1364,9 +1364,6 @@ class ABIFunction:
                         from peachpy.x86_64.registers import rbp, rsp, r15
                         if memory_address.base is not None and memory_address.base not in {rbp, rsp, r15}:
                             # Base register is not a restricted register: needs transformation
-                            with InstructionStream():
-                                from peachpy.x86_64.generic import MOV
-                                instructions.append(MOV(memory_address.base.as_dword, memory_address.base.as_dword))
                             memory_address.index = memory_address.base
                             memory_address.scale = 1
                             memory_address.base = r15
@@ -1504,15 +1501,17 @@ class InstructionBundle:
         # Map from instruction position to tuple (label address, long encoding, short range)
         self.branch_info_map = dict()
 
-    def add(self, instruction):
+    def add(self, instructions):
         from peachpy.x86_64.instructions import Instruction
-        assert isinstance(instruction, Instruction), \
+        assert isinstance(instructions, list)
+        assert all(isinstance(instruction, Instruction) for instruction in instructions), \
             "Instruction instance expected"
-        bytecode = instruction.encode()
-        if self.capacity - self.size > len(bytecode):
+        bytecode = sum([instruction.encode() for instruction in instructions], bytearray())
+        if self.size + len(bytecode) <= self.capacity:
             self.size += len(bytecode)
-            instruction.bytecode = bytecode
-            self._instructions.append(instruction)
+            for instruction in instructions:
+                instruction.bytecode = instruction.encode()
+                self._instructions.append(instruction)
         else:
             raise BufferError()
 
@@ -1541,25 +1540,35 @@ class InstructionBundle:
         else:
             raise BufferError()
 
-    def realign(self):
-        from peachpy.x86_64.instructions import BranchInstruction, Instruction
-        from peachpy.x86_64.pseudo import LABEL
-        from peachpy.util import diff
-        encoding_options = []
-        for i, instruction in enumerate(self._instructions):
-            assert isinstance(instruction, Instruction)
-            if isinstance(instruction, BranchInstruction):
-                (label_address, long_encoding, branch_pos_max) = self.branch_info_map[i]
-                length_encoding_map = dict()
-                _, bytecode = instruction._encode_label_branch(self.end_address, label_address, long_encoding)
-                encoding_options.append(list())
-            else:
-                length_options = instruction.encode_length_options().keys()
-                min_length = min(length_options)
-                encoding_options.append(
-                    diff(sorted([length - min_length for length in length_options])))
-        gap = self.capacity - self.size
+    def fill(self):
+        from peachpy.x86_64.generic import NOP
+        while self.capacity > self.size:
+            self.add([NOP()])
+        self.size = self.capacity
 
+        # from peachpy.x86_64.instructions import BranchInstruction, Instruction
+        # from peachpy.x86_64.pseudo import LABEL
+        # from peachpy.util import diff
+        # encoding_options = []
+        # for i, instruction in enumerate(self._instructions):
+        #     assert isinstance(instruction, Instruction)
+        #     if isinstance(instruction, BranchInstruction):
+        #         (label_address, long_encoding, branch_pos_max) = self.branch_info_map[i]
+        #         length_encoding_map = dict()
+        #         _, bytecode = instruction._encode_label_branch(self.end_address, label_address, long_encoding)
+        #         encoding_options.append(list())
+        #     else:
+        #         length_options = instruction.encode_length_options().keys()
+        #         min_length = min(length_options)
+        #         encoding_options.append(
+        #             diff(sorted([length - min_length for length in length_options])))
+        # gap = self.capacity - self.size
+
+    def finalize(self):
+        from peachpy.x86_64.generic import NOP
+        while self.capacity > self.size:
+            self.add([NOP()])
+        self.size = self.capacity
 
     @property
     def label_address_map(self):
@@ -1598,6 +1607,12 @@ class EncodedFunction:
 
         from peachpy.x86_64.meta import Section, SectionType
         self.code_section = Section(SectionType.code)
+        from peachpy.x86_64.abi import native_client_x86_64_abi
+        if self.abi == native_client_x86_64_abi:
+            self.code_section.alignment = 32
+        else:
+            self.code_section.alignment = 16
+
         self.const_section = Section(SectionType.const_data)
 
         self._instructions = deepcopy(function._instructions)
@@ -1661,29 +1676,86 @@ class EncodedFunction:
         label_address_map = dict()
         long_branches = set()
 
-        has_updated_branches = True
-        has_unresolved_labels = True
-        while has_updated_branches or has_unresolved_labels:
-            code_address = 0
-            has_updated_branches = False
-            has_unresolved_labels = False
-            for (i, instruction) in enumerate(self._instructions):
-                if isinstance(instruction, LABEL):
-                    label_address_map[instruction.identifier] = code_address
-                elif isinstance(instruction, BranchInstruction) and instruction.label_name:
-                    label_address = label_address_map.get(instruction.label_name)
-                    if label_address is None:
-                        has_unresolved_labels = True
-                    was_long = i in long_branches
-                    is_long, instruction.bytecode = instruction._encode_label_branch(code_address, label_address,
-                                                                                     long_encoding=was_long)
-                    if is_long and not was_long:
-                        long_branches.add(i)
-                        has_updated_branches = True
-                else:
-                    instruction.bytecode = instruction.encode()
-                if instruction.bytecode:
-                    code_address += len(instruction.bytecode)
+        # Special post-processing for Native Client SFI
+        from peachpy.x86_64.abi import native_client_x86_64_abi
+        if self.abi == native_client_x86_64_abi:
+            has_updated_branches = True
+            has_unresolved_labels = True
+            bundles = list()
+            while has_updated_branches or has_unresolved_labels:
+                code_address = 0
+                has_updated_branches = False
+                has_unresolved_labels = False
+                bundles = list()
+                current_bundle = InstructionBundle(32, code_address)
+                for (i, instruction) in enumerate(self._instructions):
+                    if isinstance(instruction, LABEL):
+                        label_address_map[instruction.identifier] = code_address
+                    elif isinstance(instruction, BranchInstruction) and instruction.label_name:
+                        label_address = label_address_map.get(instruction.label_name)
+                        if label_address is None:
+                            has_unresolved_labels = True
+                        was_long = i in long_branches
+                        is_long, instruction.bytecode = instruction._encode_label_branch(code_address, label_address,
+                                                                                         long_encoding=was_long)
+                        if is_long and not was_long:
+                            long_branches.add(i)
+                            has_updated_branches = True
+                        try:
+                            current_bundle.add_label_branch(instruction, label_address, is_long)
+                        except BufferError:
+                            current_bundle.fill()
+                            bundles.append(current_bundle)
+                            current_bundle = InstructionBundle(32, current_bundle.end_address)
+                            current_bundle.add_label_branch(instruction, label_address, is_long)
+                    else:
+                        instruction_group = [instruction]
+
+                        memory_address = instruction.memory_address
+                        if memory_address:
+                            from peachpy.stream import NullStream
+                            with NullStream():
+                                from peachpy.x86_64.generic import MOV
+                                instruction_group.insert(0,
+                                    MOV(memory_address.index.as_dword, memory_address.index.as_dword)
+                                )
+                        try:
+                            current_bundle.add(instruction_group)
+                        except BufferError:
+                            current_bundle.fill()
+                            bundles.append(current_bundle)
+                            current_bundle = InstructionBundle(32, current_bundle.end_address)
+                            current_bundle.add(instruction_group)
+                    code_address = current_bundle.end_address
+                current_bundle.fill()
+                bundles.append(current_bundle)
+            self._instructions = list()
+            for bundle in bundles:
+                self._instructions.extend(bundle._instructions)
+        else:
+            has_updated_branches = True
+            has_unresolved_labels = True
+            while has_updated_branches or has_unresolved_labels:
+                code_address = 0
+                has_updated_branches = False
+                has_unresolved_labels = False
+                for (i, instruction) in enumerate(self._instructions):
+                    if isinstance(instruction, LABEL):
+                        label_address_map[instruction.identifier] = code_address
+                    elif isinstance(instruction, BranchInstruction) and instruction.label_name:
+                        label_address = label_address_map.get(instruction.label_name)
+                        if label_address is None:
+                            has_unresolved_labels = True
+                        was_long = i in long_branches
+                        is_long, instruction.bytecode = instruction._encode_label_branch(code_address, label_address,
+                                                                                         long_encoding=was_long)
+                        if is_long and not was_long:
+                            long_branches.add(i)
+                            has_updated_branches = True
+                    else:
+                        instruction.bytecode = instruction.encode()
+                    if instruction.bytecode:
+                        code_address += len(instruction.bytecode)
 
         from peachpy.x86_64.meta import Relocation, RelocationType
         for instruction in self._instructions:
