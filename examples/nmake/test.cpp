@@ -15,9 +15,6 @@ int main(int argc, char** argv) {
 	transpose4x4_opt(matrix_opt);
 	for (size_t i = 0; i < 4 * 4; i++) {
 		if (matrix_ref[i] != matrix_opt[i]) {
-			for (size_t i = 0; i < 4 * 4; i++) {
-				std::cout << matrix_ref[i] << "\t" << matrix_opt[i] << std::endl;
-			}
 			std::cerr << "UNIT TEST FAILED" << std::endl;
 			return 1;
 		}
