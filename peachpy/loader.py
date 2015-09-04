@@ -111,7 +111,13 @@ class Loader:
                     raise OSError("Failed to allocate memory for data segment")
                 self.data_address = data_address
         elif osname == "nacl":
-            raise NotImplementedError("Native Client")
+            import dynacl
+
+            # Allocate code segment
+            self.allocation = dynacl.allocate(self.code_size, self.data_size)
+            self.code_address = self.allocation.code_address
+            self.data_address = self.allocation.data_address
+            self.copy_code = self._nacl_copy_code
         else:
             raise ValueError("Unknown host OS: " + osname)
 
@@ -124,6 +130,10 @@ class Loader:
         ctypes.memmove(self.code_address,
                        ctypes.c_char_p(bytes(code_segment)),
                        len(code_segment))
+
+    def _nacl_copy_code(self, code_segment):
+        code_offset = 0
+        self.allocation.dyncode_create(code_segment, code_offset)
 
     def __del__(self):
         if self._release_memory is not None:
