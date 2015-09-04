@@ -128,9 +128,9 @@ class TextSection(Section):
                                           alignment)
 
 
-class ConstSection(Section):
-    def __init__(self, name=".const", alignment=None):
-        super(ConstSection, self).__init__(name,
+class ReadOnlyDataSection(Section):
+    def __init__(self, name=".rdata", alignment=None):
+        super(ReadOnlyDataSection, self).__init__(name,
                                            SectionFlags.initialized_data | SectionFlags.readable,
                                            alignment)
 
