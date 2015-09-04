@@ -6,7 +6,7 @@ from enum import IntEnum
 import six
 
 
-class SectionFlags:
+class SectionFlags(IntEnum):
     # Section contains executable code
     code = 0x00000020
     # Section contains initialized data
@@ -30,9 +30,11 @@ class SectionFlags:
     # Section contains writable data during process execution
     writable = 0x80000000
 
-    alignment_mask = 0x00F00000
 
-    _alignment_to_flag_map = {
+class Section(object):
+    header_size = 40
+
+    _alignment_flag_map = {
         1: 0x00100000,
         2: 0x00200000,
         4: 0x00300000,
@@ -49,95 +51,89 @@ class SectionFlags:
         8192: 0x00E00000
     }
 
-    _flag_to_alignment_map = {flag: alignment for (alignment, flag) in six.iteritems(_alignment_to_flag_map)}
+    _flag_alignment_map = {flag: alignment for (alignment, flag) in six.iteritems(_alignment_flag_map)}
 
-    @staticmethod
-    def alignment_flag(alignment):
-        return SectionFlags._alignment_to_flag_map[alignment]
+    _alignment_mask = 0x00F00000
 
+    def __init__(self, name, flags, alignment=None):
+        from peachpy.util import is_uint32
+        if not isinstance(name, str):
+            raise TypeError("Section name %s is not a string" % str(name))
+        if not is_uint32(flags):
+            raise TypeError("Flags %s are not representable as a 32-bit unsigned integer" % str(flags))
 
-class SectionHeader:
-    size = 40
-
-    def __init__(self):
+        super(Section, self).__init__()
         # Section name
-        self.name = None
-        # Size of the section in memory
-        self.memory_size = 0
-        # Address of section data before relocation. Normally equals zero
-        self.memory_address = 0
-        # Size of section on disk
-        self.content_size = 0
-        # Offset in the COFF file to the start of section.
-        # 4-byte aligned. 0 if section data occupies no space in the file.
-        self.content_offset = None
-        # Offset to the beginning of relocation entries for the section. 0 if there are no relocations
-        self.relocations_offset = None
-        # Offset to the beginning of line-number entries for the section. 0 if there are no COFF line numbers.
-        self.line_numbers_offset = None
-        # Number of relocations for the section. 0 if no relocations.
-        self.relocations_count = 0
-        # Number of line-number entries for the section
-        self.line_numbers_count = 0
+        self.name = name
         # Flags for the section
-        self.flags = 0
+        self.flags = (flags & ~Section._alignment_mask) | Section._alignment_flag_map[1]
+        if alignment is not None:
+            self.alignment = alignment
 
-    def set_alignment(self, alignment):
-        self.flags = (self.flags & ~SectionFlags.alignment_mask) | SectionFlags.alignment_flag(alignment)
+        self.relocations = list()
+        self.content = bytearray()
+
+    @property
+    def content_size(self):
+        return len(self.content)
 
     @property
     def alignment(self):
-        alignment_flag = self.flags & SectionFlags.alignment_mask
-        if alignment_flag == 0:
-            return 0
-        else:
-            return SectionFlags._flag_to_alignment_map[alignment_flag]
+        return Section._flag_alignment_map.get(self.flags & Section._alignment_mask, 1)
 
-    @property
-    def as_bytearray(self):
-        from peachpy.encoder import Encoder
+    @alignment.setter
+    def alignment(self, alignment):
         from peachpy.util import is_int
+        if not is_int(alignment):
+            raise TypeError("Alignment %s is not an integer" % str(alignment))
+        if alignment < 0:
+            raise ValueError("Alignment %d is not a positive integer" % alignment)
+        if alignment & (alignment - 1) != 0:
+            raise ValueError("Alignment %d is not a power of 2" % alignment)
+        if alignment not in Section._alignment_flag_map:
+            raise ValueError("Alignment %d exceeds maximum alignment (8192)" % alignment)
+        self.flags = (self.flags & ~Section._alignment_mask) | Section._alignment_flag_map[alignment]
 
-        if is_int(self.name):
-            header = Encoder.fixed_string("/" + str(self.name), 8)
-        else:
-            header = Encoder.fixed_string(self.name, 8)
-        return header + \
-            Encoder.uint32le(self.memory_size) + \
-            Encoder.uint32le(self.memory_address) + \
-            Encoder.uint32le(self.content_size) + \
-            Encoder.uint32le(self.content_offset) + \
-            Encoder.uint32le(self.relocations_offset or 0) + \
-            Encoder.uint32le(self.line_numbers_offset or 0) + \
-            Encoder.uint16le(self.relocations_count) + \
-            Encoder.uint16le(self.line_numbers_count) + \
-            Encoder.uint32le(self.flags)
+    def encode_header(self, encoder, name_index_map, offset, relocations_offset=None, address=None):
+        from peachpy.encoder import Encoder
+        assert isinstance(encoder, Encoder)
+        assert isinstance(name_index_map, dict)
 
-
-class Section(object):
-    def __init__(self, alignment=None):
-        super(Section, self).__init__()
-        self.header = SectionHeader()
-        if alignment is not None:
-            self.header.set_alignment(alignment)
-        self.index = None
-        self.content = bytearray()
-
-    def write(self, data):
-        self.header.content_size += len(data)
-        self.content += data
+        if address is None:
+            address = 0
+        if relocations_offset is None:
+            relocations_offset = 0
+        line_numbers_offset = 0
+        line_numbers_count = 0
+        try:
+            name_8_bytes = encoder.fixed_string(self.name, 8)
+        except ValueError:
+            name_index = name_index_map[self.name]
+            name_8_bytes = encoder.fixed_string("/" + str(name_index), 8)
+        return name_8_bytes + \
+            encoder.uint32(self.content_size) + \
+            encoder.uint32(address) + \
+            encoder.uint32(self.content_size) + \
+            encoder.uint32(offset) + \
+            encoder.uint32(line_numbers_offset) + \
+            encoder.uint32(relocations_offset) + \
+            encoder.uint16(len(self.relocations)) + \
+            encoder.uint16(line_numbers_count) + \
+            encoder.uint32(self.flags)
 
 
 class TextSection(Section):
-    def __init__(self):
-        super(TextSection, self).__init__()
-        self.header.flags |= SectionFlags.code | SectionFlags.readable | SectionFlags.executable
+    def __init__(self, name=".text", alignment=None):
+        super(TextSection, self).__init__(name,
+                                          SectionFlags.code | SectionFlags.readable | SectionFlags.executable,
+                                          alignment)
 
 
 class ConstSection(Section):
-    def __init__(self):
-        super(ConstSection, self).__init__()
-        self.header.flags |= SectionFlags.initialized_data | SectionFlags.readable
+    def __init__(self, name=".const", alignment=None):
+        super(ConstSection, self).__init__(name,
+                                           SectionFlags.initialized_data | SectionFlags.readable,
+                                           alignment)
 
 
 class StringTable:
@@ -157,8 +153,7 @@ class StringTable:
             self.size += len(bytestring) + 1
             return string_index
 
-    @property
-    def as_bytearray(self):
+    def encode(self):
         import codecs
         import peachpy.encoder
 

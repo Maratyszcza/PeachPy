@@ -258,7 +258,7 @@ class MSCOFFWriter:
         self.abi = abi
         self.image = Image(abi, input_path)
         self.text_section = TextSection()
-        self.image.add_section(self.text_section, ".text")
+        self.image.add_section(self.text_section)
 
     def __enter__(self):
         global active_writer
@@ -272,7 +272,7 @@ class MSCOFFWriter:
         active_writer = self.previous_writer
         self.previous_writer = None
         if exc_type is None:
-            self.output_file.write(self.image.as_bytearray)
+            self.output_file.write(self.image.encode())
             self.output_file.close()
             self.output_file = None
         else:
@@ -294,16 +294,17 @@ class MSCOFFWriter:
                                  (roundup(code_offset, encoded_function.code_section.alignment) - code_offset))
         code_offset += len(code_padding)
         self.text_section.content += encoded_function.code_section.content
-        self.text_section.header.alignment = \
-            max(self.text_section.header.alignment, encoded_function.code_section.alignment)
+        self.text_section.alignment = \
+            max(self.text_section.alignment, encoded_function.code_section.alignment)
 
-        from peachpy.formats.mscoff.symbol import SymbolEntry, SymbolType, StorageClass
-        function_symbol = SymbolEntry()
+        from peachpy.formats.mscoff.symbol import Symbol, SymbolType, StorageClass
+        function_symbol = Symbol()
+        function_symbol.name = function.name
         function_symbol.value = code_offset
-        function_symbol.section_index = self.text_section.index
+        function_symbol.section = self.text_section
         function_symbol.symbol_type = SymbolType.function
         function_symbol.storage_class = StorageClass.external
-        self.image.add_symbol(function_symbol, function.name)
+        self.image.add_symbol(function_symbol)
 
 
 class NullWriter:

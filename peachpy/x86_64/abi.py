@@ -7,7 +7,7 @@ from peachpy.x86_64.registers import rax, rbx, rcx, rdx, rsi, rdi, rbp, r8, r9, 
     xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, \
     mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7
 import peachpy.formats.elf.file
-import peachpy.formats.mscoff.file
+import peachpy.formats.mscoff
 
 
 microsoft_x64_abi = ABI("Microsoft x64 ABI", endianness=Endianness.Little,
@@ -22,7 +22,7 @@ microsoft_x64_abi = ABI("Microsoft x64 ABI", endianness=Endianness.Little,
                         volatile_registers=[rax, r10, r11,
                                             mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                             xmm4, xmm5],
-                        mscoff_machine_type=peachpy.formats.mscoff.file.MachineType.x86_64)
+                        mscoff_machine_type=peachpy.formats.mscoff.MachineType.x86_64)
 
 system_v_x86_64_abi = ABI("SystemV x86-64 ABI", endianness=Endianness.Little,
                           bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,
@@ -78,7 +78,7 @@ gosyso_amd64_abi = ABI("Go/SysO x86-64 ABI", endianness=Endianness.Little,
                        elf_class=peachpy.formats.elf.file.ElfClass.class64,
                        elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
                        elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64,
-                       mscoff_machine_type=peachpy.formats.mscoff.file.MachineType.x86_64)
+                       mscoff_machine_type=peachpy.formats.mscoff.MachineType.x86_64)
 
 goasm_amd64_abi = ABI("Go/Asm x86-64 ABI", endianness=Endianness.Little,
                       bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,
@@ -104,7 +104,7 @@ gosyso_amd64p32_abi = ABI("Go/SysO x32 ABI", endianness=Endianness.Little,
                           elf_class=peachpy.formats.elf.file.ElfClass.class32,
                           elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
                           elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64,
-                          mscoff_machine_type=peachpy.formats.mscoff.file.MachineType.x86_64)
+                          mscoff_machine_type=peachpy.formats.mscoff.MachineType.x86_64)
 
 goasm_amd64p32_abi = ABI("Go/Asm x32 ABI", endianness=Endianness.Little,
                          bool_size=1, wchar_size=4, short_size=2, int_size=4, long_size=8, longlong_size=8,

@@ -1,2 +1,6 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
+
+from peachpy.formats.mscoff.image import MachineType, Image
+from peachpy.formats.mscoff.section import Section, TextSection, ConstSection
+from peachpy.formats.mscoff.symbol import Symbol, SymbolType, StorageClass

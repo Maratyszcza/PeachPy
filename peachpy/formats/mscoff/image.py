@@ -1,8 +1,31 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+from enum import IntEnum
+
+
+class MachineType(IntEnum):
+    # Machine-independent
+    unknown = 0
+    # IA32 (x86)
+    x86 = 0x14C
+    # x86-64 (AMD64, Intel64, x64)
+    x86_64 = 0x8664
+    # IA64 (Itanium)
+    ia64 = 0x200
+    # ARM
+    arm = 0x1C0
+    # ARMv7 (Thumb mode only)
+    armnt = 0x1C4
+    # ARMv8 AArch64
+    arm64 = 0xAA64
+    # EFI bytecode
+    efi_bytecode = 0xEBC
+
 
 class Image:
+    file_header_size = 20
+
     def __init__(self, abi, source=None):
         from peachpy.formats.mscoff.section import StringTable
         self.abi = abi
@@ -10,79 +33,67 @@ class Image:
         self.symbols = []
         self.string_table = StringTable()
 
-    def add_section(self, section, name):
+    def add_section(self, section):
         from peachpy.formats.mscoff.section import Section
         assert isinstance(section, Section)
 
-        section.index = len(self.sections)
         self.sections.append(section)
 
-        import codecs
-        name_bytestring = codecs.encode(name, "utf8")
-        if len(name_bytestring) > 8:
-            section.header.name = self.string_table.add(name_bytestring)
-        else:
-            section.header.name = name
+    def add_symbol(self, symbol):
+        from peachpy.formats.mscoff.symbol import Symbol
+        assert isinstance(symbol, Symbol)
 
-        return section.index
-
-    def add_symbol(self, symbol, name):
-        from peachpy.formats.mscoff.symbol import SymbolEntry
-        assert isinstance(symbol, SymbolEntry)
-
-        import codecs
-        name_bytestring = codecs.encode(name, "utf8")
-        if len(name_bytestring) > 8:
-            symbol.name = self.string_table.add(name_bytestring)
-        else:
-            symbol.name = name
         self.symbols.append(symbol)
 
-    @property
-    def as_bytearray(self):
-        from peachpy.formats.mscoff.file import FileHeader
-        from peachpy.formats.mscoff.section import SectionHeader
-        import operator
+    def encode(self):
+        from peachpy.encoder import Encoder
+        encoder = Encoder(self.abi.endianness)
 
-        file_header = FileHeader(self.abi)
-        file_header.section_count = len(self.sections)
-        file_header.symbol_count = len(self.symbols)
-        file_header.symbol_table_offset = FileHeader.size + len(self.sections) * SectionHeader.size
-
-        # Update section offsets
-        data_offset = FileHeader.size + len(self.sections) * SectionHeader.size
-        file_header.symbol_table_offset = data_offset
-
-        data = file_header.as_bytearray
-
-        # Update section offsets
-        data_offset = file_header.symbol_table_offset + \
-            sum(map(operator.attrgetter("size"), self.symbols)) + \
-            self.string_table.size
+        # Collect names that need to be encoded in the string table
+        import codecs
         for section in self.sections:
-            if section.header.alignment != 0:
-                if data_offset % section.header.alignment != 0:
-                    padding_length = section.header.alignment - data_offset % section.header.alignment
-                    data_offset += padding_length
-            section.header.content_offset = data_offset
-            data_offset += section.header.content_size
+            if len(codecs.encode(section.name, "utf8")) > 8:
+                self.string_table.add(section.name)
+        for symbol in self.symbols:
+            if len(codecs.encode(symbol.name, "utf8")) > 8:
+                self.string_table.add(symbol.name)
+
+        # Layout sections offsets
+        from peachpy.formats.mscoff.section import Section
+
+        section_offset_map = dict()
+        symbol_table_offset = Image.file_header_size + len(self.sections) * Section.header_size
+        data_offset = symbol_table_offset + self.string_table.size
+        for symbol in self.symbols:
+            data_offset += symbol.entry_size
+        for section in self.sections:
+            section_offset_map[section] = data_offset
+            data_offset += section.content_size
+
+        section_index_map = {section: index + 1 for index, section in enumerate(self.sections)}
+
+        # Write file header
+        timestamp = 0
+        file_flags = 0
+        data = encoder.uint16(self.abi.mscoff_machine_type) + \
+            encoder.uint16(len(self.sections)) + \
+            encoder.uint32(timestamp) + \
+            encoder.uint32(symbol_table_offset) + \
+            encoder.uint32(len(self.symbols)) + \
+            encoder.uint16(0) + \
+            encoder.uint16(file_flags)
 
         # Write section headers
         for section in self.sections:
-            data += section.header.as_bytearray
+            data += section.encode_header(encoder, self.string_table._strings, section_offset_map[section])
 
         # Write symbol table and string table (immediately follows symbols table)
         for symbol in self.symbols:
-            data += symbol.as_bytearray
-        data += self.string_table.as_bytearray
+            data += symbol.encode_entry(encoder, self.string_table._strings, section_index_map)
+        data += self.string_table.encode()
 
         # Write section content
         for section in self.sections:
-            if section.header.alignment != 0:
-                if len(data) % section.header.alignment != 0:
-                    padding_length = section.header.alignment - len(data) % section.header.alignment
-                    padding_data = bytearray([0] * padding_length)
-                    data += padding_data
             data += section.content
 
         return data

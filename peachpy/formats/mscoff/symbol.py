@@ -26,34 +26,35 @@ class SymbolType(IntEnum):
     function = 0x20
 
 
-class SymbolEntry:
-    size = 18
+class Symbol:
+    entry_size = 18
 
     def __init__(self):
-        # Either short string (<= 8 bytes) or offset into the string table
+        # Name of the symbol
         self.name = None
         # Value of the symbol. Interpretation depends on section_index and storage_class
         self.value = None
-        # Index (1-based) of the relevant section in the section table
-        self.section_index = None
+        # Relevant section
+        self.section = None
         # Symbol type. Microsoft tools use only 0x20 (function) or 0x0 (not a function)
         self.symbol_type = None
         # Storage class
         self.storage_class = None
-        # Number of auxiliary symbol table following the symbol entry.
-        self.auxiliary_entries = 0
 
-    @property
-    def as_bytearray(self):
+    def encode_entry(self, encoder, name_index_map, section_index_map):
         from peachpy.encoder import Encoder
-        from peachpy.util import is_int
-        if is_int(self.name):
-            entry = Encoder.uint32le(0) + Encoder.uint32le(self.name)
-        else:
-            entry = Encoder.fixed_string(self.name, 8)
-        return entry + \
-            Encoder.uint32le(self.value) + \
-            Encoder.uint16le(self.section_index) + \
-            Encoder.uint16le(self.symbol_type) + \
-            Encoder.uint8(self.storage_class) + \
-            Encoder.uint8(self.auxiliary_entries)
+        assert isinstance(encoder, Encoder)
+
+        try:
+            name_8_bytes = encoder.fixed_string(self.name, 8)
+        except ValueError:
+            name_index = name_index_map[self.name]
+            name_8_bytes = encoder.uint32(0) + encoder.uint32(name_index)
+        section_index = section_index_map[self.section]
+        auxiliary_entries = 0
+        return name_8_bytes + \
+            encoder.uint32(self.value) + \
+            encoder.uint16(section_index) + \
+            encoder.uint16(self.symbol_type) + \
+            encoder.uint8(self.storage_class) + \
+            encoder.uint8(auxiliary_entries)
