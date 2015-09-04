@@ -250,8 +250,7 @@ class MachOWriter:
 
 class MSCOFFWriter:
     def __init__(self, output_path, abi, input_path=None):
-        from peachpy.formats.mscoff.image import Image
-        from peachpy.formats.mscoff.section import TextSection
+        from peachpy.formats.mscoff import Image, TextSection, ReadOnlyDataSection
 
         self.output_path = output_path
         self.previous_writer = None
@@ -259,6 +258,8 @@ class MSCOFFWriter:
         self.image = Image(abi, input_path)
         self.text_section = TextSection()
         self.image.add_section(self.text_section)
+        self.rdata_section = ReadOnlyDataSection()
+        self.image.add_section(self.rdata_section)
 
     def __enter__(self):
         global active_writer
@@ -286,6 +287,7 @@ class MSCOFFWriter:
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
             "Function must be bindinded to an ABI before its assembly can be used"
         from peachpy.util import roundup
+        from peachpy.formats.mscoff import Symbol, SymbolType, StorageClass, Relocation, RelocationType
 
         encoded_function = function.encode()
 
@@ -297,7 +299,33 @@ class MSCOFFWriter:
         self.text_section.alignment = \
             max(self.text_section.alignment, encoded_function.code_section.alignment)
 
-        from peachpy.formats.mscoff.symbol import Symbol, SymbolType, StorageClass
+        rdata_offset = self.rdata_section.content_size
+        rdata_padding = bytearray([encoded_function.const_section.alignment_byte] *
+                                  (roundup(rdata_offset, encoded_function.const_section.alignment) - rdata_offset))
+        self.rdata_section.content += rdata_padding
+        rdata_offset += len(rdata_padding)
+        self.rdata_section.content += encoded_function.const_section.content
+        self.rdata_section.alignment = \
+            max(self.rdata_section.alignment, encoded_function.const_section.alignment)
+
+        # Map from PeachPy symbol to Mach-O symbol
+        symbol_map = dict()
+        for symbol in encoded_function.const_section.symbols:
+            mscoff_symbol = Symbol()
+            mscoff_symbol.name = symbol.name
+            mscoff_symbol.value = rdata_offset + symbol.offset
+            mscoff_symbol.section = self.rdata_section
+            mscoff_symbol.symbol_type = SymbolType.non_function
+            mscoff_symbol.storage_class = StorageClass.static
+            self.image.add_symbol(mscoff_symbol)
+            symbol_map[symbol] = mscoff_symbol
+
+        for relocation in encoded_function.code_section.relocations:
+            mscoff_relocation = Relocation(RelocationType.x86_64_relocation_offset32,
+                                           code_offset + relocation.offset,
+                                           symbol_map[relocation.symbol])
+            self.text_section.relocations.append(mscoff_relocation)
+
         function_symbol = Symbol()
         function_symbol.name = function.name
         function_symbol.value = code_offset

@@ -3,4 +3,4 @@
 
 from peachpy.formats.mscoff.image import MachineType, Image
 from peachpy.formats.mscoff.section import Section, TextSection, ReadOnlyDataSection
-from peachpy.formats.mscoff.symbol import Symbol, SymbolType, StorageClass
+from peachpy.formats.mscoff.symbol import Symbol, SymbolType, StorageClass, Relocation, RelocationType

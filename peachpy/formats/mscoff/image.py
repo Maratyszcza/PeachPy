@@ -29,8 +29,8 @@ class Image:
     def __init__(self, abi, source=None):
         from peachpy.formats.mscoff.section import StringTable
         self.abi = abi
-        self.sections = []
-        self.symbols = []
+        self.sections = list()
+        self.symbols = list()
         self.string_table = StringTable()
 
     def add_section(self, section):
@@ -70,7 +70,17 @@ class Image:
             section_offset_map[section] = data_offset
             data_offset += section.content_size
 
+        # Layout section relocations
+        from peachpy.formats.mscoff.symbol import Relocation
+
+        section_relocations_map = dict()
+        for section in self.sections:
+            if section.relocations:
+                section_relocations_map[section] = data_offset
+                data_offset += Relocation.entry_size * len(section.relocations)
+
         section_index_map = {section: index + 1 for index, section in enumerate(self.sections)}
+        symbol_index_map = {symbol: index for index, symbol in enumerate(self.symbols)}
 
         # Write file header
         timestamp = 0
@@ -85,7 +95,9 @@ class Image:
 
         # Write section headers
         for section in self.sections:
-            data += section.encode_header(encoder, self.string_table._strings, section_offset_map[section])
+            data += section.encode_header(encoder, self.string_table._strings,
+                                          section_offset_map[section],
+                                          section_relocations_map.get(section))
 
         # Write symbol table and string table (immediately follows symbols table)
         for symbol in self.symbols:
@@ -95,5 +107,10 @@ class Image:
         # Write section content
         for section in self.sections:
             data += section.content
+
+        # Write section relocations
+        for section in self.sections:
+            for relocation in section.relocations:
+                data += relocation.encode_entry(encoder, symbol_index_map)
 
         return data

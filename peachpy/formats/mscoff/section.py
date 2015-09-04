@@ -114,8 +114,8 @@ class Section(object):
             encoder.uint32(address) + \
             encoder.uint32(self.content_size) + \
             encoder.uint32(offset) + \
-            encoder.uint32(line_numbers_offset) + \
             encoder.uint32(relocations_offset) + \
+            encoder.uint32(line_numbers_offset) + \
             encoder.uint16(len(self.relocations)) + \
             encoder.uint16(line_numbers_count) + \
             encoder.uint32(self.flags)
