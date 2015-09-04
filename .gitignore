@@ -22,6 +22,8 @@ MANIFEST
 
 # Generated object/assembly files
 *.o
+*.obj
+*.exe
 *.s
 *.S
 
