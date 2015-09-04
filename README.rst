@@ -99,23 +99,24 @@ Now you can compile this code into a binary object file that you can link into a
 .. code-block:: bash
 
   # Use MS-COFF format with Microsoft ABI for Windows
-  python -m peachpy.x86_64 -mabi=ms -mimage-format=ms-coff -o example.o example.py
+  python -m peachpy.x86_64 -mabi=ms -mimage-format=ms-coff -o example.obj example.py
   # Use Mach-O format with SysV ABI for OS X
   python -m peachpy.x86_64 -mabi=sysv -mimage-format=mach-o -o example.o example.py
   # Use ELF format with SysV ABI for Linux x86-64
   python -m peachpy.x86_64 -mabi=sysv -mimage-format=elf -o example.o example.py
   # Use ELF format with x32 ABI for Linux x32 (x86-64 with 32-bit pointer)
-  python -m peachpy.x86_64 -mabi=x32 -mimage-format=elf -o example.obj example.py
-  # Code-generation for Native Client x86-64 SFI doesn't work yet, but we'll get there
+  python -m peachpy.x86_64 -mabi=x32 -mimage-format=elf -o example.o example.py
+  # Use ELF format with Native Client x86-64 ABI for Chromium x86-64
+  python -m peachpy.x86_64 -mabi=nacl -mimage-format=elf -o example.o example.py
 
 What else? You can convert the program to Plan 9 assembly for use with Go programming language:
 
 .. code-block:: bash
 
   # Use Golang ABI with -S flag to generate assembly for Golang x86-64 targets
-  python -m peachpy.x86_64 -mabi=golang -S -o example_amd64.s example.py
+  python -m peachpy.x86_64 -mabi=goasm -S -o example_amd64.s example.py
   # Use Golang-p32 ABI with -S flag to generate assembly for Golang x86-64 targets with 32-bit pointers
-  python -m peachpy.x86_64 -mabi=golang-p32 -S -o example_amd64p32.s example.py
+  python -m peachpy.x86_64 -mabi=goasm-p32 -S -o example_amd64p32.s example.py
 
 See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ for real-world scenarios of using PeachPy with ``make`` and ``go generate`` tools.
 
