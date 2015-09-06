@@ -113,12 +113,23 @@ What else? You can convert the program to Plan 9 assembly for use with Go progra
 
 .. code-block:: bash
 
-  # Use Golang ABI with -S flag to generate assembly for Golang x86-64 targets
+  # Use Go ABI (asm version) with -S flag to generate assembly for Go x86-64 targets
   python -m peachpy.x86_64 -mabi=goasm -S -o example_amd64.s example.py
-  # Use Golang-p32 ABI with -S flag to generate assembly for Golang x86-64 targets with 32-bit pointers
+  # Use Go-p32 ABI (asm version) with -S flag to generate assembly for Go x86-64 targets with 32-bit pointers
   python -m peachpy.x86_64 -mabi=goasm-p32 -S -o example_amd64p32.s example.py
 
-See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ for real-world scenarios of using PeachPy with ``make`` and ``go generate`` tools.
+If Plan 9 assembly is too restrictive for your use-case, generate ``.syso`` objects `which can be linked into Go programs <https://github.com/golang/go/wiki/GcToolchainTricks#use-syso-file-to-embed-arbitrary-self-contained-c-code>`_:
+
+.. code-block:: bash
+
+  # Use Go ABI (syso version) to generate .syso objects for Go x86-64 targets
+  # Image format can be any (ELF/Mach-O/MS-COFF)
+  python -m peachpy.x86_64 -mabi=gosyso -mimage-format=elf -o example_amd64.syso example.py
+  # Use Go-p32 ABI (syso version) to generate .syso objects for Go x86-64 targets with 32-bit pointers
+  # Image format can be any (ELF/Mach-O/MS-COFF)
+  python -m peachpy.x86_64 -mabi=gosyso-p32 -mimage-format=elf -o example_amd64p32.syso example.py
+
+See `examples <https://github.com/Maratyszcza/PeachPy/tree/master/examples>`_ for real-world scenarios of using PeachPy with ``make``, ``nmake`` and ``go generate`` tools.
 
 Using PeachPy as a Python module
 --------------------------------
