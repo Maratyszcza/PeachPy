@@ -178,6 +178,13 @@ class Register(object):
             "The method returns encoding detail for a physical register"
         return self.physical_id & 0xF
 
+    @property
+    def ehcode(self):
+        """Returns the bits 3-4 of register encoding"""
+        assert self.physical_id is not None, \
+            "The method returns encoding detail for a physical register"
+        return (self.physical_id >> 3) & 0b11
+
 
 class GeneralPurposeRegister(Register):
     """A base class for general-purpose registers"""
@@ -542,6 +549,21 @@ class XMMRegister(Register):
     def as_zmm(self):
         return ZMMRegister(self.virtual_id, self.physical_id)
 
+    @property
+    def kcode(self):
+        """Returns encoding of mask register"""
+        return 0
+
+    @property
+    def zcode(self):
+        """Returns encoding of zeroing/merging flag of mask register"""
+        return 0
+
+    def __call__(self, mask):
+        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+            raise TypeError("xmm(mask) syntax requires mask to be a MaskRegister")
+        return MaskedRegister(self, mask)
+
 
 xmm0 = XMMRegister(physical_id=0)
 xmm1 = XMMRegister(physical_id=1)
@@ -610,6 +632,21 @@ class YMMRegister(Register):
     @property
     def as_zmm(self):
         return ZMMRegister(self.virtual_id, self.physical_id)
+
+    @property
+    def kcode(self):
+        """Returns encoding of mask register"""
+        return 0
+
+    @property
+    def zcode(self):
+        """Returns encoding of zeroing/merging flag of mask register"""
+        return 0
+
+    def __call__(self, mask):
+        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+            raise TypeError("ymm(mask) syntax requires mask to be a MaskRegister")
+        return MaskedRegister(self, mask)
 
 
 ymm0 = YMMRegister(physical_id=0)
@@ -680,6 +717,21 @@ class ZMMRegister(Register):
     def as_zmm(self):
         return ZMMRegister(self.virtual_id, self.physical_id)
 
+    @property
+    def kcode(self):
+        """Returns encoding of mask register"""
+        return 0
+
+    @property
+    def zcode(self):
+        """Returns encoding of zeroing/merging flag of mask register"""
+        return 0
+
+    def __call__(self, mask):
+        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+            raise TypeError("zmm(mask) syntax requires mask to be a MaskRegister")
+        return MaskedRegister(self, mask)
+
 
 zmm0 = ZMMRegister(physical_id=0)
 zmm1 = ZMMRegister(physical_id=1)
@@ -737,6 +789,37 @@ class MaskRegister(Register):
         else:
             return MaskRegister._physical_id_map[self.physical_id]
 
+    @property
+    def z(self):
+        return ZeroingMaskRegister(self)
+
+    @property
+    def kcode(self):
+        """Returns the register encoding"""
+        assert self.physical_id is not None, \
+            "The method returns encoding detail for a physical register"
+        return self.physical_id
+
+    @property
+    def zcode(self):
+        """Returns encoding of the merge/zero flags"""
+        return 0
+
+
+class ZeroingMaskRegister:
+    def __init__(self, mask):
+        self.mask = mask
+
+    @property
+    def kcode(self):
+        """Returns encoding of the mask register"""
+        return self.mask.kcode
+
+    @property
+    def zcode(self):
+        """Returns encoding of the merge/zero flags"""
+        return 1
+
 
 k0 = MaskRegister(physical_id=0)
 k1 = MaskRegister(physical_id=1)
@@ -746,6 +829,49 @@ k4 = MaskRegister(physical_id=4)
 k5 = MaskRegister(physical_id=5)
 k6 = MaskRegister(physical_id=6)
 k7 = MaskRegister(physical_id=7)
+
+
+class MaskedRegister:
+    def __init__(self, register, mask):
+        assert isinstance(register, (XMMRegister, YMMRegister, ZMMRegister))
+        assert isinstance(mask, (MaskRegister, ZeroingMaskRegister))
+        self.register = register
+        self.mask = mask
+
+    @property
+    def lcode(self):
+        """Returns the bits 0-2 of register encoding"""
+        return self.register.lcode
+
+    @property
+    def hcode(self):
+        """Returns the bit 3 of register encoding"""
+        return self.register.hcode
+
+    @property
+    def ecode(self):
+        """Returns the bit 4 of register encoding"""
+        return self.register.ecode
+
+    @property
+    def hlcode(self):
+        """Returns the bits 0-3 of register encoding"""
+        return self.register.hlcode
+
+    @property
+    def ehcode(self):
+        """Returns the bits 3-4 of register encoding"""
+        return self.register.ehcode
+
+    @property
+    def kcode(self):
+        """Returns encoding of mask register"""
+        return self.mask.kcode
+
+    @property
+    def zcode(self):
+        """Returns encoding of zeroing/merging flag of mask register"""
+        return self.mask.zcode
 
 
 class RIPRegister:
