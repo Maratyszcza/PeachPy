@@ -21,6 +21,11 @@ def check_operand(operand):
         if len(operand) != 1:
             raise ValueError("Memory operands must be represented by a list with only one element")
         return MemoryOperand(operand[0])
+    elif isinstance(operand, set):
+        if len(operand) != 1:
+            raise ValueError("Rounding control & suppress-all-errors operands must be represented by a set "
+                             "with only one element")
+        return operand[0]
     else:
         raise TypeError("Unsupported operand: %s" % str(operand))
 
@@ -485,6 +490,14 @@ def is_label(operand):
     return isinstance(operand, peachpy.x86_64.pseudo.Label)
 
 
+def is_er(operand):
+    return isinstance(operand, RoundingControl)
+
+
+def is_sae(operand):
+    return isinstance(operand, SuppressAllExceptions)
+
+
 byte = SizeSpecification(1)
 word = SizeSpecification(2)
 dword = SizeSpecification(4)
@@ -494,3 +507,45 @@ oword = SizeSpecification(16)
 hword = SizeSpecification(32)
 yword = SizeSpecification(32)
 zword = SizeSpecification(64)
+
+
+class RoundingControl:
+    def __init__(self, name, code):
+        self.name = name
+        self.code = code
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        return isinstance(other, RoundingControl) and other.name == self.name and other.code == self.code
+
+    def __ne__(self, other):
+        return not isinstance(other, RoundingControl) or other.name != self.name or other.code != self.code
+
+    def __str__(self):
+        return "{" + self.name + "}"
+
+
+class SuppressAllExceptions:
+    def __init__(self, name):
+        self.name = name
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        return isinstance(other, SuppressAllExceptions) and other.name == self.name
+
+    def __ne__(self, other):
+        return not isinstance(other, SuppressAllExceptions) or other.name != self.name
+
+    def __str__(self):
+        return "{" + self.name + "}"
+
+
+rn_sae = RoundingControl("rn-sae", 0b00)
+rz_sae = RoundingControl("rz-sae", 0b11)
+ru_sae = RoundingControl("ru-sae", 0b10)
+rd_sae = RoundingControl("rd-sae", 0b01)
+sae = SuppressAllExceptions("sae")
