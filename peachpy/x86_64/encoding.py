@@ -119,7 +119,7 @@ def vex3(escape, mmmmm, w____lpp, r, rm, vvvv=0):
     return bytearray([escape, 0xE0 ^ (r << 7) ^ (x << 6) ^ (b << 5) ^ mmmmm, 0x78 ^ (vvvv << 3) ^ w____lpp])
 
 
-def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0b11111, aaa=0, z=0, b=0):
+def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0, aaa=0, z=0, b=0):
     assert mm & ~0b11 == 0, "EVEX.mm must be a 2-bit mask"
     assert w____1pp & ~0b10000011 == 0b100, "EVEX.W____1pp is expected to have no bits set except 0, 1, 2, and 7"
     assert ll & ~0b11 == 0, "EVEX.L'L must be a 2-bit mask"
@@ -149,7 +149,10 @@ def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0b11111, aaa=0, z=0, b=0):
     p0 = (r << 7) | (x << 6) | (b_ << 5) | (r_ << 4) | mm
     p1 = w____1pp | (vvvv << 3)
     p2 = (z << 7) | (ll << 5) | (b << 4) | (v_ << 3) | aaa
-    return bytearray([0x62, p0, p1, p2])
+    # p0: invert RXBR' (bits 4-7)
+    # p1: invert vvvv (bits 3-6)
+    # p2: invert V' (bit 3)
+    return bytearray([0x62, p0 ^ 0xF0, p1 ^ 0x78, p2 ^ 0x08])
 
 
 def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
