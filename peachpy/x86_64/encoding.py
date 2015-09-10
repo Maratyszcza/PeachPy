@@ -119,6 +119,39 @@ def vex3(escape, mmmmm, w____lpp, r, rm, vvvv=0):
     return bytearray([escape, 0xE0 ^ (r << 7) ^ (x << 6) ^ (b << 5) ^ mmmmm, 0x78 ^ (vvvv << 3) ^ w____lpp])
 
 
+def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0b11111, aaa=0, z=0, b=0):
+    assert mm & ~0b11 == 0, "EVEX.mm must be a 2-bit mask"
+    assert w____1pp & ~0b10000011 == 0b100, "EVEX.W____1pp is expected to have no bits set except 0, 1, 2, and 7"
+    assert ll & ~0b11 == 0, "EVEX.L'L must be a 2-bit mask"
+    assert rr & ~0b11 == 0, "EVEX.R'R must be a 2-bit mask"
+    assert Vvvvv & ~0b11111 == 0, "EVEX.v'vvvv must be a 5-bit mask"
+    assert aaa & ~0b111 == 0, "EVEX.aaa must be a 3-bit mask"
+    assert z & 0b1 == 0, "EVEX.z must be a single-bit mask"
+    from peachpy.x86_64.operand import MemoryAddress
+    from peachpy.x86_64.registers import Register, XMMRegister, YMMRegister, ZMMRegister
+    assert rm is None or isinstance(rm, (Register, MemoryAddress, int)), \
+        "rm is expected to be a register, a memory address, or None"
+    r_, r = rr >> 1, rr & 1
+    v_, vvvv = Vvvvv >> 4, Vvvvv & 0b1111
+    b_ = 0
+    x = 0
+    if rm is not None:
+        if isinstance(rm, Register):
+            b_ = rm.hcode
+            x = rm.ecode
+        elif isinstance(rm, MemoryAddress):
+            if rm.base is not None:
+                b_ = rm.base.hcode
+            if rm.index is not None:
+                x = rm.index.hcode
+                if isinstance(rm.index, (XMMRegister, YMMRegister, ZMMRegister)):
+                    v_ = rm.index.ecode
+    p0 = (r << 7) | (x << 6) | (b_ << 5) | (r_ << 4) | mm
+    p1 = w____1pp | (vvvv << 3)
+    p2 = (z << 7) | (ll << 5) | (b << 4) | (v_ << 3) | aaa
+    return bytearray([0x62, p0, p1, p2])
+
+
 def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import rsp, rbp, r12, r13
