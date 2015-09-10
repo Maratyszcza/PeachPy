@@ -246,12 +246,13 @@ class SizeSpecification:
         8: "qword",
         10: "tword",
         16: "oword",
-        32: "hword"
+        32: "hword",
+        64: "zword"
     }
 
     def __init__(self, size):
         from peachpy.util import is_int
-        assert is_int(size) and int(size) in SizeSpecification._size_name_map,\
+        assert is_int(size) and int(size) in SizeSpecification._size_name_map, \
             "Unsupported size: %d" % size
         self.size = size
 
@@ -491,3 +492,5 @@ qword = SizeSpecification(8)
 tword = SizeSpecification(10)
 oword = SizeSpecification(16)
 hword = SizeSpecification(32)
+yword = SizeSpecification(32)
+zword = SizeSpecification(64)
