@@ -110,7 +110,7 @@ def format_operand_type(operand):
         if operand.size is None:
             return "m"
         else:
-            return "m" + str(operand.size)
+            return "m" + str(operand.size * 8)
     elif isinstance(operand, Label):
         return "rel"
     else:
