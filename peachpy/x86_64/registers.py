@@ -112,6 +112,9 @@ class Register(object):
             if mask & 0x10 != 0:
                 mask &= ~0x10
                 registers.add(MMXRegister(virtual_id=-internal_id))
+            if mask & 0x40 != 0:
+                mask &= ~0x40
+                registers.add(KRegister(virtual_id=-internal_id))
             if mask & 0x8 != 0:
                 mask &= ~0xF
                 registers.add(GeneralPurposeRegister64(virtual_id=-internal_id))
@@ -142,6 +145,8 @@ class Register(object):
             return MMXRegister._kind
         elif self.mask & XMMRegister._mask != 0:
             return XMMRegister._kind
+        elif self.mask & KRegister._mask != 0:
+            return KRegister._kind
         else:
             assert False, "Unknown register mask: %X" % self.mask
 
@@ -550,6 +555,13 @@ class XMMRegister(Register):
         return ZMMRegister(self.virtual_id, self.physical_id)
 
     @property
+    def code(self):
+        """Returns 5-bit encoding of the register"""
+        assert self.physical_id is not None, \
+            "The method returns encoding detail for a physical register"
+        return self.physical_id
+
+    @property
     def kcode(self):
         """Returns encoding of mask register"""
         return 0
@@ -560,7 +572,7 @@ class XMMRegister(Register):
         return 0
 
     def __call__(self, mask):
-        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+        if not isinstance(mask, (KRegister, RegisterMask)):
             raise TypeError("xmm(mask) syntax requires mask to be a MaskRegister")
         return MaskedRegister(self, mask)
 
@@ -634,6 +646,13 @@ class YMMRegister(Register):
         return ZMMRegister(self.virtual_id, self.physical_id)
 
     @property
+    def code(self):
+        """Returns 5-bit encoding of the register"""
+        assert self.physical_id is not None, \
+            "The method returns encoding detail for a physical register"
+        return self.physical_id
+
+    @property
     def kcode(self):
         """Returns encoding of mask register"""
         return 0
@@ -644,7 +663,7 @@ class YMMRegister(Register):
         return 0
 
     def __call__(self, mask):
-        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+        if not isinstance(mask, (KRegister, RegisterMask)):
             raise TypeError("ymm(mask) syntax requires mask to be a MaskRegister")
         return MaskedRegister(self, mask)
 
@@ -718,6 +737,13 @@ class ZMMRegister(Register):
         return ZMMRegister(self.virtual_id, self.physical_id)
 
     @property
+    def code(self):
+        """Returns 5-bit encoding of the register"""
+        assert self.physical_id is not None, \
+            "The method returns encoding detail for a physical register"
+        return self.physical_id
+
+    @property
     def kcode(self):
         """Returns encoding of mask register"""
         return 0
@@ -728,7 +754,7 @@ class ZMMRegister(Register):
         return 0
 
     def __call__(self, mask):
-        if not isinstance(mask, (MaskRegister, ZeroingMaskRegister)):
+        if not isinstance(mask, (KRegister, RegisterMask)):
             raise TypeError("zmm(mask) syntax requires mask to be a MaskRegister")
         return MaskedRegister(self, mask)
 
@@ -767,7 +793,7 @@ zmm30 = ZMMRegister(physical_id=30)
 zmm31 = ZMMRegister(physical_id=31)
 
 
-class MaskRegister(Register):
+class KRegister(Register):
     """AVX-512 mask register"""
     size = 8
 
@@ -778,20 +804,20 @@ class MaskRegister(Register):
     def __init__(self, virtual_id=None, physical_id=None):
         if virtual_id is None and physical_id is None:
             from peachpy.x86_64.function import active_function
-            super(MaskRegister, self).__init__(MaskRegister._mask,
+            super(KRegister, self).__init__(KRegister._mask,
                                                active_function._allocate_mask_register_id())
         else:
-            super(MaskRegister, self).__init__(MaskRegister._mask, virtual_id, physical_id)
+            super(KRegister, self).__init__(KRegister._mask, virtual_id, physical_id)
 
     def __str__(self):
         if self.is_virtual:
             return "k-vreg<%d>" % self.virtual_id
         else:
-            return MaskRegister._physical_id_map[self.physical_id]
+            return KRegister._physical_id_map[self.physical_id]
 
     @property
     def z(self):
-        return ZeroingMaskRegister(self)
+        return RegisterMask(self, is_zeroing=True)
 
     @property
     def kcode(self):
@@ -806,37 +832,41 @@ class MaskRegister(Register):
         return 0
 
 
-class ZeroingMaskRegister:
-    def __init__(self, mask):
-        self.mask = mask
+class RegisterMask:
+    def __init__(self, mask_register, is_zeroing=False):
+        self.mask_register = mask_register
+        self.is_zeroing = is_zeroing
 
     @property
     def kcode(self):
         """Returns encoding of the mask register"""
-        return self.mask.kcode
+        return self.mask_register.kcode
 
     @property
     def zcode(self):
         """Returns encoding of the merge/zero flags"""
-        return 1
+        return int(self.is_zeroing)
 
 
-k0 = MaskRegister(physical_id=0)
-k1 = MaskRegister(physical_id=1)
-k2 = MaskRegister(physical_id=2)
-k3 = MaskRegister(physical_id=3)
-k4 = MaskRegister(physical_id=4)
-k5 = MaskRegister(physical_id=5)
-k6 = MaskRegister(physical_id=6)
-k7 = MaskRegister(physical_id=7)
+k0 = KRegister(physical_id=0)
+k1 = KRegister(physical_id=1)
+k2 = KRegister(physical_id=2)
+k3 = KRegister(physical_id=3)
+k4 = KRegister(physical_id=4)
+k5 = KRegister(physical_id=5)
+k6 = KRegister(physical_id=6)
+k7 = KRegister(physical_id=7)
 
 
 class MaskedRegister:
     def __init__(self, register, mask):
-        assert isinstance(register, (XMMRegister, YMMRegister, ZMMRegister))
-        assert isinstance(mask, (MaskRegister, ZeroingMaskRegister))
+        assert isinstance(register, (XMMRegister, YMMRegister, ZMMRegister, KRegister))
+        assert isinstance(mask, (KRegister, RegisterMask))
         self.register = register
-        self.mask = mask
+        if isinstance(mask, KRegister):
+            self.mask = RegisterMask(mask)
+        else:
+            self.mask = mask
 
     @property
     def lcode(self):
