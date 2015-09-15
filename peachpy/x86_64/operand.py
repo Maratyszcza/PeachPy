@@ -235,7 +235,7 @@ class MemoryOperand:
             if self.address.base is not None:
                 text += "(" + self.address.base.format(assembly_format) + ")"
             if self.address.index is not None:
-                text += "(%s*%d)" % (self.address.index.format(assembly_format), str(self.address.scale))
+                text += "(%s*%d)" % (self.address.index.format(assembly_format), self.address.scale)
             return text
         elif assembly_format == "gnu":
             return "%" + str(self)
