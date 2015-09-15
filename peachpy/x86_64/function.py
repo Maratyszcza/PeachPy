@@ -84,6 +84,7 @@ class Function:
         self._virtual_general_purpose_registers_count = 0
         self._virtual_mmx_registers_count = 0
         self._virtual_xmm_registers_count = 0
+        self._virtual_mask_registers_count = 0
 
         from peachpy.x86_64 import m256, m256d, m256i
         avx_types = [m256, m256d, m256i]
@@ -91,18 +92,20 @@ class Function:
         self._avx_prolog = None
 
         from collections import defaultdict
-        from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister
+        from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
         self._conflicting_registers = {
             # Map from virtual register id to internal id of conflicting registers
             GeneralPurposeRegister._kind: defaultdict(set),
             MMXRegister._kind: defaultdict(set),
-            XMMRegister._kind: defaultdict(set)
+            XMMRegister._kind: defaultdict(set),
+            KRegister._kind: defaultdict(set),
         }
         self._register_allocations = {
             # Map from internal register id to physical register id
             GeneralPurposeRegister._kind: dict(),
             MMXRegister._kind: dict(),
-            XMMRegister._kind: dict()
+            XMMRegister._kind: dict(),
+            KRegister._kind: dict(),
         }
 
     @property
@@ -674,8 +677,9 @@ class Function:
                 conflicting_ids = [reg_id for (reg_id, reg_mask)
                                    in six.iteritems(instruction._live_registers)
                                    if reg_mask & virtual_register.mask != 0]
-                self._conflicting_registers[virtual_register.kind][-virtual_register.virtual_id]\
-                    .update(conflicting_ids)
+                if conflicting_ids:
+                    self._conflicting_registers[virtual_register.kind][-virtual_register.virtual_id]\
+                        .update(conflicting_ids)
                 # Make sure that conflicting registers are mutually conflicting
                 for conflicting_id in conflicting_ids:
                     if conflicting_id < 0:
@@ -685,12 +689,12 @@ class Function:
     def _check_live_registers(self):
         """Checks that the number of live registers does not exceed the number of physical registers for each insruction
         """
-        from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, MaskRegister
+        from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
         max_live_registers = {
             GeneralPurposeRegister._kind: 15,
             MMXRegister._kind: 8,
             XMMRegister._kind: 16,
-            MaskRegister._kind: 8
+            KRegister._kind: 8
         }
         for instruction in self._instructions:
             live_registers = max_live_registers.copy()
@@ -865,6 +869,11 @@ class Function:
         """Returns a new unique ID for a local variable"""
         self._local_variables_count += 1
         return self._local_variables_count
+
+    def _allocate_mask_register_id(self):
+        """Returns a new unique ID for a virtual mask (k) register"""
+        self._virtual_mask_registers_count += 1
+        return self._virtual_mask_registers_count
 
     def _allocate_xmm_register_id(self):
         """Returns a new unique ID for a virtual SSE/AVX/AVX-512 (xmm/ymm/zmm) register"""
@@ -1116,14 +1125,15 @@ class ABIFunction:
             self.result_offset = roundup(stack_offset, self.result_type.size)
 
     def _allocate_registers(self):
-        from peachpy.x86_64.registers import Register, GeneralPurposeRegister, MMXRegister, XMMRegister
+        from peachpy.x86_64.registers import Register, GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
         from peachpy.util import unique, append_unique
 
         allocation_options = {
             # Map from virtual register id to a list of possible allocations in priority order
             GeneralPurposeRegister._kind: dict(),
             MMXRegister._kind: dict(),
-            XMMRegister._kind: dict()
+            XMMRegister._kind: dict(),
+            KRegister._kind: dict(),
         }
         from peachpy.x86_64.pseudo import LOAD
         for vreg_kind, vreg_ids in six.iteritems(self._conflicting_registers):
