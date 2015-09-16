@@ -312,6 +312,45 @@ class SizeSpecification:
     def __getitem__(self, address):
         return MemoryOperand(address, self.size)
 
+    @property
+    def to2(self):
+        if self.size not in [4, 8]:
+            raise ValueError("{1to2} broadcasting is only supported for dword and qword memory locations")
+        return BroadcastSpecification(self.size, 2)
+
+    @property
+    def to4(self):
+        if self.size not in [4, 8]:
+            raise ValueError("{1to4} broadcasting is only supported for dword and qword memory locations")
+        return BroadcastSpecification(self.size, 4)
+
+    @property
+    def to8(self):
+        if self.size not in [4, 8]:
+            raise ValueError("{1to8} broadcasting is only supported for dword and qword memory locations")
+        return BroadcastSpecification(self.size, 8)
+
+    @property
+    def to16(self):
+        if self.size != 4:
+            raise ValueError("{1to16} broadcasting is only supported for dword memory locations")
+        return BroadcastSpecification(self.size, 16)
+
+
+class BroadcastSpecification:
+    def __init__(self, size, broadcast):
+        assert size in [4, 8]
+        assert broadcast in [2, 4, 8, 16]
+        assert size * broadcast in [16, 32, 64]
+        self.size = size
+        self.broadcast = broadcast
+
+    def __str__(self):
+        return SizeSpecification._size_name_map[self.size] + "{1to%d}" % self.broadcast
+
+    def __getitem__(self, address):
+        return MemoryOperand(address, self.size, broadcast=self.broadcast)
+
 
 class RIPRelativeOffset:
     def __init__(self, offset):
@@ -581,31 +620,31 @@ def is_m512kz(operand):
 
 
 def is_m64_m32bcst(operand):
-    return is_m64(operand)
+    return is_m64(operand) or isinstance(operand, MemoryOperand) and operand.size == 4 and operand.broadcast == 2
 
 
 def is_m128_m32bcst(operand):
-    return is_m128(operand)
+    return is_m128(operand) or isinstance(operand, MemoryOperand) and operand.size == 4 and operand.broadcast == 4
 
 
 def is_m256_m32bcst(operand):
-    return is_m256(operand)
+    return is_m256(operand) or isinstance(operand, MemoryOperand) and operand.size == 4 and operand.broadcast == 8
 
 
 def is_m512_m32bcst(operand):
-    return is_m512(operand)
+    return is_m512(operand) or isinstance(operand, MemoryOperand) and operand.size == 4 and operand.broadcast == 16
 
 
 def is_m128_m64bcst(operand):
-    return is_m128(operand)
+    return is_m128(operand) or isinstance(operand, MemoryOperand) and operand.size == 8 and operand.broadcast == 2
 
 
 def is_m256_m64bcst(operand):
-    return is_m256(operand)
+    return is_m256(operand) or isinstance(operand, MemoryOperand) and operand.size == 8 and operand.broadcast == 4
 
 
 def is_m512_m64bcst(operand):
-    return is_m512(operand)
+    return is_m512(operand) or isinstance(operand, MemoryOperand) and operand.size == 8 and operand.broadcast == 8
 
 
 def is_m32bcst(operand):
