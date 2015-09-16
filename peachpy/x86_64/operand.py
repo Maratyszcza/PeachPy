@@ -71,7 +71,7 @@ def format_operand(operand, assembly_format):
 def format_operand_type(operand):
     """Returns string representation of the operand type in assembly language"""
     from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32, GeneralPurposeRegister16,\
-        GeneralPurposeRegister8, MMXRegister, XMMRegister, YMMRegister, ZMMRegister, \
+        GeneralPurposeRegister8, MMXRegister, XMMRegister, YMMRegister, ZMMRegister, MaskedRegister, \
         al, ax, eax, rax, cl, xmm0
     from peachpy.x86_64.pseudo import Label
     from peachpy.util import is_int64, is_int32, is_int16, is_int8
@@ -111,11 +111,21 @@ def format_operand_type(operand):
         return "ymm"
     elif isinstance(operand, ZMMRegister):
         return "zmm"
+    elif isinstance(operand, MaskedRegister):
+        if operand.mask.is_zeroing:
+            return format_operand_type(operand.register) + "{k}{z}"
+        else:
+            return format_operand_type(operand.register) + "{k}"
     elif isinstance(operand, MemoryOperand):
         if operand.size is None:
             return "m"
         else:
-            return "m" + str(operand.size * 8)
+            if operand.mask is None:
+                return "m" + str(operand.size * 8)
+            elif operand.mask.is_zeroing:
+                return "m" + str(operand.size * 8) + "{k}{z}"
+            else:
+                return "m" + str(operand.size * 8) + "{k}"
     elif isinstance(operand, Label):
         return "rel"
     else:
@@ -258,6 +268,10 @@ class MemoryOperand:
             return "%" + str(self)
         else:
             return str(self)
+
+    @property
+    def bcode(self):
+        return int(self.broadcast is not None)
 
     @property
     def kcode(self):
@@ -454,17 +468,30 @@ def is_kk(operand):
 
 
 def is_m(operand):
-    if not isinstance(operand, MemoryOperand):
+    if not isinstance(operand, MemoryOperand) or operand.mask is not None or operand.broadcast is not None:
         return False
+    # Check that the operand does not use vector index
     from peachpy.x86_64.registers import GeneralPurposeRegister
     return operand.address.index is None or isinstance(operand.address.index, GeneralPurposeRegister)
 
 
 def is_mk(operand):
-    if not isinstance(operand, MemoryOperand):
+    if not isinstance(operand, MemoryOperand) or operand.broadcast is not None:
         return False
+    # Check that the no zero-masking applied to the operand
+    if operand.mask is not None and operand.mask.is_zeroing:
+        return False
+    # Check that the operand does not use vector index
     from peachpy.x86_64.registers import GeneralPurposeRegister
-    r
+    return operand.address.index is None or isinstance(operand.address.index, GeneralPurposeRegister)
+
+
+def is_mkz(operand):
+    if not isinstance(operand, MemoryOperand) or operand.broadcast is not None:
+        return False
+    # Check that the operand does not use vector index
+    from peachpy.x86_64.registers import GeneralPurposeRegister
+    return operand.address.index is None or isinstance(operand.address.index, GeneralPurposeRegister)
 
 
 def is_vmx(operand):
@@ -487,16 +514,36 @@ def is_m16(operand, strict=False):
         isinstance(operand, peachpy.literal.Constant) and operand.size == 2
 
 
+def is_m16kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 2)
+
+
 def is_m32(operand, strict=False):
     import peachpy.literal
     return is_m(operand) and (operand.size is None and not strict or operand.size == 4) or \
         isinstance(operand, peachpy.literal.Constant) and operand.size == 4
 
 
+def is_m32k(operand):
+    return is_mk(operand) and (operand.size is None or operand.size == 4)
+
+
+def is_m32kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 4)
+
+
 def is_m64(operand, strict=False):
     import peachpy.literal
     return is_m(operand) and (operand.size is None and not strict or operand.size == 8) or \
         isinstance(operand, peachpy.literal.Constant) and operand.size == 8
+
+
+def is_m64k(operand):
+    return is_mk(operand) and (operand.size is None or operand.size == 8)
+
+
+def is_m64kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 8)
 
 
 def is_m80(operand, strict=False):
@@ -509,8 +556,8 @@ def is_m128(operand, strict=False):
         isinstance(operand, peachpy.literal.Constant) and operand.size == 16
 
 
-def is_m128kz(operand, strict=False):
-    return is_m128(operand, strict)
+def is_m128kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 16)
 
 
 def is_m256(operand, strict=False):
@@ -519,8 +566,8 @@ def is_m256(operand, strict=False):
         isinstance(operand, peachpy.literal.Constant) and operand.size == 32
 
 
-def is_m256kz(operand, strict=False):
-    return is_m256(operand, strict)
+def is_m256kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 32)
 
 
 def is_m512(operand, strict=False):
@@ -529,8 +576,8 @@ def is_m512(operand, strict=False):
         isinstance(operand, peachpy.literal.Constant) and operand.size == 64
 
 
-def is_m512kz(operand, strict=False):
-    return is_m512(operand, strict)
+def is_m512kz(operand):
+    return is_mkz(operand) and (operand.size is None or operand.size == 64)
 
 
 def is_m64_m32bcst(operand):
