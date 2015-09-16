@@ -233,6 +233,16 @@ class MemoryOperand:
     def __repr__(self):
         return str(self)
 
+    def __call__(self, mask):
+        from peachpy.x86_64.registers import KRegister, RegisterMask
+        if not isinstance(mask, (KRegister, RegisterMask)):
+            raise SyntaxError("zmm(mask) syntax requires mask to be a KRegister or KRegister.z")
+        if self.broadcast:
+            raise ValueError("mask can not be applied to memory operands with broadcasting")
+        if isinstance(mask, KRegister):
+            mask = RegisterMask(mask)
+        return MemoryOperand(self.address, self.size, mask)
+
     def format(self, assembly_format):
         assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
             "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"

@@ -573,7 +573,7 @@ class XMMRegister(Register):
 
     def __call__(self, mask):
         if not isinstance(mask, (KRegister, RegisterMask)):
-            raise TypeError("xmm(mask) syntax requires mask to be a MaskRegister")
+            raise SyntaxError("xmm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
 
 
@@ -664,7 +664,7 @@ class YMMRegister(Register):
 
     def __call__(self, mask):
         if not isinstance(mask, (KRegister, RegisterMask)):
-            raise TypeError("ymm(mask) syntax requires mask to be a MaskRegister")
+            raise SyntaxError("ymm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
 
 
@@ -755,7 +755,7 @@ class ZMMRegister(Register):
 
     def __call__(self, mask):
         if not isinstance(mask, (KRegister, RegisterMask)):
-            raise TypeError("zmm(mask) syntax requires mask to be a MaskRegister")
+            raise SyntaxError("zmm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
 
 
