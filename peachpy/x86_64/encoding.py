@@ -126,7 +126,7 @@ def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0, aaa=0, z=0, b=0):
     assert rr & ~0b11 == 0, "EVEX.R'R must be a 2-bit mask"
     assert Vvvvv & ~0b11111 == 0, "EVEX.v'vvvv must be a 5-bit mask"
     assert aaa & ~0b111 == 0, "EVEX.aaa must be a 3-bit mask"
-    assert z & 0b1 == 0, "EVEX.z must be a single-bit mask"
+    assert z & ~0b1 == 0, "EVEX.z must be a single-bit mask"
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import Register, XMMRegister, YMMRegister, ZMMRegister
     assert rm is None or isinstance(rm, (Register, MemoryAddress, int)), \
