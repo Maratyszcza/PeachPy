@@ -1,4 +1,4 @@
-.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo.png
+.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/peachpy.png
   :alt: PeachPy logo
   :align: center
 
