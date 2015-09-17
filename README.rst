@@ -203,3 +203,20 @@ Publications
 ------------
 
 - Marat Dukhan "PeachPy: A Python Framework for Developing High-Performance Assembly Kernels", Python for High-Performance Computing (PyHPC) 2013 (`slides <http://www.yeppp.info/resources/peachpy-slides.pdf>`_, `paper <http://www.yeppp.info/resources/peachpy-paper.pdf>`_, code uses deprecated syntax)
+
+Acknowledgements
+----------------
+
+.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/college-of-computing.gif
+  :alt: Georgia Tech College of Computing logo
+  :target: http://www.cse.gatech.edu/
+
+.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/hpcgarage.png
+  :alt: HPC Garage logo
+  :target: http://hpcgarage.org/
+
+This work is a research project at the HPC Garage lab in the Georgia Institute of Technology, College of Computing, School of Computational Science and Engineering.
+
+The work was supported in part by grants to Prof. Richard Vuduc’s research lab, `The HPC Garage <www.hpcgarage.org>`_, from the National Science Foundation (NSF) under NSF CAREER award number 0953100; and a grant from the Defense Advanced Research Projects Agency (DARPA) Computer Science Study Group program
+
+Any opinions, conclusions or recommendations expressed in this software and documentation are those of the authors and not necessarily reflect those of NSF or DARPA.
