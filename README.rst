@@ -69,20 +69,20 @@ Using PeachPy as a command-line tool
 
 .. code-block:: python
   
-  # This two lines are not needed for PeachPy, but will help you get autocompletion in good code editors
+  # These two lines are not needed for PeachPy, but will help you get autocompletion in good code editors
   from peachpy import *
   from peachpy.x86_64 import *
 
   # Lets write a function float DotProduct(const float* x, const float* y)
   
-  # If you want maximum cross-platform compatibility, argument must have names
+  # If you want maximum cross-platform compatibility, arguments must have names
   x = Argument(ptr(const_float_), name="x")
   # If name is not specified, it is auto-detected
   y = Argument(ptr(const_float_))
 
-  # Everything inside the `with` statement is goes to function body
+  # Everything inside the `with` statement is function body
   with Function("DotProduct", (x, y), float_):
-    # Request two 64-bit general-purpose register. No need to specify exact names.
+    # Request two 64-bit general-purpose registers. No need to specify exact names.
     reg_x, reg_y = GeneralPurposeRegister64(), GeneralPurposeRegister64()
 
     # This is a cross-platform way to load arguments. PeachPy will map it to something proper later.
