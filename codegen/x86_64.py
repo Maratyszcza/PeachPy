@@ -420,23 +420,23 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
             else:
                 byte_sequence.append("0x62")
                 if isinstance(component.RR, Operand):
-                    byte_sequence.append("(op[%d].hcode << 7) | (op[%d].hcode << 5) | (op[%d].ecode << 4) | %d" %
+                    byte_sequence.append("((op[%d].hcode << 7) | (op[%d].ehcode << 5) | (op[%d].ecode << 4)) ^ %d" %
                                          (operands.index(component.RR), operands.index(component.B),
-                                          operands.index(component.RR), component.mm))
+                                          operands.index(component.RR), 0xF0 | component.mm))
                 else:
                     r = component.RR & 1
                     r_ = (component.RR >> 1) & 1
-                    byte = component.mm | (r << 7) | (r_ << 4)
+                    byte = (component.mm | (r << 7) | (r_ << 4)) ^ 0xF0
                     if byte == 0:
-                        byte_sequence.append("op[%d].hcode << 5" % operands.index(component.B))
+                        byte_sequence.append("op[%d].ehcode << 5" % operands.index(component.B))
                     else:
-                        byte_sequence.append("(op[%d].hcode << 5) | 0x%02X" % (operands.index(component.B), byte))
+                        byte_sequence.append("(op[%d].ehcode << 5) ^ 0x%02X" % (operands.index(component.B), byte))
                 if isinstance(component.vvvv, Operand):
-                    byte_sequence.append("0x%02X | (op[%d].hlcode << 3)" %
-                                         (component.W << 7 | component.pp | 0b100, operands.index(component.vvvv)))
+                    byte_sequence.append("0x%02X ^ (op[%d].hlcode << 3)" %
+                                         (component.W << 7 | component.pp | 0b01111100, operands.index(component.vvvv)))
                 else:
                     assert component.vvvv == 0
-                    byte_sequence.append("0x%02X" % (component.W << 7 | component.pp | 0b100))
+                    byte_sequence.append("0x%02X" % (component.W << 7 | component.pp | 0b01111100))
                 byte = component.b << 4
                 byte_parts = []
                 if isinstance(component.z, Operand):
@@ -448,9 +448,9 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
                 else:
                     byte |= component.LL << 5
                 if isinstance(component.V, Operand):
-                    byte_parts.append("(op[%d].ecode << 3)" % operands.index(component.V))
+                    byte_parts.append("(op[%d].ecode << 3 ^ 0x8)" % operands.index(component.V))
                 else:
-                    byte |= component.V << 3
+                    byte |= (component.V ^ 1) << 3
                 if isinstance(component.aaa, Operand):
                     byte_parts.append("op[%d].kcode" % operands.index(component.aaa))
                 else:
