@@ -207,13 +207,13 @@ Publications
 Acknowledgements
 ----------------
 
-.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/college-of-computing.gif
-  :alt: Georgia Tech College of Computing logo
-  :target: http://www.cse.gatech.edu/
-
 .. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/hpcgarage.png
   :alt: HPC Garage logo
   :target: http://hpcgarage.org/
+
+.. image:: https://github.com/Maratyszcza/PeachPy/blob/master/logo/college-of-computing.gif
+  :alt: Georgia Tech College of Computing logo
+  :target: http://www.cse.gatech.edu/
 
 This work is a research project at the HPC Garage lab in the Georgia Institute of Technology, College of Computing, School of Computational Science and Engineering.
 
