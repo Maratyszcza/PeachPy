@@ -312,6 +312,60 @@ class Instruction(object):
                 encodings.append((flags, encoding))
         return encodings
 
+    @property
+    def relocation(self):
+        """Returns relocation corresponding to encoding of this instruction of None if no relocation needed.
+        Relocation offset and type variables are initialized, symbol variable needs to be initialized by the caller.
+        Relocation offset specifies offset relative to the start of instruction encoding.
+        """
+
+        from peachpy.x86_64.meta import Relocation, RelocationType
+        if self.bytecode:
+            from peachpy.literal import Constant
+            if any(filter(lambda op: isinstance(op, Constant), self.operands)):
+                # Mini-disassembler for instruction encoding.
+                # Possible encoding sequences:
+                #   | [66, F2, or F3 prefix] | [REX] | [66, F2, or F3 prefix] | ...
+                #     ... [0F, 0F 38, or 0F 3A opcode extension] | Opcode | Mod R/M | disp32 | [imm] |
+                #   | C5 ... 2-byte VEX  | Opcode | Mod R/M | disp32 | [imm] |
+                #   | C4 ... 3-byte VEX  | Opcode | Mod R/M | disp32 | [imm] |
+                #   | 8F ... 3-byte XOP  | Opcode | Mod R/M | disp32 | [imm] |
+                #   | 62 ... 4-byte EVEX | Opcode | Mod R/M | disp32 | [imm] |
+                prefix_lengths = {
+                    0xC5: 2,
+                    0xC4: 3,
+                    0x8F: 3,
+                    0x62: 4
+                }
+                if self.bytecode[0] in prefix_lengths:
+                    mod_rm_position = prefix_lengths[self.bytecode[0]] + 1
+                else:
+                    decode_position = 0
+                    if self.bytecode[0] in [0x66, 0xF2, 0xF3]:
+                        # Legacy prefix
+                        decode_position += 1
+                    if self.bytecode[decode_position] & 0xF0 == 0x40:
+                        # REX prefix
+                        decode_position += 1
+                    if self.bytecode[decode_position] in [0x66, 0xF2, 0xF3]:
+                        # Legacy prefix += 1
+                        decode_position += 1
+                    if self.bytecode[decode_position] == 0x0F:
+                        # Opcode extension
+                        decode_position += 1
+                        if self.bytecode[decode_position] in [0x38, 0x3A]:
+                            # 2-byte 0F 38 or 0F 3A opcode extension
+                            decode_position += 1
+                    # Opcode
+                    mod_rm_position = decode_position + 1
+                mod_rm = self.bytecode[mod_rm_position]
+                rm = mod_rm & 0b111
+                mode = mod_rm >> 6
+                assert rm == 0b101 and mode == 0b00, \
+                    "Encoding must use rip-relative disp32 addressing, can't have SIB byte"
+                return Relocation(mod_rm_position + 1, RelocationType.rip_disp32)
+
+
 
 class BranchInstruction(Instruction):
     def __init__(self, name, origin=None, prototype=None):

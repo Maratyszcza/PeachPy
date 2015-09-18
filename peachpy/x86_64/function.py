@@ -1769,22 +1769,18 @@ class EncodedFunction:
                     if instruction.bytecode:
                         code_address += len(instruction.bytecode)
 
-        from peachpy.x86_64.meta import Relocation, RelocationType
         for instruction in self._instructions:
-            bytecode = instruction.bytecode
             constant_operand = instruction.constant_operand
             if constant_operand:
-                assert len(bytecode) > 4, \
-                    "The instruction encoding can't be smaller than 4 bytes as disp32 is encoded in 4 bytes"
-                for index in range(len(bytecode) - 4, len(bytecode)):
-                    bytecode[index] = 0
-                offset = len(self.code_section) + len(bytecode) - 4
-                relocation = Relocation(offset, RelocationType.rip_disp32,
-                                        symbol=self._constant_symbol_map[constant_operand])
+                relocation = instruction.relocation
+                for index in range(relocation.offset, relocation.offset + 4):
+                    instruction.bytecode[index] = 0
+                relocation.offset += len(self.code_section)
+                relocation.symbol = self._constant_symbol_map[instruction.constant_operand]
                 self.code_section.add_relocation(relocation)
 
-            if bytecode:
-                self.code_section.content += bytecode
+            if instruction.bytecode:
+                self.code_section.content += instruction.bytecode
 
     def _encode_nops(self, length):
         assert 1 <= length <= 31
