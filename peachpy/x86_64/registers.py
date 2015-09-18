@@ -869,6 +869,11 @@ class MaskedRegister:
             self.mask = mask
 
     @property
+    def code(self):
+        """Returns the 5-bit register encoding"""
+        return self.register.code
+
+    @property
     def lcode(self):
         """Returns the bits 0-2 of register encoding"""
         return self.register.lcode
