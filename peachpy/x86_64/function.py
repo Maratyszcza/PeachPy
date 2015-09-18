@@ -61,9 +61,11 @@ class Function:
             self.package = peachpy.x86_64.options.package
         self.package = package
         if target is None:
-            self.target = peachpy.x86_64.options.target
-        self.target = target
-
+            target = peachpy.x86_64.options.target
+        if target is None:
+            target = peachpy.x86_64.uarch.default
+        if not isinstance(target, peachpy.x86_64.uarch.Microarchitecture):
+            raise TypeError("%s is not an valid CPU target" % str(target))
         self.target = target
         if debug_level is None:
             self.debug_level = peachpy.x86_64.options.debug_level
