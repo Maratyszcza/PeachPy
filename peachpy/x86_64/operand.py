@@ -439,7 +439,8 @@ def is_mm(operand):
 
 def is_xmm(operand):
     import peachpy.x86_64.registers
-    return isinstance(operand, peachpy.x86_64.registers.XMMRegister) and not operand.physical_id >= 16
+    return isinstance(operand, peachpy.x86_64.registers.XMMRegister) and \
+           (operand.physical_id is None or operand.physical_id >= 16)
 
 
 def is_evex_xmm(operand):
@@ -464,7 +465,8 @@ def is_xmmkz(operand):
 
 def is_ymm(operand):
     import peachpy.x86_64.registers
-    return isinstance(operand, peachpy.x86_64.registers.YMMRegister) and not operand.physical_id >= 16
+    return isinstance(operand, peachpy.x86_64.registers.YMMRegister) and \
+           (operand.physical_id is None or operand.physical_id >= 16)
 
 
 def is_evex_ymm(operand):
