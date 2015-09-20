@@ -25,6 +25,10 @@ def filter_instruction_forms(instruction_forms):
     return new_instruction_forms
 
 
+def is_avx512_instruction_form(instruction_form):
+    return instruction_form.isa_extensions and instruction_form.isa_extensions[0].name.startswith("AVX512")
+
+
 def objcopy(*args):
     objdump_path = os.environ.get("OBJCOPY_FOR_X86", os.environ.get("OBJCOPY"))
     objdump_process = subprocess.Popen([objdump_path] + list(args),
@@ -70,7 +74,7 @@ def binutils_encode(assembly):
     return "bytearray([%s])" % ", ".join(["0x%02X" % b for b in bytecode])
 
 
-def generate_operand(operand, operand_number, peachpy=True):
+def generate_operand(operand, operand_number, peachpy=True, evex=False):
     value_map = {
         "r8": ["bl", "r9b", "dl", "r11b"],
         "r16": ["si", "r12w", "di", "r14w"],
@@ -78,14 +82,40 @@ def generate_operand(operand, operand_number, peachpy=True):
         "r64": ["rcx", "r15", "rax", "r13"],
         "mm": ["mm3", "mm5"],
         "xmm": ["xmm1", "xmm14", "xmm3", "xmm9"],
+        "xmm{k}": "xmm5{k1}",
+        "xmm{k}{z}": "xmm30{k2}{z}",
         "ymm": ["ymm2", "ymm15", "ymm4", "ymm10"],
+        "ymm{k}": "ymm24{k3}",
+        "ymm{k}{z}": "ymm19{k5}{z}",
+        "zmm": ["zmm3", "zmm26", "zmm9", "zmm17"],
+        "zmm{k}": "zmm26{k7}",
+        "zmm{k}{z}": "zmm9{k6}{z}",
+        "k": "k5",
+        "k{k}": "k4{k6}",
         "m": "[r15 + rsi*8 - 128]",
         "m8": "byte[r14 + rdi*4 - 123]",
         "m16": "word[r13 + rbp*8 - 107]",
         "m32": "dword[r12 + rcx*8 - 99]",
         "m64": "qword[r11 + rdx*8 - 88]",
+        "m64/m32bcst": "qword[r11 + rdx*8 - 88]",
         "m128": "oword[r10 + rax*8 - 77]",
+        "m128/m32bcst": "oword[r10 + rax*8 - 77]",
+        "m128/m64bcst": "oword[r10 + rax*8 - 77]",
         "m256": "hword[r9 + rbx*8 - 66]",
+        "m256/m32bcst": "hword[r9 + rbx*8 - 66]",
+        "m256/m64bcst": "hword[r9 + rbx*8 - 66]",
+        "m512": "zword[r9 + rbx*8 - 66]",
+        "m512/m32bcst": "zword[r9 + rbx*8 - 66]",
+        "m512/m64bcst": "zword[r9 + rbx*8 - 66]",
+        "m8{k}{z}": ["byte[r14 - 64]", "byte[r14 + 64]", "byte[r14 - 128]{k1}{z}"],
+        "m16{k}{z}": ["word[r13 - 64]", "word[r13 + 64]", "word[r13 - 128]{k2}{z}"],
+        "m32{k}{z}": ["dword[r12 - 64]", "dword[r12 + 64]", "dword[r12 - 128]{k3}{z}"],
+        "m64{k}{z}": ["qword[r11 - 64]", "qword[r11 + 64]", "qword[r11 - 128]{k4}{z}"],
+        "m128{k}{z}": ["oword[r10 - 64]", "oword[r10 + 64]", "oword[r10 - 128]{k5}{z}"],
+        "m256{k}{z}": ["hword[r9 - 64]", "hword[r9 + 64]", "hword[r9 - 128]{k6}{z}"],
+        "m512{k}{z}": ["zword[r8 - 64]", "zword[r8 + 64]", "zword[r8 - 128]{k7}{z}"],
+        "m32{k}": ["dword[r12 - 64]", "dword[r12 + 64]", "dword[r12 - 128]{k5}"],
+        "m64{k}": ["qword[r11 - 64]", "qword[r11 + 64]", "qword[r11 - 128]{k6}"],
         "imm4": "0b11",
         "imm8": "2",
         "imm16": "32000",
@@ -100,10 +130,25 @@ def generate_operand(operand, operand_number, peachpy=True):
         "rax": "rax",
         "xmm0": "xmm0",
         "1": "1",
-        "3": "3"
+        "3": "3",
+        "{sae}": "{sae}",
+        "{er}": "{rn-sae}",
+    }
+    evex_value_map = {
+        "xmm": ["xmm16", "xmm4", "xmm19", "xmm31"],
+        "ymm": ["ymm17", "ymm5", "ymm20", "ymm30"],
+        "m8": ["byte[r14 - 64]", "byte[r14 + 64]", "byte[r14 - 128]"],
+        "m16": ["word[r13 - 64]", "word[r13 + 64]", "word[r13 - 128]"],
+        "m32": ["dword[r12 - 64]", "dword[r12 + 64]", "dword[r12 - 128]"],
+        "m64": ["qword[r11 - 64]", "qword[r11 + 64]", "qword[r11 - 128]"],
+        "m128": ["oword[r10 - 64]", "oword[r10 + 64]", "oword[r10 - 128]"],
+        "m256": ["hword[r9 - 64]", "hword[r9 + 64]", "hword[r9 - 128]"],
+        "m512": ["zword[r8 - 64]", "zword[r8 + 64]", "zword[r8 - 128]"],
     }
     optype = operand.type
     operand = value_map.get(optype)
+    if evex:
+        operand = evex_value_map.get(optype, operand)
     if isinstance(operand, list):
         operand = operand[operand_number]
     if operand is not None and not peachpy:
@@ -113,8 +158,18 @@ def generate_operand(operand, operand_number, peachpy=True):
             replace("qword", "QWORD PTR").\
             replace("oword", "XMMWORD PTR").\
             replace("hword", "YMMWORD PTR").\
+            replace("zword", "ZMMWORD PTR").\
             replace("word", "WORD PTR").\
             replace("rip", "$+2")
+    if operand is not None and peachpy:
+        for kn in range(1, 8):
+            kreg = "k" + str(kn)
+            operand = operand.replace("{" + kreg + "}", "(" + kreg + ")")
+        operand = operand.replace("){z}", ".z)")
+        operand = operand.replace("{rn-sae}", "{rn_sae}")
+        operand = operand.replace("{rz-sae}", "{rz_sae}")
+        operand = operand.replace("{ru-sae}", "{ru_sae}")
+        operand = operand.replace("{rd-sae}", "{rd_sae}")
     return operand
 
 
@@ -147,9 +202,10 @@ for group, instruction_names in instruction_groups.iteritems():
 
                         has_assertions = False
                         for instruction_form in filter_instruction_forms(name_instruction.forms):
-                            peachpy_operands = [generate_operand(o, i, peachpy=True) for (i, o)
+                            is_avx512 = is_avx512_instruction_form(instruction_form)
+                            peachpy_operands = [generate_operand(o, i, peachpy=True, evex=is_avx512) for (i, o)
                                                 in enumerate(instruction_form.operands)]
-                            gas_operands = [generate_operand(o, i, peachpy=False) for (i, o)
+                            gas_operands = [generate_operand(o, i, peachpy=False, evex=is_avx512) for (i, o)
                                             in enumerate(instruction_form.operands)]
                             if not any(map(lambda op: op is None, gas_operands)):
                                 gas_assembly = "%s %s" % (instruction_form.name, ", ".join(gas_operands))
