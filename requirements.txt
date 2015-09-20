@@ -1,3 +1,3 @@
-Opcodes==0.3.2
+Opcodes==0.3.3
 six
 enum34
