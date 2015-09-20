@@ -230,6 +230,7 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
     byte_sequence = []
     parts = []
     flags = 0
+    disp8xN = None
 
     def generate_bytes(byte_sequence):
         if byte_sequence:
@@ -403,6 +404,7 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
                         byte_sequence.append("0x%02X" % (0x78 | (component.W << 7) | (component.L << 2) | component.pp))
 
         elif isinstance(component, EVEX):
+            disp8xN = component.disp8xN
             component.set_ignored()
             if component.X.is_memory:
                 assert component.X is component.B
@@ -491,7 +493,10 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
                     modrm_reg = str(component.reg)
                 modrm_rm = "op[%d].address" % operands.index(component.rm)
 
-                modrm = "modrm_sib_disp(%s, %s, sib, min_disp)" % (modrm_reg, modrm_rm)
+                if disp8xN is None:
+                    modrm = "modrm_sib_disp(%s, %s, sib, min_disp)" % (modrm_reg, modrm_rm)
+                else:
+                    modrm = "modrm_sib_disp(%s, %s, sib, min_disp, disp8xN=%d)" % (modrm_reg, modrm_rm, disp8xN)
                 flags |= Flags.ModRMSIBDisp
                 parts.append(modrm)
             else:
@@ -944,8 +949,8 @@ def main(package_root="."):
                 code.line("from peachpy.x86_64.encoding import rex, optional_rex, vex2, vex3, evex, modrm_sib_disp")
                 code.line("from peachpy.x86_64.instructions import Instruction, BranchInstruction")
                 code.line("from peachpy.x86_64.operand import is_al, is_ax, is_eax, is_rax, is_cl, is_xmm0, is_r8, is_r8rex, is_r16, is_r32, is_r64, \\")
-                code.indent_line("is_mm, is_xmm, is_xmmk, is_xmmkz, is_ymm, is_ymmk, is_ymmkz, is_zmm, is_zmmk, is_zmmkz, is_k, is_kk, \\")
-                code.indent_line("is_m, is_m8, is_m16, is_m32, is_m64, is_m80, is_m128, is_m256, is_m512, \\")
+                code.indent_line("is_mm, is_xmm, is_ymm, is_m, is_m8, is_m16, is_m32, is_m64, is_m80, is_m128, is_m256, is_m512, \\")
+                code.indent_line("is_evex_xmm, is_xmmk, is_xmmkz, is_evex_ymm, is_ymmk, is_ymmkz, is_zmm, is_zmmk, is_zmmkz, is_k, is_kk, \\")
                 code.indent_line("is_m32k, is_m64k, is_m16kz, is_m32kz, is_m64kz, is_m128kz, is_m256kz, is_m512kz, \\")
                 code.indent_line("is_m64_m32bcst, is_m128_m32bcst, is_m256_m32bcst, is_m512_m32bcst, \\")
                 code.indent_line("is_m128_m64bcst, is_m256_m64bcst, is_m512_m64bcst, \\")
@@ -1088,7 +1093,10 @@ def main(package_root="."):
                                         # Instruction form with one or more operands
                                         for (form_index, (instruction_form, instruction_subforms)) \
                                                 in enumerate(count_operand_form_trees):
-                                            operand_checks = map(lambda o: generate_operand_check(o[0], o[1]), enumerate(instruction_form.operands))
+                                            is_avx512 = is_avx512_instruction_form(instruction_form)
+                                            operand_checks = map(
+                                                lambda o: generate_operand_check(o[0], o[1], evex_form=is_avx512),
+                                                enumerate(instruction_form.operands))
                                             code.line("%s %s:" % ("if" if form_index == 0 else "elif", " and ".join(operand_checks)))
                                             with CodeBlock():
                                                 instruction_form_init(code, instruction_form, instruction_subforms,
