@@ -155,7 +155,7 @@ def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0, aaa=0, z=0, b=0):
     return bytearray([0x62, p0 ^ 0xF0, p1 ^ 0x78, p2 ^ 0x08])
 
 
-def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
+def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0, disp8xN=None):
     from peachpy.x86_64.operand import MemoryAddress
     from peachpy.x86_64.registers import rsp, rbp, r12, r13
     from peachpy.util import is_int, is_sint8, ilog2
@@ -163,6 +163,10 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
     assert is_int(reg) and 0 <= reg <= 7, \
         "Constant reg value expected, got " + str(reg)
     assert isinstance(rm, (MemoryAddress, int))
+
+    if disp8xN is None:
+        disp8xN = 1
+    assert disp8xN in [1, 2, 4, 8, 16, 32, 64]
 
     #                    ModR/M byte
     # +----------------+---------------+--------------+
@@ -187,12 +191,12 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
                 assert rm.base.lcode != 0b101, \
                     "rbp/r13 is not encodable as a base register (interpreted as disp32 address)"
                 return bytearray([(reg << 3) | rm.base.lcode])
-            elif is_sint8(rm.displacement) and min_disp <= 1:
+            elif (rm.displacement % disp8xN == 0) and is_sint8(rm.displacement // disp8xN) and min_disp <= 1:
                 # ModRM.mode = 1 (8-bit displacement)
 
                 assert rm.base.lcode != 0b100, \
                     "rsp/r12 are not encodable as a base register (interpreted as SIB indicator)"
-                return bytearray([0x40 | (reg << 3) | rm.base.lcode, rm.displacement & 0xFF])
+                return bytearray([0x40 | (reg << 3) | rm.base.lcode, (rm.displacement // disp8xN) & 0xFF])
             else:
                 # ModRM.mode == 2 (32-bit displacement)
 
@@ -221,11 +225,11 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0):
                     assert rm.base.lcode != 0b101, \
                         "rbp/r13 is not encodable as a base register (interpreted as disp32 address)"
                     return bytearray([(reg << 3) | 0x4, (scale << 6) | (index << 3) | rm.base.lcode])
-                elif is_sint8(rm.displacement) and min_disp <= 1:
+                elif (rm.displacement % disp8xN == 0) and is_sint8(rm.displacement // disp8xN) and min_disp <= 1:
                     # ModRM.mode == 1 (8-bit displacement)
 
                     return bytearray([(reg << 3) | 0x44, (scale << 6) | (index << 3) | rm.base.lcode,
-                                      rm.displacement & 0xFF])
+                                      (rm.displacement // disp8xN) & 0xFF])
                 else:
                     # ModRM.mode == 2 (32-bit displacement)
 
