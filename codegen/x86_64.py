@@ -25,6 +25,13 @@ for instruction in instruction_set:
             extra_instruction_forms.append(new_instruction_form)
             old_evex = next(component for component in instruction_form.encodings[0].components
                             if isinstance(component, EVEX))
+            if not isinstance(old_evex.LL, Operand):
+                # EVEX.LL didn't encode rounding control.
+
+                # Set LL to 0.
+                # This is contrary to Intel spec (319433-023), but this is what binutils does. See discussion at
+                # https://software.intel.com/en-us/forums/intel-isa-extensions/topic/562664
+                old_evex.LL = 0
             old_evex.b = 1
     instruction.forms.extend(extra_instruction_forms)
 
