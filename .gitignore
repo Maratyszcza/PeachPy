@@ -12,6 +12,7 @@ peachpy/x86_64/fma.py
 peachpy/x86_64/generic.py
 peachpy/x86_64/mask.py
 peachpy/x86_64/mmxsse.py
+codegen/x86_64_nacl.py
 
 # Generated documentation
 doc/
