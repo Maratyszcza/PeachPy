@@ -831,6 +831,11 @@ class KRegister(Register):
         """Returns encoding of the merge/zero flags"""
         return 0
 
+    def __call__(self, mask):
+        if not isinstance(mask, KRegister):
+            raise SyntaxError("k(mask) syntax requires mask to be a KRegister")
+        return MaskedRegister(self, mask)
+
 
 class RegisterMask:
     def __init__(self, mask_register, is_zeroing=False):
