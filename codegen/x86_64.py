@@ -41,6 +41,11 @@ def filter_instruction_forms(instruction_forms):
     return new_instruction_forms
 
 
+def is_avx512_instruction_form(instruction_form):
+    """Indicates whether the instruction form belongs to AVX512 extensions"""
+    return instruction_form.isa_extensions and instruction_form.isa_extensions[0].name.startswith("AVX512")
+
+
 def aggregate_instruction_forms(instruction_forms):
     """Hierarhically chains instruction forms
 
@@ -98,7 +103,8 @@ def aggregate_instruction_forms(instruction_forms):
     return new_instruction_forms
 
 
-def generate_operand_check(operand_index, operand, ignore_imm_size=True, ext_imm_size=None, lambda_form=False):
+def generate_operand_check(operand_index, operand,
+                           ignore_imm_size=True, ext_imm_size=None, lambda_form=False, evex_form=False):
     check_map = {
         "r8": "is_r8(%s)",
         "r16": "is_r16(%s)",
@@ -164,6 +170,10 @@ def generate_operand_check(operand_index, operand, ignore_imm_size=True, ext_imm
         "{er}": "is_er(%s)",
         "{sae}": "is_sae(%s)"
     }
+    evex_check_map = {
+        "xmm": "is_evex_xmm(%s)",
+        "ymm": "is_evex_ymm(%s)",
+    }
     imm_check_map = {
         "imm4": "is_imm4(%s, ext_size=%d)",
         "imm8": "is_imm8(%s, ext_size=%d)",
@@ -182,12 +192,12 @@ def generate_operand_check(operand_index, operand, ignore_imm_size=True, ext_imm
     operands = "op" if lambda_form else "self.operands"
     if ignore_imm_size:
         optype = imm_map.get(optype, optype)
-        return check_map[optype] % (operands + "[" + str(operand_index) + "]")
+    if ext_imm_size is not None and optype in imm_check_map:
+        return imm_check_map[optype] % (operands + "[" + str(operand_index) + "]", ext_imm_size)
+    elif evex_form and optype in evex_check_map:
+        return evex_check_map[optype] % (operands + "[" + str(operand_index) + "]")
     else:
-        if ext_imm_size is not None and optype in imm_check_map:
-            return imm_check_map[optype] % (operands + "[" + str(operand_index) + "]", ext_imm_size)
-        else:
-            return check_map[optype] % (operands + "[" + str(operand_index) + "]")
+        return check_map[optype] % (operands + "[" + str(operand_index) + "]")
 
 
 def generate_isa_extensions(extensions):
