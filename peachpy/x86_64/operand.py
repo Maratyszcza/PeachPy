@@ -126,6 +126,10 @@ def format_operand_type(operand):
                 return "m" + str(operand.size * 8) + "{k}{z}"
             else:
                 return "m" + str(operand.size * 8) + "{k}"
+    elif isinstance(operand, RoundingControl):
+        return "{er}"
+    elif isinstance(operand, SuppressAllExceptions):
+        return "{sae}"
     elif isinstance(operand, Label):
         return "rel"
     else:
