@@ -152,18 +152,18 @@ def generate_operand_check(operand_index, operand,
         "m128/m64bcst": "is_m128_m64bcst(%s)",
         "m256/m64bcst": "is_m256_m64bcst(%s)",
         "m512/m64bcst": "is_m512_m64bcst(%s)",
-        "vm32x": "is_vm32x(%s)",
-        "vm32x{k}": "is_vm32xk(%s)",
-        "vm32y": "is_vm32y(%s)",
-        "vm32y{k}": "is_vm32yk(%s)",
-        "vm32z": "is_vm32z(%s)",
-        "vm32z{k}": "is_vm32zk(%s)",
-        "vm64x": "is_vm64x(%s)",
-        "vm64x{k}": "is_vm64xk(%s)",
-        "vm64y": "is_vm64y(%s)",
-        "vm64y{k}": "is_vm64yk(%s)",
-        "vm64z": "is_vm64z(%s)",
-        "vm64z{k}": "is_vm64zk(%s)",
+        "vm32x": "is_vmx(%s)",
+        "vm64x": "is_vmx(%s)",
+        "vm32x{k}": "is_vmxk(%s)",
+        "vm64x{k}": "is_vmxk(%s)",
+        "vm32y": "is_vmy(%s)",
+        "vm64y": "is_vmy(%s)",
+        "vm32y{k}": "is_vmyk(%s)",
+        "vm64y{k}": "is_vmyk(%s)",
+        "vm32z": "is_vmz(%s)",
+        "vm64z": "is_vmz(%s)",
+        "vm32z{k}": "is_vmzk(%s)",
+        "vm64z{k}": "is_vmzk(%s)",
         "imm": "is_imm(%s)",
         "imm4": "is_imm4(%s)",
         "imm8": "is_imm8(%s)",
@@ -186,6 +186,10 @@ def generate_operand_check(operand_index, operand,
     evex_check_map = {
         "xmm": "is_evex_xmm(%s)",
         "ymm": "is_evex_ymm(%s)",
+        "vm32x": "is_evex_vmx(%s)",
+        "vm64x": "is_evex_vmx(%s)",
+        "vm32y": "is_evex_vmy(%s)",
+        "vm64y": "is_evex_vmy(%s)",
     }
     imm_check_map = {
         "imm4": "is_imm4(%s, ext_size=%d)",
@@ -961,7 +965,8 @@ def main(package_root="."):
                 code.indent_line("is_m32k, is_m64k, is_m16kz, is_m32kz, is_m64kz, is_m128kz, is_m256kz, is_m512kz, \\")
                 code.indent_line("is_m64_m32bcst, is_m128_m32bcst, is_m256_m32bcst, is_m512_m32bcst, \\")
                 code.indent_line("is_m128_m64bcst, is_m256_m64bcst, is_m512_m64bcst, \\")
-                code.indent_line("is_vm32x, is_vm64x, is_vm32y, is_vm64y, is_imm, is_imm4, is_imm8, is_imm16, is_imm32, is_imm64, \\")
+                code.indent_line("is_vmx, is_vmy, is_evex_vmx, is_evex_vmy, is_vmz, is_vmxk, is_vmyk, is_vmzk, \\")
+                code.indent_line("is_imm, is_imm4, is_imm8, is_imm16, is_imm32, is_imm64, \\")
                 code.indent_line("is_rel8, is_rel32, is_label, is_er, is_sae, check_operand, format_operand_type")
                 code.line()
                 code.line()

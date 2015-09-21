@@ -140,26 +140,30 @@ class MemoryAddress:
     """An address expression involving a register, e.g. rax - 10, r8d * 4."""
 
     def __init__(self, base=None, index=None, scale=None, displacement=0):
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, \
+            XMMRegister, YMMRegister, ZMMRegister, MaskedRegister
         from peachpy.util import is_int, is_sint32
 
         # Check individual arguments
-        if base is not None and not isinstance(base, (GeneralPurposeRegister32, GeneralPurposeRegister64)):
-            raise TypeError("Base register must be a 32- or 64-bit general-purpose register")
-        if index is not None and not isinstance(index, (GeneralPurposeRegister32, GeneralPurposeRegister64)):
-            raise TypeError("Index register must be a 32- or 64-bit general-purpose register")
+        if base is not None and not isinstance(base, GeneralPurposeRegister64):
+            raise TypeError("Base register must be a 64-bit general-purpose register")
+        if index is not None and \
+            not isinstance(index, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister)) and not \
+            (isinstance(index, MaskedRegister) and
+                isinstance(index.register, (XMMRegister, YMMRegister, ZMMRegister)) and
+                not index.mask.is_zeroing):
+            raise TypeError("Index register must be a 64-bit general-purpose register or an XMM/YMM/ZMM register")
         if scale is not None and not is_int(scale):
             raise TypeError("Scale must be an integer")
         if scale is not None and int(scale) not in {1, 2, 4, 8}:
             raise TypeError("Scale must be 1, 2, 4, or 8")
         if not is_sint32(displacement):
-            raise ValueError("Displacement value (%s) is not representable as a signed 32-bit integer" % str(displacement))
+            raise ValueError("Displacement value (%s) is not representable as a signed 32-bit integer" %
+                             str(displacement))
 
         # Check relations of arguments
         if scale is not None and index is None or scale is None and index is not None:
             raise ValueError("Either both of neither of scale and index must be defined")
-        if base is not None and index is not None and base.size != index.size:
-            raise TypeError("Base (%s) and index (%s) registers have different size" % (str(base), str(index)))
         if index is None and base is None:
             raise ValueError("Either base or index * scale must be specified")
 
@@ -169,13 +173,13 @@ class MemoryAddress:
         self.displacement = int(displacement)
 
     def __add__(self, addend):
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
+        from peachpy.x86_64.registers import GeneralPurposeRegister64
         from peachpy.util import is_int, is_sint32
         if is_int(addend):
             if not is_sint32(addend):
                 raise ValueError("The addend value (%d) is not representable as a signed 32-bit integer" % addend)
             return MemoryAddress(self.base, self.index, self.scale, self.displacement + addend)
-        elif isinstance(addend, (GeneralPurposeRegister64, GeneralPurposeRegister32)):
+        elif isinstance(addend, GeneralPurposeRegister64):
             if self.base is not None:
                 raise TypeError("Can not add a general-purpose register to a memory operand with existing base")
             if self.index.size != addend.size:
@@ -222,17 +226,30 @@ class MemoryAddress:
 
 class MemoryOperand:
     def __init__(self, address, size=None, mask=None, broadcast=None):
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, GeneralPurposeRegister32
-        assert isinstance(address, (GeneralPurposeRegister64, GeneralPurposeRegister32, MemoryAddress)),\
-            "Only MemoryAddress, and 32- or 64-bit general-purpose registers may be specified as an address"
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, \
+            XMMRegister, YMMRegister, ZMMRegister, MaskedRegister
+        assert isinstance(address, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister, MemoryAddress)) or\
+            isinstance(address, MaskedRegister) and \
+            isinstance(address.register, (XMMRegister, YMMRegister, ZMMRegister)) and \
+            not address.mask.is_zeroing, \
+            "Only MemoryAddress, 64-bit general-purpose registers, XMM/YMM/ZMM registers, " \
+            "and merge-masked XMM/YMM/ZMM registers may be specified as an address"
         from peachpy.util import is_int
-        assert size is None or is_int(size) and \
-            int(size) in SizeSpecification._size_name_map, \
+        assert size is None or is_int(size) and int(size) in SizeSpecification._size_name_map, \
             "Unsupported size: %d" % size
         if isinstance(address, MemoryAddress):
-            self.address = address
+            if isinstance(address.index, MaskedRegister):
+                self.address = MemoryAddress(address.base, address.index.register, address.scale, address.displacement)
+                assert mask is None, "Mask argument can't be used when address index is a masked XMM/YMM/ZMM register"
+                mask = address.index.mask
+            else:
+                self.address = address
+        elif isinstance(address, MaskedRegister):
+            self.address = MemoryAddress(index=address.register, scale=1)
+            assert mask is None, "Mask argument can't be used when address is a masked XMM/YMM/ZMM register"
+            mask = address.mask
         else:
-            # Convert general-purpose register to memory address expression
+            # Convert register to memory address expression
             self.address = MemoryAddress(address)
         self.size = size
         self.mask = mask
@@ -551,12 +568,49 @@ def is_mkz(operand):
 
 def is_vmx(operand):
     from peachpy.x86_64.registers import XMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, XMMRegister) and \
+        (operand.address.index is None or operand.address.index.physical_id < 16) and \
+        operand.mask is None
+
+
+def is_evex_vmx(operand):
+    from peachpy.x86_64.registers import XMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, XMMRegister) and \
+        operand.mask is None
+
+
+def is_vmxk(operand):
+    from peachpy.x86_64.registers import XMMRegister
     return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, XMMRegister)
 
 
 def is_vmy(operand):
     from peachpy.x86_64.registers import YMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, YMMRegister) and \
+        (operand.address.index is None or operand.address.index.physical_id < 16) and \
+        operand.mask is None
+
+
+def is_evex_vmy(operand):
+    from peachpy.x86_64.registers import YMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, YMMRegister) and \
+        operand.mask is None
+
+
+def is_vmyk(operand):
+    from peachpy.x86_64.registers import YMMRegister
     return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, YMMRegister)
+
+
+def is_vmz(operand):
+    from peachpy.x86_64.registers import ZMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, ZMMRegister) and \
+        operand.mask is None
+
+
+def is_vmzk(operand):
+    from peachpy.x86_64.registers import ZMMRegister
+    return isinstance(operand, MemoryOperand) and isinstance(operand.address.index, ZMMRegister)
 
 
 def is_m8(operand, strict=False):
@@ -669,22 +723,6 @@ def is_m32bcst(operand):
 
 def is_m64bcst(operand):
     return False
-
-
-def is_vm32x(operand, strict=False):
-    return is_vmx(operand) and (operand.size is None and not strict or operand.size == 4)
-
-
-def is_vm64x(operand, strict=False):
-    return is_vmx(operand) and (operand.size is None and not strict or operand.size == 8)
-
-
-def is_vm32y(operand, strict=False):
-    return is_vmy(operand) and (operand.size is None and not strict or operand.size == 4)
-
-
-def is_vm64y(operand, strict=False):
-    return is_vmy(operand) and (operand.size is None and not strict or operand.size == 8)
 
 
 def is_imm(operand):
