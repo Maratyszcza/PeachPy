@@ -41,7 +41,7 @@ PeachPy aims to simplify writing optimized assembly kernels while preserving all
   * De-duplication of data constants (e.g. `Constant.float32x4(1.0)`)
   * Analysis of ISA extensions used in a function
 
-- Supports x86-64 instructions up to AVX2 and SHA
+- Supports x86-64 instructions up to AVX-512 and SHA
   
   * Including 3dnow!+, XOP, FMA3, FMA4, TBM and BMI2.
   * Excluding x87 FPU and most system instructions.
