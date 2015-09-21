@@ -363,7 +363,7 @@ class Instruction(object):
                 mode = mod_rm >> 6
                 assert rm == 0b101 and mode == 0b00, \
                     "Encoding must use rip-relative disp32 addressing, can't have SIB byte"
-                return Relocation(mod_rm_position + 1, RelocationType.rip_disp32)
+                return Relocation(mod_rm_position + 1, RelocationType.rip_disp32, program_counter=len(self.bytecode))
 
 
 

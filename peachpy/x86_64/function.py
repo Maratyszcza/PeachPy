@@ -1776,6 +1776,7 @@ class EncodedFunction:
                 for index in range(relocation.offset, relocation.offset + 4):
                     instruction.bytecode[index] = 0
                 relocation.offset += len(self.code_section)
+                relocation.program_counter += len(self.code_section)
                 relocation.symbol = self._constant_symbol_map[instruction.constant_operand]
                 self.code_section.add_relocation(relocation)
 
@@ -1870,7 +1871,7 @@ class ExecutableFuntion:
                 (self.code_segment[relocation.offset + 3] << 24)
             new_value = old_value + \
                 (self.loader.data_address + relocation.symbol.offset) - \
-                (self.loader.code_address + relocation.offset + 4)
+                (self.loader.code_address + relocation.program_counter)
             assert is_sint32(new_value)
             self.code_segment[relocation.offset] = new_value & 0xFF
             self.code_segment[relocation.offset + 1] = (new_value >> 8) & 0xFF
