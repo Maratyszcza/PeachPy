@@ -576,6 +576,15 @@ class XMMRegister(Register):
             raise SyntaxError("xmm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
 
+    def __mul__(self, scale):
+        from peachpy.x86_64.operand import MemoryAddress
+        from peachpy.util import is_int
+        if not is_int(scale):
+            raise TypeError("Register can be scaled only by an integer number")
+        if int(scale) not in {1, 2, 4, 8}:
+            raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)
+        return MemoryAddress(index=self, scale=scale)
+
 
 xmm0 = XMMRegister(physical_id=0)
 xmm1 = XMMRegister(physical_id=1)
@@ -667,6 +676,15 @@ class YMMRegister(Register):
             raise SyntaxError("ymm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
 
+    def __mul__(self, scale):
+        from peachpy.x86_64.operand import MemoryAddress
+        from peachpy.util import is_int
+        if not is_int(scale):
+            raise TypeError("Register can be scaled only by an integer number")
+        if int(scale) not in {1, 2, 4, 8}:
+            raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)
+        return MemoryAddress(index=self, scale=scale)
+
 
 ymm0 = YMMRegister(physical_id=0)
 ymm1 = YMMRegister(physical_id=1)
@@ -757,6 +775,15 @@ class ZMMRegister(Register):
         if not isinstance(mask, (KRegister, RegisterMask)):
             raise SyntaxError("zmm(mask) syntax requires mask to be a KRegister or KRegister.z")
         return MaskedRegister(self, mask)
+
+    def __mul__(self, scale):
+        from peachpy.x86_64.operand import MemoryAddress
+        from peachpy.util import is_int
+        if not is_int(scale):
+            raise TypeError("Register can be scaled only by an integer number")
+        if int(scale) not in {1, 2, 4, 8}:
+            raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)
+        return MemoryAddress(index=self, scale=scale)
 
 
 zmm0 = ZMMRegister(physical_id=0)
@@ -912,6 +939,15 @@ class MaskedRegister:
     def zcode(self):
         """Returns encoding of zeroing/merging flag of mask register"""
         return self.mask.zcode
+
+    def __mul__(self, scale):
+        from peachpy.x86_64.operand import MemoryAddress
+        from peachpy.util import is_int
+        if not is_int(scale):
+            raise TypeError("Register can be scaled only by an integer number")
+        if int(scale) not in {1, 2, 4, 8}:
+            raise ValueError("Invalid scale value (%d): only scaling by 1, 2, 4, or 8 is supported" % scale)
+        return MemoryAddress(index=self, scale=scale)
 
 
 class RIPRegister:
