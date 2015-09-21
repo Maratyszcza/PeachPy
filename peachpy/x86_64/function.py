@@ -1852,11 +1852,34 @@ class ExecutableFuntion:
             raise ValueError("Function ABI (%s) does not match process ABI (%s)" %
                              (str(function.abi), str(process_abi)))
 
-        self.code_segment = function.code_section.content
+        self.code_segment = bytearray(function.code_section.content)
+        self.const_segment = bytearray(function.const_section.content)
 
         import peachpy.loader
-        self.loader = peachpy.loader.Loader(len(self.code_segment))
+        self.loader = peachpy.loader.Loader(len(self.code_segment), len(self.const_segment))
+
+        # Apply relocations
+        from peachpy.x86_64.meta import RelocationType
+        from peachpy.util import is_sint32
+        for relocation in function.code_section.relocations:
+            assert relocation.type == RelocationType.rip_disp32
+            assert relocation.symbol in function.const_section.symbols
+            old_value = self.code_segment[relocation.offset] | \
+                (self.code_segment[relocation.offset + 1] << 8) | \
+                (self.code_segment[relocation.offset + 2] << 16) | \
+                (self.code_segment[relocation.offset + 3] << 24)
+            new_value = old_value + \
+                (self.loader.data_address + relocation.symbol.offset) - \
+                (self.loader.code_address + relocation.offset + 4)
+            assert is_sint32(new_value)
+            self.code_segment[relocation.offset] = new_value & 0xFF
+            self.code_segment[relocation.offset + 1] = (new_value >> 8) & 0xFF
+            self.code_segment[relocation.offset + 2] = (new_value >> 16) & 0xFF
+            self.code_segment[relocation.offset + 3] = (new_value >> 24) & 0xFF
+        assert not function.const_section.relocations
+
         self.loader.copy_code(self.code_segment)
+        self.loader.copy_data(self.const_segment)
 
         import ctypes
         result_type = None if function.result_type is None else function.result_type.as_ctypes_type

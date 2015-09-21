@@ -135,6 +135,12 @@ class Loader:
         code_offset = 0
         self.allocation.dyncode_create(code_segment, code_offset)
 
+    def copy_data(self, data_segment):
+        import ctypes
+        ctypes.memmove(self.data_address,
+                       ctypes.c_char_p(bytes(data_segment)),
+                       len(data_segment))
+
     def __del__(self):
         if self._release_memory is not None:
             if self.code_address is not None:
