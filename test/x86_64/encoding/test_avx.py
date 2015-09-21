@@ -509,62 +509,74 @@ class TestVCOMPRESSPS(unittest.TestCase):
 
 class TestVGATHERDPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0x92, 0x6C, 0x86, 0xE0]), VGATHERDPS(xmm5(k1), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0x7D, 0x2B, 0x92, 0x44, 0x83, 0x0C]), VGATHERDPS(ymm24(k3), [r11 + ymm8 * 4 + 48]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x47, 0x92, 0x54, 0x9F, 0xFC]), VGATHERDPS(zmm26(k7), [r15 + zmm19 * 4 - 16]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0x61, 0x92, 0x4C, 0x86, 0x80]), VGATHERDPS(xmm1, [rsi + xmm0 * 4 - 128], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0x5D, 0x92, 0x54, 0x83, 0x30]), VGATHERDPS(ymm2, [r11 + ymm8 * 4 + 48], ymm4).encode())
 
 
 class TestVGATHERQPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0x93, 0x6C, 0xCE, 0x0A]), VGATHERQPS(xmm5(k1), [rsi + xmm1 * 8 + 40]).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x29, 0x93, 0x6C, 0xCB, 0xF2]), VGATHERQPS(xmm5(k1), [r11 + ymm9 * 8 - 56]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x43, 0x93, 0x44, 0xE7, 0x12]), VGATHERQPS(ymm24(k3), [r15 + zmm20 * 8 + 72]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0x61, 0x93, 0x4C, 0xCE, 0x28]), VGATHERQPS(xmm1, [rsi + xmm1 * 8 + 40], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0x65, 0x93, 0x4C, 0xCB, 0xC8]), VGATHERQPS(xmm1, [r11 + ymm9 * 8 - 56], xmm3).encode())
 
 
 class TestVGATHERPF0DPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x43, 0xC6, 0x4C, 0x9F, 0xFC]), VGATHERPF0DPS([r15 + zmm19(k3) * 4 - 16]).encode())
 
 
 class TestVGATHERPF0QPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xC7, 0x4C, 0xE7, 0x12]), VGATHERPF0QPS([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVGATHERPF1DPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x43, 0xC6, 0x54, 0x9F, 0xFC]), VGATHERPF1DPS([r15 + zmm19(k3) * 4 - 16]).encode())
 
 
 class TestVGATHERPF1QPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xC7, 0x54, 0xE7, 0x12]), VGATHERPF1QPS([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVSCATTERDPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0xA2, 0x64, 0x86, 0xE0]), VSCATTERDPS([rsi + xmm0(k1) * 4 - 128], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x2A, 0xA2, 0x6C, 0x83, 0x0C]), VSCATTERDPS([r11 + ymm8(k2) * 4 + 48], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x43, 0xA2, 0x54, 0x9F, 0xFC]), VSCATTERDPS([r15 + zmm19(k3) * 4 - 16], zmm26).encode())
 
 
 class TestVSCATTERQPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x0C, 0xA3, 0x64, 0xCE, 0x0A]), VSCATTERQPS([rsi + xmm1(k4) * 8 + 40], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x2D, 0xA3, 0x64, 0xCB, 0xF2]), VSCATTERQPS([r11 + ymm9(k5) * 8 - 56], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xA3, 0x6C, 0xE7, 0x12]), VSCATTERQPS([r15 + zmm20(k6) * 8 + 72], ymm5).encode())
 
 
 class TestVSCATTERPF0DPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x43, 0xC6, 0x6C, 0x9F, 0xFC]), VSCATTERPF0DPS([r15 + zmm19(k3) * 4 - 16]).encode())
 
 
 class TestVSCATTERPF0QPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xC7, 0x6C, 0xE7, 0x12]), VSCATTERPF0QPS([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVSCATTERPF1DPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x43, 0xC6, 0x74, 0x9F, 0xFC]), VSCATTERPF1DPS([r15 + zmm19(k3) * 4 - 16]).encode())
 
 
 class TestVSCATTERPF1QPS(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xC7, 0x74, 0xE7, 0x12]), VSCATTERPF1QPS([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVMOVAPD(unittest.TestCase):
@@ -690,62 +702,74 @@ class TestVCOMPRESSPD(unittest.TestCase):
 
 class TestVGATHERDPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0x92, 0x6C, 0x86, 0xF0]), VGATHERDPD(xmm5(k1), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x62, 0xFD, 0x2B, 0x92, 0x44, 0x86, 0xF0]), VGATHERDPD(ymm24(k3), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x4F, 0x92, 0x54, 0x83, 0x06]), VGATHERDPD(zmm26(k7), [r11 + ymm8 * 4 + 48]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xE1, 0x92, 0x4C, 0x86, 0x80]), VGATHERDPD(xmm1, [rsi + xmm0 * 4 - 128], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xDD, 0x92, 0x54, 0x86, 0x80]), VGATHERDPD(ymm2, [rsi + xmm0 * 4 - 128], ymm4).encode())
 
 
 class TestVGATHERQPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0x93, 0x6C, 0xCE, 0x05]), VGATHERQPD(xmm5(k1), [rsi + xmm1 * 8 + 40]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x2B, 0x93, 0x44, 0xCB, 0xF9]), VGATHERQPD(ymm24(k3), [r11 + ymm9 * 8 - 56]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0xFD, 0x47, 0x93, 0x54, 0xE7, 0x09]), VGATHERQPD(zmm26(k7), [r15 + zmm20 * 8 + 72]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xE1, 0x93, 0x4C, 0xCE, 0x28]), VGATHERQPD(xmm1, [rsi + xmm1 * 8 + 40], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0xDD, 0x93, 0x54, 0xCB, 0xC8]), VGATHERQPD(ymm2, [r11 + ymm9 * 8 - 56], ymm4).encode())
 
 
 class TestVGATHERPF0DPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x4A, 0xC6, 0x4C, 0x83, 0x06]), VGATHERPF0DPD([r11 + ymm8(k2) * 4 + 48]).encode())
 
 
 class TestVGATHERPF0QPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0xFD, 0x46, 0xC7, 0x4C, 0xE7, 0x09]), VGATHERPF0QPD([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVGATHERPF1DPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x4A, 0xC6, 0x54, 0x83, 0x06]), VGATHERPF1DPD([r11 + ymm8(k2) * 4 + 48]).encode())
 
 
 class TestVGATHERPF1QPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0xFD, 0x46, 0xC7, 0x54, 0xE7, 0x09]), VGATHERPF1QPD([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVSCATTERDPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0xA2, 0x64, 0x86, 0xF0]), VSCATTERDPD([rsi + xmm0(k1) * 4 - 128], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x29, 0xA2, 0x6C, 0x86, 0xF0]), VSCATTERDPD([rsi + xmm0(k1) * 4 - 128], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x4A, 0xA2, 0x54, 0x83, 0x06]), VSCATTERDPD([r11 + ymm8(k2) * 4 + 48], zmm26).encode())
 
 
 class TestVSCATTERQPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x0C, 0xA3, 0x64, 0xCE, 0x05]), VSCATTERQPD([rsi + xmm1(k4) * 8 + 40], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x2D, 0xA3, 0x6C, 0xCB, 0xF9]), VSCATTERQPD([r11 + ymm9(k5) * 8 - 56], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0xFD, 0x46, 0xA3, 0x54, 0xE7, 0x09]), VSCATTERQPD([r15 + zmm20(k6) * 8 + 72], zmm26).encode())
 
 
 class TestVSCATTERPF0DPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x4A, 0xC6, 0x6C, 0x83, 0x06]), VSCATTERPF0DPD([r11 + ymm8(k2) * 4 + 48]).encode())
 
 
 class TestVSCATTERPF0QPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0xFD, 0x46, 0xC7, 0x6C, 0xE7, 0x09]), VSCATTERPF0QPD([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVSCATTERPF1DPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x4A, 0xC6, 0x74, 0x83, 0x06]), VSCATTERPF1DPD([r11 + ymm8(k2) * 4 + 48]).encode())
 
 
 class TestVSCATTERPF1QPD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xD2, 0xFD, 0x46, 0xC7, 0x74, 0xE7, 0x09]), VSCATTERPF1QPD([r15 + zmm20(k6) * 8 + 72]).encode())
 
 
 class TestVADDPS(unittest.TestCase):
@@ -2375,42 +2399,66 @@ class TestVPINSRQ(unittest.TestCase):
 
 class TestVPGATHERDD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0x90, 0x6C, 0x86, 0xE0]), VPGATHERDD(xmm5(k1), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0x7D, 0x2B, 0x90, 0x44, 0x83, 0x0C]), VPGATHERDD(ymm24(k3), [r11 + ymm8 * 4 + 48]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x47, 0x90, 0x54, 0x9F, 0xFC]), VPGATHERDD(zmm26(k7), [r15 + zmm19 * 4 - 16]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0x61, 0x90, 0x4C, 0x86, 0x80]), VPGATHERDD(xmm1, [rsi + xmm0 * 4 - 128], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0x5D, 0x90, 0x54, 0x83, 0x30]), VPGATHERDD(ymm2, [r11 + ymm8 * 4 + 48], ymm4).encode())
 
 
 class TestVPGATHERDQ(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0x90, 0x6C, 0x86, 0xF0]), VPGATHERDQ(xmm5(k1), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x62, 0xFD, 0x2B, 0x90, 0x44, 0x86, 0xF0]), VPGATHERDQ(ymm24(k3), [rsi + xmm0 * 4 - 128]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x4F, 0x90, 0x54, 0x83, 0x06]), VPGATHERDQ(zmm26(k7), [r11 + ymm8 * 4 + 48]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xE1, 0x90, 0x4C, 0x86, 0x80]), VPGATHERDQ(xmm1, [rsi + xmm0 * 4 - 128], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xDD, 0x90, 0x54, 0x86, 0x80]), VPGATHERDQ(ymm2, [rsi + xmm0 * 4 - 128], ymm4).encode())
 
 
 class TestVPGATHERQD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0x91, 0x6C, 0xCE, 0x0A]), VPGATHERQD(xmm5(k1), [rsi + xmm1 * 8 + 40]).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x29, 0x91, 0x6C, 0xCB, 0xF2]), VPGATHERQD(xmm5(k1), [r11 + ymm9 * 8 - 56]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x43, 0x91, 0x44, 0xE7, 0x12]), VPGATHERQD(ymm24(k3), [r15 + zmm20 * 8 + 72]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0x61, 0x91, 0x4C, 0xCE, 0x28]), VPGATHERQD(xmm1, [rsi + xmm1 * 8 + 40], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0x65, 0x91, 0x4C, 0xCB, 0xC8]), VPGATHERQD(xmm1, [r11 + ymm9 * 8 - 56], xmm3).encode())
 
 
 class TestVPGATHERQQ(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0x91, 0x6C, 0xCE, 0x05]), VPGATHERQQ(xmm5(k1), [rsi + xmm1 * 8 + 40]).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x2B, 0x91, 0x44, 0xCB, 0xF9]), VPGATHERQQ(ymm24(k3), [r11 + ymm9 * 8 - 56]).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0xFD, 0x47, 0x91, 0x54, 0xE7, 0x09]), VPGATHERQQ(zmm26(k7), [r15 + zmm20 * 8 + 72]).encode())
+        self.assertEqual(bytearray([0xC4, 0xE2, 0xE1, 0x91, 0x4C, 0xCE, 0x28]), VPGATHERQQ(xmm1, [rsi + xmm1 * 8 + 40], xmm3).encode())
+        self.assertEqual(bytearray([0xC4, 0x82, 0xDD, 0x91, 0x54, 0xCB, 0xC8]), VPGATHERQQ(ymm2, [r11 + ymm9 * 8 - 56], ymm4).encode())
 
 
 class TestVPSCATTERDD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x09, 0xA0, 0x64, 0x86, 0xE0]), VPSCATTERDD([rsi + xmm0(k1) * 4 - 128], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x2A, 0xA0, 0x6C, 0x83, 0x0C]), VPSCATTERDD([r11 + ymm8(k2) * 4 + 48], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0x7D, 0x43, 0xA0, 0x54, 0x9F, 0xFC]), VPSCATTERDD([r15 + zmm19(k3) * 4 - 16], zmm26).encode())
 
 
 class TestVPSCATTERDQ(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x09, 0xA0, 0x64, 0x86, 0xF0]), VPSCATTERDQ([rsi + xmm0(k1) * 4 - 128], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x29, 0xA0, 0x6C, 0x86, 0xF0]), VPSCATTERDQ([rsi + xmm0(k1) * 4 - 128], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x02, 0xFD, 0x4A, 0xA0, 0x54, 0x83, 0x06]), VPSCATTERDQ([r11 + ymm8(k2) * 4 + 48], zmm26).encode())
 
 
 class TestVPSCATTERQD(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0x7D, 0x0C, 0xA1, 0x64, 0xCE, 0x0A]), VPSCATTERQD([rsi + xmm1(k4) * 8 + 40], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0x7D, 0x2D, 0xA1, 0x64, 0xCB, 0xF2]), VPSCATTERQD([r11 + ymm9(k5) * 8 - 56], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0xD2, 0x7D, 0x46, 0xA1, 0x6C, 0xE7, 0x12]), VPSCATTERQD([r15 + zmm20(k6) * 8 + 72], ymm5).encode())
 
 
 class TestVPSCATTERQQ(unittest.TestCase):
     def runTest(self):
-        pass
+        self.assertEqual(bytearray([0x62, 0xF2, 0xFD, 0x0C, 0xA1, 0x64, 0xCE, 0x05]), VPSCATTERQQ([rsi + xmm1(k4) * 8 + 40], xmm4).encode())
+        self.assertEqual(bytearray([0x62, 0x92, 0xFD, 0x2D, 0xA1, 0x6C, 0xCB, 0xF9]), VPSCATTERQQ([r11 + ymm9(k5) * 8 - 56], ymm5).encode())
+        self.assertEqual(bytearray([0x62, 0x42, 0xFD, 0x46, 0xA1, 0x54, 0xE7, 0x09]), VPSCATTERQQ([r15 + zmm20(k6) * 8 + 72], zmm26).encode())
 
 
 class TestVPCONFLICTD(unittest.TestCase):

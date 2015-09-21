@@ -116,6 +116,18 @@ def generate_operand(operand, operand_number, peachpy=True, evex=False):
         "m512{k}{z}": ["zword[r8 - 64]", "zword[r8 + 64]", "zword[r8 - 128]{k7}{z}"],
         "m32{k}": ["dword[r12 - 64]", "dword[r12 + 64]", "dword[r12 - 128]{k5}"],
         "m64{k}": ["qword[r11 - 64]", "qword[r11 + 64]", "qword[r11 - 128]{k6}"],
+        "vm32x": "[rsi + xmm0 * 4 - 128]",
+        "vm32y": "[r11 + ymm8 * 4 + 48]",
+        "vm32z": "[r15 + zmm19 * 4 - 16]",
+        "vm64x": "[rsi + xmm1 * 8 + 40]",
+        "vm64y": "[r11 + ymm9 * 8 - 56]",
+        "vm64z": "[r15 + zmm20 * 8 + 72]",
+        "vm32x{k}": "[rsi + xmm0 * 4 - 128]{k1}",
+        "vm32y{k}": "[r11 + ymm8 * 4 + 48]{k2}",
+        "vm32z{k}": "[r15 + zmm19 * 4 - 16]{k3}",
+        "vm64x{k}": "[rsi + xmm1 * 8 + 40]{k4}",
+        "vm64y{k}": "[r11 + ymm9 * 8 - 56]{k5}",
+        "vm64z{k}": "[r15 + zmm20 * 8 + 72]{k6}",
         "imm4": "0b11",
         "imm8": "2",
         "imm16": "32000",
@@ -145,10 +157,20 @@ def generate_operand(operand, operand_number, peachpy=True, evex=False):
         "m256": ["hword[r9 - 64]", "hword[r9 + 64]", "hword[r9 - 128]"],
         "m512": ["zword[r8 - 64]", "zword[r8 + 64]", "zword[r8 - 128]"],
     }
+    peachpy_value_map = {
+        "vm32x{k}": "[rsi + xmm0(k1) * 4 - 128]",
+        "vm32y{k}": "[r11 + ymm8(k2) * 4 + 48]",
+        "vm32z{k}": "[r15 + zmm19(k3) * 4 - 16]",
+        "vm64x{k}": "[rsi + xmm1(k4) * 8 + 40]",
+        "vm64y{k}": "[r11 + ymm9(k5) * 8 - 56]",
+        "vm64z{k}": "[r15 + zmm20(k6) * 8 + 72]",
+    }
     optype = operand.type
     operand = value_map.get(optype)
     if evex:
         operand = evex_value_map.get(optype, operand)
+    if peachpy:
+        operand = peachpy_value_map.get(optype, operand)
     if isinstance(operand, list):
         operand = operand[operand_number]
     if operand is not None and not peachpy:
