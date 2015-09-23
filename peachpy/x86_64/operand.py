@@ -11,8 +11,12 @@ def check_operand(operand):
     from peachpy.literal import Constant
     from peachpy import Argument
     from peachpy.util import is_int, is_int64
-    if isinstance(operand, (Register, MaskedRegister, Constant, MemoryOperand, LocalVariable, Argument,
-                            RIPRelativeOffset, Label)):
+    from copy import copy, deepcopy
+    if isinstance(operand, Register):
+        return copy(operand)
+    elif isinstance(operand, (MaskedRegister, MemoryOperand)):
+        return deepcopy(operand)
+    elif isinstance(operand, (Constant, LocalVariable, Argument, RIPRelativeOffset, Label)):
         return operand
     elif is_int(operand):
         if not is_int64(operand):
@@ -36,18 +40,18 @@ def get_operand_registers(operand):
 
     from peachpy.x86_64.registers import Register, MaskedRegister
     if isinstance(operand, Register):
-        return {operand}
+        return [operand]
     elif isinstance(operand, MaskedRegister):
-        return {operand.register, operand.mask.mask_register}
+        return [operand.register, operand.mask.mask_register]
     elif isinstance(operand, MemoryOperand):
-        registers = set()
+        registers = list()
         if operand.address.base is not None:
-            registers.add(operand.address.base)
+            registers.append(operand.address.base)
         if operand.address.index is not None:
-            registers.add(operand.address.index)
+            registers.append(operand.address.index)
         return registers
     else:
-        return set()
+        return list()
 
 
 def format_operand(operand, assembly_format):

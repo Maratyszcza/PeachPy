@@ -800,7 +800,7 @@ class Function:
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
 
         for instruction in self._instructions:
-            for register in instruction.registers:
+            for register in instruction.register_objects:
                 if register.is_virtual:
                     register.physical_id = \
                         self._register_allocations[register.kind].get(register._internal_id, register.physical_id)
@@ -1436,7 +1436,7 @@ class ABIFunction:
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
 
         for instruction in self._instructions:
-            for register in instruction.registers:
+            for register in instruction.register_objects:
                 if register.is_virtual:
                     register.physical_id = \
                         self._register_allocations[register.kind].get(register._internal_id, register.physical_id)

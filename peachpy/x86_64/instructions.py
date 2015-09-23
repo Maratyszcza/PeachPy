@@ -2,9 +2,6 @@
 #    See license.rst for the full text of the license.
 
 
-from six.moves import reduce
-
-
 class Instruction(object):
     def __init__(self, name, origin=None, prototype=None):
         super(Instruction, self).__init__()
@@ -89,8 +86,15 @@ class Instruction(object):
     @property
     def registers(self):
         from peachpy.x86_64.operand import get_operand_registers
-        from operator import or_
-        return reduce(or_, map(get_operand_registers, self.operands), set())
+        registers = set()
+        for operand in self.operands:
+            registers.update(get_operand_registers(operand))
+        return registers
+
+    @property
+    def register_objects(self):
+        from peachpy.x86_64.operand import get_operand_registers
+        return sum(map(get_operand_registers, self.operands), [])
 
     @property
     def available_registers(self):
@@ -364,7 +368,6 @@ class Instruction(object):
                 assert rm == 0b101 and mode == 0b00, \
                     "Encoding must use rip-relative disp32 addressing, can't have SIB byte"
                 return Relocation(mod_rm_position + 1, RelocationType.rip_disp32, program_counter=len(self.bytecode))
-
 
 
 class BranchInstruction(Instruction):
