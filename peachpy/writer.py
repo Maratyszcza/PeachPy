@@ -154,7 +154,7 @@ class ELFWriter:
                 elf_relocation = RelocationWithAddend(RelocationType.x86_64_pc32,
                                                       relocation.offset,
                                                       symbol_map[relocation.symbol],
-                                                      -4)
+                                                      relocation.offset - relocation.program_counter)
                 self.text_rela_section.add(elf_relocation)
 
         function_symbol = Symbol()
@@ -239,6 +239,13 @@ class MachOWriter:
         for relocation in encoded_function.code_section.relocations:
             macho_relocation = Relocation(RelocationType.x86_64_signed, code_offset + relocation.offset, 4,
                                           symbol_map[relocation.symbol], is_pc_relative=True)
+            relocation_addend = relocation.offset + 4 - relocation.program_counter
+            if relocation_addend != 0:
+                self.image.text_section.content[code_offset + relocation.offset] = relocation_addend & 0xFF
+                self.image.text_section.content[code_offset + relocation.offset + 1] = (relocation_addend >> 8) & 0xFF
+                self.image.text_section.content[code_offset + relocation.offset + 2] = (relocation_addend >> 16) & 0xFF
+                self.image.text_section.content[code_offset + relocation.offset + 3] = (relocation_addend >> 24) & 0xFF
+
             self.image.text_section.relocations.append(macho_relocation)
 
         function_symbol = Symbol("_" + function.name, SymbolType.section_relative, self.image.text_section,
@@ -321,7 +328,16 @@ class MSCOFFWriter:
             symbol_map[symbol] = mscoff_symbol
 
         for relocation in encoded_function.code_section.relocations:
-            mscoff_relocation = Relocation(RelocationType.x86_64_relocation_offset32,
+            relocation_type_map = {
+                4: RelocationType.x86_64_relocation_offset32,
+                5: RelocationType.x86_64_relocation_plus_1_offset32,
+                6: RelocationType.x86_64_relocation_plus_2_offset32,
+                7: RelocationType.x86_64_relocation_plus_3_offset32,
+                8: RelocationType.x86_64_relocation_plus_4_offset32,
+                9: RelocationType.x86_64_relocation_plus_5_offset32
+            }
+            relocation_type = relocation_type_map[relocation.program_counter - relocation.offset]
+            mscoff_relocation = Relocation(relocation_type,
                                            code_offset + relocation.offset,
                                            symbol_map[relocation.symbol])
             self.text_section.relocations.append(mscoff_relocation)
