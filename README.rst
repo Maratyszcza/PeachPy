@@ -197,6 +197,8 @@ Dependencies and Users
 
 - Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
 
+- PeachPy uses `six <https://pythonhosted.org/six/>`_ and `enum34 <https://pypi.python.org/pypi/enum34>`_ packages as a compatibility layer between Python 2 and Python 3
+
 - PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
 
 Publications
