@@ -1337,7 +1337,7 @@ class ABIFunction:
                         else:
                             assert False
                     if instruction.avx_mode and not self.avx_environment:
-                        VZEROUPPER()
+                        VZEROUPPER(prototype=instruction)
                     # Generate epilog
                     # 1. Restore clobbered XMM registers on stack with (V)MOVAPS instruction
                     # 2. If there are clobbered XMM registers, release their space on stack (increment stack pointer)
