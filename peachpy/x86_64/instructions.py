@@ -68,11 +68,14 @@ class Instruction(object):
             return text + str(self)
         elif assembly_format == "go":
             if self.go_name:
-                if self.operands:
-                    out_operands = [op for (is_out, op) in zip(self.out_operands, self.operands) if is_out]
-                    in_operands = [op for (is_out, op) in zip(self.out_operands, self.operands) if not is_out]
+                from peachpy.util import is_int
+                if self.name == "CMP" and is_int(self.operands[1]):
+                    # CMP instruction with an immediate operand has operands in normal (non-reversed) order
                     return text + str(self.go_name) + " " + \
-                        ", ".join(map(lambda op: format_operand(op, assembly_format), in_operands + out_operands))
+                           ", ".join(format_operand(op, assembly_format) for op in self.operands)
+                elif self.operands:
+                    return text + str(self.go_name) + " " + \
+                           ", ".join(format_operand(op, assembly_format) for op in reversed(self.operands))
                 else:
                     return text + str(self.go_name)
             else:
