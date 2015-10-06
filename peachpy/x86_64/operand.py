@@ -16,7 +16,7 @@ def check_operand(operand):
         return copy(operand)
     elif isinstance(operand, (MaskedRegister, MemoryOperand)):
         return deepcopy(operand)
-    elif isinstance(operand, (Constant, LocalVariable, Argument, RIPRelativeOffset, Label)):
+    elif isinstance(operand, (LocalVariable, Argument, RIPRelativeOffset, Label)):
         return operand
     elif is_int(operand):
         if not is_int64(operand):
@@ -26,6 +26,8 @@ def check_operand(operand):
         if len(operand) != 1:
             raise ValueError("Memory operands must be represented by a list with only one element")
         return MemoryOperand(operand[0])
+    elif isinstance(operand, Constant):
+        return MemoryOperand(operand)
     elif isinstance(operand, set):
         if len(operand) != 1:
             raise ValueError("Rounding control & suppress-all-errors operands must be represented by a set "
@@ -43,7 +45,7 @@ def get_operand_registers(operand):
         return [operand]
     elif isinstance(operand, MaskedRegister):
         return [operand.register, operand.mask.mask_register]
-    elif isinstance(operand, MemoryOperand):
+    elif isinstance(operand, MemoryOperand) and isinstance(operand.address, MemoryAddress):
         registers = list()
         if operand.address.base is not None:
             registers.append(operand.address.base)
@@ -232,7 +234,9 @@ class MemoryOperand:
     def __init__(self, address, size=None, mask=None, broadcast=None):
         from peachpy.x86_64.registers import GeneralPurposeRegister64, \
             XMMRegister, YMMRegister, ZMMRegister, MaskedRegister
-        assert isinstance(address, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister, MemoryAddress)) or\
+        from peachpy.literal import Constant
+        assert isinstance(address, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister,
+                                    MemoryAddress, Constant)) or \
             isinstance(address, MaskedRegister) and \
             isinstance(address.register, (XMMRegister, YMMRegister, ZMMRegister)) and \
             not address.mask.is_zeroing, \
@@ -241,23 +245,30 @@ class MemoryOperand:
         from peachpy.util import is_int
         assert size is None or is_int(size) and int(size) in SizeSpecification._size_name_map, \
             "Unsupported size: %d" % size
+
+        self.symbol = None
+        self.size = size
+        self.mask = mask
+        self.broadcast = broadcast
+
         if isinstance(address, MemoryAddress):
             if isinstance(address.index, MaskedRegister):
                 self.address = MemoryAddress(address.base, address.index.register, address.scale, address.displacement)
                 assert mask is None, "Mask argument can't be used when address index is a masked XMM/YMM/ZMM register"
-                mask = address.index.mask
+                self.mask = address.index.mask
             else:
                 self.address = address
         elif isinstance(address, MaskedRegister):
             self.address = MemoryAddress(index=address.register, scale=1)
             assert mask is None, "Mask argument can't be used when address is a masked XMM/YMM/ZMM register"
-            mask = address.mask
+            self.mask = address.mask
+        elif isinstance(address, Constant):
+            self.address = RIPRelativeOffset(0)
+            self.symbol = address
+            self.size = address.size
         else:
             # Convert register to memory address expression
             self.address = MemoryAddress(address)
-        self.size = size
-        self.mask = mask
-        self.broadcast = broadcast
 
     def __str__(self):
         if self.size is None:
@@ -548,7 +559,8 @@ def is_m(operand):
         return False
     # Check that the operand does not use vector index
     from peachpy.x86_64.registers import GeneralPurposeRegister
-    return operand.address.index is None or isinstance(operand.address.index, GeneralPurposeRegister)
+    return isinstance(operand.address, RIPRelativeOffset) or \
+        operand.address.index is None or isinstance(operand.address.index, GeneralPurposeRegister)
 
 
 def is_mk(operand):

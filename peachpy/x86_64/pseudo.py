@@ -8,29 +8,26 @@ import peachpy.x86_64.options
 import peachpy.x86_64.isa
 from peachpy.x86_64.instructions import Instruction
 from peachpy.x86_64.operand import check_operand, format_operand_type
+from peachpy.parse import parse_assigned_variable_name, parse_with_variable_name
 
 
 class Label:
     def __init__(self, name=None):
+        from peachpy.name import Name
         if name is None:
-            import re
-
-            source_line = inspect.stack()[1][4][0].strip()
-            match = re.match("(?:\\w+\\.)*(\\w+)\\s*=\\s*(?:\\w+\\.)*Label\\(.*\\)", source_line)
-            if match:
-                name = match.group(1)
-            else:
-                match = re.match("\\s*with\\s+(?:\\w+\\.)*Label\\(.*\\)\\s+as\\s+(\\w+)\\s*:\\s*", source_line)
-                if match:
-                    name = match.group(1)
-                else:
-                    raise ValueError("Label name not specified")
-        Label._check_name(name)
-        self.name = name
+            import inspect
+            self.name = (Name(prename=parse_assigned_variable_name(inspect.stack(), "Label")),)
+        elif isinstance(name, tuple):
+            assert all(isinstance(part, Name) for part in name), \
+                "Name must a string or a tuple or Name objects"
+            self.name = name
+        else:
+            Name.check_name(name)
+            self.name = (Name(name=name),)
 
     def __str__(self):
         """Returns a string representation of the name"""
-        return self.name
+        return ".".join(map(str, self.name))
 
     def format(self, assembly_format):
         assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
@@ -38,20 +35,13 @@ class Label:
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with underscore symbol
-            return self.name.replace(".", "_")
+            return str(self).replace(".", "_")
         else:
             return str(self)
 
-    @staticmethod
-    def _check_name(name):
-        """Verifies that the name is appropriate for a label"""
-        if not isinstance(name, str):
-            raise TypeError("Invalid label name %s: string required" % name)
-        import re
-        if not re.match("[_a-zA-Z]\\w*(?:\\.\\w+)*$", name):
-            raise ValueError("Invalid label name " + name)
-        if name.startswith("__") and name != "__entry__":
-            raise ValueError("Invalid label name %s: names starting with __ are reserved for Peach-Py purposes" % name)
+    @property
+    def is_named(self):
+        return not any(part.name is None for part in self.name)
 
 
 class LABEL(Instruction):
@@ -67,7 +57,7 @@ class LABEL(Instruction):
             peachpy.stream.active_stream.add_instruction(self)
 
     def __str__(self):
-        return self.identifier + ':'
+        return ".".join(map(str, self.identifier)) + ":"
 
     def format(self, assembly_format, indent):
         assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
@@ -75,7 +65,7 @@ class LABEL(Instruction):
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with underscore symbol
-            return self.identifier.replace(".", "_") + ":"
+            return "_".join(map(str, self.identifier)) + ":"
         else:
             return str(self)
 
@@ -89,22 +79,22 @@ class LABEL(Instruction):
 
 class Loop:
     def __init__(self, name=None):
+        from peachpy.name import Name
         if name is None:
-            import re
-
-            source_line = inspect.stack()[1][4][0].strip()
-            match = re.match("(?:\\w+\\.)*(\\w+)\\s*=\\s*(?:\\w+\\.)*Loop\\(.*\\)", source_line)
-            if match:
-                name = match.group(1)
-            else:
-                match = re.match("\\s*with\\s+(?:\\w+\\.)*Loop\\(.*\\)\\s+as\\s+(\\w+)\\s*:\\s*", source_line)
-                if match:
-                    name = match.group(1)
-                else:
-                    raise ValueError("Loop name not specified")
-        self.name = name
-        self.begin = Label(self.name + ".begin")
-        self.end = Label(self.name + ".end")
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Loop")
+            if prename is None:
+                prename = parse_with_variable_name(inspect.stack(), "Loop")
+            self.name = (Name(prename=prename),)
+        elif isinstance(name, tuple):
+            assert all(isinstance(part, Name) for part in name), \
+                "Name must a string or a tuple or Name objects"
+            self.name = name
+        else:
+            Name.check_name(name)
+            self.name = (Name(name=name),)
+        self.begin = Label(self.name + (Name(name="begin"),))
+        self.end = Label(self.name + (Name(name="end"),))
 
     def __enter__(self):
         LABEL(self.begin)

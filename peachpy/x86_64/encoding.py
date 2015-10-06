@@ -4,9 +4,9 @@
 
 def optional_rex(r, rm, force_rex=False):
     assert r in {0, 1}, "REX.R must be 0 or 1"
-    from peachpy.x86_64.operand import MemoryAddress
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
     from peachpy.x86_64.registers import Register
-    assert isinstance(rm, (Register, MemoryAddress, int)), \
+    assert isinstance(rm, (Register, MemoryAddress, RIPRelativeOffset)), \
         "rm is expected to be a register or a memory address"
     b = 0
     x = 0
@@ -27,8 +27,8 @@ def optional_rex(r, rm, force_rex=False):
 def rex(w, r, rm):
     assert w in {0, 1}, "REX.W must be 0 or 1"
     assert r in {0, 1}, "REX.R must be 0 or 1"
-    from peachpy.x86_64.operand import MemoryAddress
-    assert isinstance(rm, (MemoryAddress, int)), \
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
+    assert isinstance(rm, (MemoryAddress, RIPRelativeOffset)), \
         "rm is expected to be a memory address"
     b = 0
     x = 0
@@ -67,10 +67,10 @@ def vex2(lpp, r, rm, vvvv=0, force_vex3=False):
     assert lpp & ~0b111 == 0, "VEX.Lpp must be a 3-bit mask"
     assert r & ~0b1 == 0, "VEX.R must be a single-bit mask"
     assert vvvv & ~0b1111 == 0, "VEX.vvvv must be a 4-bit mask"
-    from peachpy.x86_64.operand import MemoryAddress
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
     from peachpy.x86_64.registers import Register
-    assert rm is None or isinstance(rm, (Register, MemoryAddress, int)), \
-        "rm is expected to be a register, a memory address, or None"
+    assert rm is None or isinstance(rm, (Register, MemoryAddress, RIPRelativeOffset)), \
+        "rm is expected to be a register, a memory address, a rip-relative offset, or None"
     b = 0
     x = 0
     if rm is not None:
@@ -106,9 +106,9 @@ def vex3(escape, mmmmm, w____lpp, r, rm, vvvv=0):
     assert mmmmm & ~0b11111 == 0, "VEX.m-mmmm is expected to be a 5-bit mask"
     assert r & ~0b1 == 0, "VEX.R must be a single-bit mask"
     assert vvvv & ~0b1111 == 0, "VEX.vvvv must be a 4-bit mask"
-    from peachpy.x86_64.operand import MemoryAddress
-    assert isinstance(rm, (MemoryAddress, int)), \
-        "rm is expected to be a memory address"
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
+    assert isinstance(rm, (MemoryAddress, RIPRelativeOffset)), \
+        "rm is expected to be a memory address or a rip-relative offset"
     b = 0
     x = 0
     if isinstance(rm, MemoryAddress):
@@ -127,9 +127,9 @@ def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0, aaa=0, z=0, b=0):
     assert Vvvvv & ~0b11111 == 0, "EVEX.v'vvvv must be a 5-bit mask"
     assert aaa & ~0b111 == 0, "EVEX.aaa must be a 3-bit mask"
     assert z & ~0b1 == 0, "EVEX.z must be a single-bit mask"
-    from peachpy.x86_64.operand import MemoryAddress
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
     from peachpy.x86_64.registers import Register, XMMRegister, YMMRegister, ZMMRegister
-    assert rm is None or isinstance(rm, (Register, MemoryAddress, int)), \
+    assert rm is None or isinstance(rm, (Register, MemoryAddress, RIPRelativeOffset)), \
         "rm is expected to be a register, a memory address, or None"
     r_, r = rr >> 1, rr & 1
     v_, vvvv = Vvvvv >> 4, Vvvvv & 0b1111
@@ -156,13 +156,13 @@ def evex(mm, w____1pp, ll, rr, rm, Vvvvv=0, aaa=0, z=0, b=0):
 
 
 def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0, disp8xN=None):
-    from peachpy.x86_64.operand import MemoryAddress
-    from peachpy.x86_64.registers import rsp, rbp, r12, r13
+    from peachpy.x86_64.operand import MemoryAddress, RIPRelativeOffset
+    from peachpy.x86_64.registers import rsp, rbp, r13
     from peachpy.util import is_int, is_sint8, ilog2
 
     assert is_int(reg) and 0 <= reg <= 7, \
         "Constant reg value expected, got " + str(reg)
-    assert isinstance(rm, (MemoryAddress, int))
+    assert isinstance(rm, (MemoryAddress, RIPRelativeOffset))
 
     if disp8xN is None:
         disp8xN = 1
@@ -236,9 +236,11 @@ def modrm_sib_disp(reg, rm, force_sib=False, min_disp=0, disp8xN=None):
                     return bytearray([(reg << 3) | 0x84, (scale << 6) | (index << 3) | rm.base.lcode,
                                      rm.displacement & 0xFF, (rm.displacement >> 8) & 0xFF,
                                      (rm.displacement >> 16) & 0xFF, (rm.displacement >> 24) & 0xFF])
-    else:
+    elif isinstance(rm, RIPRelativeOffset):
         # ModRM.mode == 0 and ModeRM.rm == 5 (0b101) indicates (rip + disp32) addressing
-        return bytearray([0b00000101 | (reg << 3), rm & 0xFF, (rm >> 8) & 0xFF, (rm >> 16) & 0xFF, (rm >> 24) & 0xFF])
+        return bytearray([0b00000101 | (reg << 3),
+                          rm.offset & 0xFF, (rm.offset >> 8) & 0xFF,
+                          (rm.offset >> 16) & 0xFF, (rm.offset >> 24) & 0xFF])
 
 
 def nop(length):

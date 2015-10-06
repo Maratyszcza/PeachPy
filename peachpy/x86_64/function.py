@@ -10,10 +10,12 @@ import six
 
 import peachpy
 import peachpy.writer
+import peachpy.name
 import peachpy.x86_64.instructions
 import peachpy.x86_64.registers
 import peachpy.x86_64.avx
 import peachpy.x86_64.options
+import peachpy.x86_64.meta
 
 active_function = None
 
@@ -73,14 +75,16 @@ class Function:
             self.debug_level = int(debug_level)
 
         from peachpy.x86_64.pseudo import Label
-        self.entry = Label("__entry__")
+        from peachpy.name import Name
+        self.entry = Label((Name("__entry__", None),))
 
         self._indent_level = 1
 
         self._instructions = list()
 
+        # This set is only used to ensure that all labels references in branches are defined
         self._label_names = set()
-        self._named_constants = dict()
+        self._scope = peachpy.name.Namespace(None)
 
         self._local_variables_count = 0
         self._virtual_general_purpose_registers_count = 0
@@ -193,7 +197,7 @@ class Function:
             self._check_live_registers()
             self._preallocate_registers()
             self._bind_registers()
-            self._name_constants()
+            self._scope.assign_names()
             if peachpy.x86_64.options.abi is not None:
                 abi_function = self.finalize(peachpy.x86_64.options.abi)
 
@@ -280,15 +284,12 @@ class Function:
 
         # Check that label with the same name is not added twice
         if isinstance(instruction, LABEL):
-            if instruction.identifier in self._label_names:
-                raise ValueError("A label named %s already exists in the function" % instruction.identifier)
+            self._scope.add_scoped_name(instruction.identifier)
             self._label_names.add(instruction.identifier)
 
-        constant_operand = instruction.constant_operand
-        if constant_operand is not None and constant_operand.name is not None:
-            self._named_constants.setdefault(constant_operand.name, constant_operand)
-            if self._named_constants[constant_operand.name] != constant_operand:
-                raise ValueError("A constant named %s already exists in the function" % constant_operand.name)
+        constant = instruction.constant
+        if constant is not None:
+            self._scope.add_scoped_name(constant.name)
 
         # Check that the instruction is supported by the target ISA
         for extension in instruction.isa_extensions:
@@ -313,20 +314,23 @@ class Function:
 
         from peachpy.x86_64.pseudo import LABEL
 
-        if self.entry.name not in self._label_names:
+        if self.entry.name not in self._scope.names:
             self._instructions.insert(0, LABEL(self.entry))
+            self._scope.add_scoped_name(self.entry.name)
             self._label_names.add(self.entry.name)
 
     def _check_undefined_labels(self):
         """Verifies that all labels referenced by branch instructions are defined"""
 
         from peachpy.x86_64.instructions import BranchInstruction
-        referenced_label_names = set(
-            [instruction.label_name for instruction in self._instructions
-             if isinstance(instruction, BranchInstruction) and instruction.label_name])
+        referenced_label_names = set()
+        for instruction in self._instructions:
+            if isinstance(instruction, BranchInstruction) and instruction.label_name:
+                referenced_label_names.add(instruction.label_name)
         if not referenced_label_names.issubset(self._label_names):
+            undefined_label_names = referenced_label_names.difference(self._label_names)
             raise ValueError("Undefined labels found: " +
-                             ", ".join(referenced_label_names.difference(self._label_names)))
+                             ", ".join(map(lambda name: ".".join(map(str, name)), undefined_label_names)))
 
     def _remove_unused_labels(self):
         """Removes labels that are not referenced by any instruction"""
@@ -334,9 +338,10 @@ class Function:
         from peachpy.x86_64.instructions import BranchInstruction
         from peachpy.x86_64.pseudo import LABEL
 
-        referenced_label_names = set(
-            [instruction.label_name for instruction in self._instructions
-             if isinstance(instruction, BranchInstruction) and instruction.label_name])
+        referenced_label_names = set()
+        for instruction in self._instructions:
+            if isinstance(instruction, BranchInstruction) and instruction.label_name:
+                referenced_label_names.add(instruction.label_name)
         unreferenced_label_names = self._label_names.difference(referenced_label_names)
         # Do not remove entry label if it is in the middle of the function
         if self.entry.name in unreferenced_label_names:
@@ -812,13 +817,13 @@ class Function:
         prenamed_constants_list = list()
         unnamed_constants_list = list()
         for instruction in self._instructions:
-            constant_operand = instruction.constant_operand
-            if constant_operand is not None:
-                if constant_operand.prename is None:
-                    if constant_operand.name is None:
-                        unnamed_constants_list.append(constant_operand)
+            constant = instruction.constant
+            if constant is not None:
+                if constant.prename is None:
+                    if constant.name is None:
+                        unnamed_constants_list.append(constant)
                 else:
-                    prenamed_constants_list.append(constant_operand)
+                    prenamed_constants_list.append(constant)
 
         # Step 1: assign names to constants with prenames
 
@@ -1640,7 +1645,7 @@ class EncodedFunction:
 
         constants = list()
         for instruction in self._instructions:
-            constant = instruction.constant_operand
+            constant = instruction.constant
             if constant is not None:
                 constants.append(constant)
 
@@ -1651,34 +1656,34 @@ class EncodedFunction:
             max_constant_alignment = max(constant.alignment for constant in constants)
         self.const_section.alignment = max_constant_alignment
 
+        # Unsorted list of Symbol objects for constants
         constant_symbols = list()
-        constant_symbols_set = set()
+        # This set is used to ensure that each constant is added only once
+        constant_names_set = set()
         if max_constant_size != 0:
             # Map from constant value (as bytes) to address in the const data section
             constants_address_map = dict()
 
             for instruction in self._instructions:
-                constant_operand = instruction.constant_operand
-                if constant_operand is not None:
-                    constant_value = bytes(constant_operand.encode(encoder))
-                    if constant_value in constants_address_map:
-                        constant_operand.address = constants_address_map[constant_value]
-                    else:
+                constant = instruction.constant
+                if constant is not None:
+                    constant_value = bytes(constant.encode(encoder))
+                    if constant_value not in constants_address_map:
                         # Add the new constant to the section
-                        assert constant_operand.size == max_constant_size, \
+                        assert constant.size == max_constant_size, \
                             "Handling of functions with constant literals of different size is not implemented"
-                        assert constant_operand.alignment == max_constant_alignment, \
+                        assert constant.alignment == max_constant_alignment, \
                             "Handling of functions with constant literals of different alignment is not implemented"
-                        constant_operand.address = len(self.const_section)
-                        constants_address_map[constant_value] = constant_operand.address
+                        constants_address_map[constant_value] = len(self.const_section)
                         self.const_section.content += constant_value
-                    if constant_operand.name not in constant_symbols_set:
-                        constant_symbols_set.add(constant_operand.name)
-                        const_symbol = Symbol(constant_operand.address, SymbolType.literal_constant,
-                                              name=constant_operand.name,
-                                              size=constant_operand.size)
+                    if constant.name not in constant_names_set:
+                        constant_names_set.add(constant.name)
+                        const_symbol = Symbol(constants_address_map[constant_value],
+                                              SymbolType.literal_constant,
+                                              name=constant.name,
+                                              size=constant.size)
                         constant_symbols.append(const_symbol)
-                        self._constant_symbol_map[constant_operand] = const_symbol
+                        self._constant_symbol_map[constant.name] = const_symbol
         for constant_symbol in sorted(constant_symbols, key=lambda sym: (sym.offset, -sym.size)):
             self.const_section.add_symbol(constant_symbol)
 
@@ -1770,14 +1775,14 @@ class EncodedFunction:
                         code_address += len(instruction.bytecode)
 
         for instruction in self._instructions:
-            constant_operand = instruction.constant_operand
-            if constant_operand:
+            constant = instruction.constant
+            if constant:
                 relocation = instruction.relocation
                 for index in range(relocation.offset, relocation.offset + 4):
                     instruction.bytecode[index] = 0
                 relocation.offset += len(self.code_section)
                 relocation.program_counter += len(self.code_section)
-                relocation.symbol = self._constant_symbol_map[instruction.constant_operand]
+                relocation.symbol = self._constant_symbol_map[instruction.constant.name]
                 self.code_section.add_relocation(relocation)
 
             if instruction.bytecode:

@@ -181,12 +181,11 @@ class Instruction(object):
         return registers_masks
 
     @property
-    def constant_operand(self):
-        import peachpy.literal
-        constant_operands = [operand for operand in self.operands if isinstance(operand, peachpy.literal.Constant)]
-        if constant_operands:
-            assert len(constant_operands) == 1, "At most one literal Constant operand in an instruction expected"
-            return constant_operands[0]
+    def constant(self):
+        from peachpy.x86_64.operand import MemoryOperand
+        from peachpy.literal import Constant
+        return next(iter(operand.symbol for operand in self.operands if
+                    isinstance(operand, MemoryOperand) and isinstance(operand.symbol, Constant)), None)
 
     @property
     def memory_address(self):
@@ -329,7 +328,7 @@ class Instruction(object):
         from peachpy.x86_64.meta import Relocation, RelocationType
         if self.bytecode:
             from peachpy.literal import Constant
-            if any(filter(lambda op: isinstance(op, Constant), self.operands)):
+            if self.constant is not None:
                 # Mini-disassembler for instruction encoding.
                 # Possible encoding sequences:
                 #   | [66, F2, or F3 prefix] | [REX] | [66, F2, or F3 prefix] | ...

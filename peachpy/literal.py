@@ -4,6 +4,7 @@ from peachpy.c.types import Type, \
     uint8_t, uint16_t, uint32_t, uint64_t, \
     float_, double_
 from peachpy.parse import parse_assigned_variable_name
+from peachpy.name import Name
 
 
 class Constant:
@@ -12,7 +13,7 @@ class Constant:
                         int8_t, int16_t, int32_t, int64_t,
                         float_, double_]
 
-    def __init__(self, size, repeats, data, element_ctype, name=None, prename=None):
+    def __init__(self, size, repeats, data, element_ctype, name):
         assert isinstance(size, six.integer_types), "Constant size must be an integer"
         assert size in Constant._supported_sizes, "Unsupported size %s: the only supported sizes are %s" \
             % (str(size), ", ".join(map(str, sorted(Constant._supported_sizes))))
@@ -21,16 +22,14 @@ class Constant:
         assert isinstance(element_ctype, Type), "Element type must be an instance of peachpy.c.Type"
         assert element_ctype in Constant._supported_types, "The only supported types are %s" \
             % ", ".join(Constant._supported_types)
+        assert isinstance(name, Name)
 
         self.size = size
         self.repeats = repeats
         self.element_ctype = element_ctype
         self.data = data
 
-        self.name = name
-        self.prename = prename
-
-        self.address = None
+        self.name = (name,)
 
         self.label = None
         self.prefix = None
@@ -76,7 +75,7 @@ class Constant:
             return str(self)
 
     @staticmethod
-    def _uint64xN(name, prename, n, *args):
+    def _uint64xN(name, n, *args):
         from peachpy.util import is_int, is_int64
         assert is_int(n)
         args = [arg for arg in args if arg is not None]
@@ -93,10 +92,10 @@ class Constant:
                 args[i] += 0x10000000000000000
         if len(args) == 1:
             args = [args[0]] * n
-        return Constant(8 * n, n, tuple(args), uint64_t)
+        return Constant(8 * n, n, tuple(args), uint64_t, name)
 
     @staticmethod
-    def _uint32xN(name, prename, n, *args):
+    def _uint32xN(name, n, *args):
         from peachpy.util import is_int, is_int32
         assert is_int(n)
         args = [arg for arg in args if arg is not None]
@@ -113,10 +112,10 @@ class Constant:
                 args[i] += 0x100000000
         if len(args) == 1:
             args = [args[0]] * n
-        return Constant(4 * n, n, tuple(args), uint32_t)
+        return Constant(4 * n, n, tuple(args), uint32_t, name)
 
     @staticmethod
-    def _float64xN(name, prename, n, *args):
+    def _float64xN(name, n, *args):
         args = [arg for arg in args if arg is not None]
         if len(args) == 0:
             raise ValueError("At least one constant value must be specified")
@@ -125,10 +124,10 @@ class Constant:
         args = [Constant._parse_float64(arg) for arg in args]
         if len(args) == 1:
             args = [args[0]] * n
-        return Constant(8 * n, n, tuple(args), double_)
+        return Constant(8 * n, n, tuple(args), double_, name)
 
     @staticmethod
-    def _float32xN(name, prename, n, *args):
+    def _float32xN(name, n, *args):
         args = [arg for arg in args if arg is not None]
         if len(args) == 0:
             raise ValueError("At least one constant value must be specified")
@@ -137,84 +136,100 @@ class Constant:
         args = [Constant._parse_float32(arg) for arg in args]
         if len(args) == 1:
             args = [args[0]] * n
-        return Constant(4 * n, n, tuple(args), double_)
+        return Constant(4 * n, n, tuple(args), double_, name)
 
     @staticmethod
     def uint64(number, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint64"))
 
-        return Constant._uint64xN(name, prename, 1, number)
+        return Constant._uint64xN(name, 1, number)
 
     @staticmethod
     def uint64x2(number1, number2=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x2")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint64x2"))
 
-        return Constant._uint64xN(name, prename, 2, number1, number2)
+        return Constant._uint64xN(name, 2, number1, number2)
 
     @staticmethod
     def uint64x4(number1, number2=None, number3=None, number4=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x4")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint64x4"))
 
-        return Constant._uint64xN(name, prename, 4, number1, number2, number3, number4)
+        return Constant._uint64xN(name, 4, number1, number2, number3, number4)
 
     @staticmethod
     def uint64x8(number1, number2=None, number3=None, number4=None,
                  number5=None, number6=None, number7=None, number8=None,
                  name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint64x8")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint64x8"))
 
-        return Constant._uint64xN(name, prename, 8,
+        return Constant._uint64xN(name, 8,
                                   number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod
     def uint32(number, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32"))
 
-        return Constant._uint32xN(name, prename, 1, number)
+        return Constant._uint32xN(name, 1, number)
 
     @staticmethod
     def uint32x2(number1, number2=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x2")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32x2"))
 
-        return Constant._uint32xN(name, prename, 2, number1, number2)
+        return Constant._uint32xN(name, 2, number1, number2)
 
     @staticmethod
     def uint32x4(number1, number2=None, number3=None, number4=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x4")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32x4"))
 
-        return Constant._uint32xN(name, prename, 4, number1, number2, number3, number4)
+        return Constant._uint32xN(name, 4, number1, number2, number3, number4)
 
     @staticmethod
     def uint32x8(number1, number2=None, number3=None, number4=None,
                  number5=None, number6=None, number7=None, number8=None,
                  name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x8")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32x8"))
 
-        return Constant._uint32xN(name, prename, 8,
+        return Constant._uint32xN(name, 8,
                                   number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod
@@ -223,79 +238,95 @@ class Constant:
                   number9=None, number10=None, number11=None, number12=None,
                   number13=None, number14=None, number15=None, number16=None,
                   name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.uint32x16")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32x16"))
 
-        return Constant._uint32xN(name, prename, 16,
+        return Constant._uint32xN(name, 16,
                                   number1, number2, number3, number4, number5, number6, number7, number8,
                                   number9, number10, number11, number12, number13, number14, number15, number16)
 
     @staticmethod
     def float64(number, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float64"))
 
-        return Constant._float64xN(name, prename, 1, number)
+        return Constant._float64xN(name, 1, number)
 
     @staticmethod
     def float64x2(number1, number2=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64x2")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float64x2"))
 
-        return Constant._float64xN(name, prename, 2, number1, number2)
+        return Constant._float64xN(name, 2, number1, number2)
 
     @staticmethod
     def float64x4(number1, number2=None, number3=None, number4=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float64x4")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float64x4"))
 
-        return Constant._float64xN(name, prename, 4, number1, number2, number3, number4)
+        return Constant._float64xN(name, 4, number1, number2, number3, number4)
 
     @staticmethod
     def float32(number, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float32"))
 
-        return Constant._float32xN(name, prename, 1, number)
+        return Constant._float32xN(name, 1, number)
 
     @staticmethod
     def float32x2(number1, number2=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x2")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float32x2"))
 
-        return Constant._float32xN(name, prename, 2, number1, number2)
+        return Constant._float32xN(name, 2, number1, number2)
 
     @staticmethod
     def float32x4(number1, number2=None, number3=None, number4=None, name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x4")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float32x4"))
 
-        return Constant._float32xN(name, prename, 4, number1, number2, number3, number4)
+        return Constant._float32xN(name, 4, number1, number2, number3, number4)
 
     @staticmethod
     def float32x8(number1, number2=None, number3=None, number4=None,
                   number5=None, number6=None, number7=None, number8=None,
                   name=None):
-        prename = None
-        if name is None:
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
             import inspect
-            prename = parse_assigned_variable_name(inspect.stack(), "Constant.float32x8")
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.float32x8"))
 
-        return Constant._float32xN(name, prename, 8,
+        return Constant._float32xN(name, 8,
                                    number1, number2, number3, number4, number5, number6, number7, number8)
 
     @staticmethod

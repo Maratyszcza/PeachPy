@@ -105,8 +105,9 @@ class Symbol:
             raise ValueError("Offset %d is negative" % offset)
         if not isinstance(type, SymbolType):
             raise TypeError("Symbol type %s is not in SymbolType enumeration" % str(type))
-        if name is not None and not isinstance(name, str):
-            raise TypeError("Name %s is not a string" % str(name))
+        from peachpy.name import Name
+        if name is not None and not (isinstance(name, tuple) and all(isinstance(part, Name) for part in name)):
+            raise TypeError("Name %s must be a tuple of Name objects" % str(name))
         if size is not None:
             if not is_int(size):
                 raise TypeError("Size %s is not an integer" % str(size))
@@ -115,5 +116,5 @@ class Symbol:
 
         self.offset = offset
         self.type = type
-        self.name = name
+        self.name = ".".join(map(str, name))
         self.size = size
