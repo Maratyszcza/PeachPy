@@ -147,7 +147,8 @@ excavator = Microarchitecture('Excavator', (isa.cmov, isa.mmx_plus, isa.sse4a, i
 # TODO: update info when Zen is out
 zen = Microarchitecture('Zen', (isa.cmov, isa.mmx_plus, isa.fma4, isa.fma3, isa.f16c, isa.avx2,
                                 isa.aes, isa.pclmulqdq, isa.rdseed, isa.sha,
-                                isa.lzcnt, isa.popcnt, isa.bmi2, isa.adx))
+                                isa.lzcnt, isa.popcnt, isa.bmi2, isa.adx),
+                        alu_width=256, fpu_width=256, load_with=256, store_width=256)
 bonnell = Microarchitecture('Bonnell', (isa.cmov, isa.movbe, isa.mmx_plus, isa.ssse3),
                             alu_width=128, fpu_width=64, load_with=128, store_width=128)
 saltwell = Microarchitecture('Saltwell', (isa.cmov, isa.movbe, isa.mmx_plus, isa.ssse3),

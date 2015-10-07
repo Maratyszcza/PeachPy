@@ -45,6 +45,7 @@ class Extension:
             "PCLMULQDQ": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, pclmulqdq),
             "RDRAND": (rdrand,),
             "RDSEED": (rdrand, rdseed),
+            'SHA': (sha,),
             "AVX": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, avx),
             "F16C": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, avx, f16c),
             "AVX2": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2),
