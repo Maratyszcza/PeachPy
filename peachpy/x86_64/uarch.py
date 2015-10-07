@@ -104,6 +104,26 @@ haswell = Microarchitecture('Haswell', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.
 broadwell = Microarchitecture('Broadwell', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3, isa.avx2,
                                             isa.lzcnt, isa.three_d_now_prefetch, isa.movbe, isa.bmi2, isa.adx),
                               alu_width=256, fpu_width=256, load_with=256, store_width=256)
+skylake = Microarchitecture('Skylake', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3, isa.avx2,
+                                        isa.lzcnt, isa.three_d_now_prefetch, isa.movbe, isa.bmi2, isa.adx),
+                            alu_width=256, fpu_width=256, load_with=256, store_width=256)
+skylake_xeon = Microarchitecture('Skylake Xeon', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3,
+                                                  isa.lzcnt, isa.three_d_now_prefetch, isa.movbe, isa.bmi2, isa.adx,
+                                                  isa.avx512bw, isa.avx512dq, isa.avx512vl, isa.avx512cd),
+                                 # TODO: update EU width when SKX is out
+                                 alu_width=512, fpu_width=512, load_with=512, store_width=512)
+cannonlake = Microarchitecture('Cannonlake', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3,
+                                              isa.lzcnt, isa.three_d_now_prefetch, isa.movbe, isa.bmi2, isa.adx,
+                                              isa.avx512bw, isa.avx512dq, isa.avx512vl, isa.avx512cd,
+                                              isa.avx512ifma, isa.avx512vbmi),
+                               # TODO: update EU width when CNL is out
+                               alu_width=512, fpu_width=512, load_with=512, store_width=512)
+knights_landing = Microarchitecture('Knights Landing',
+                                    (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3,
+                                     isa.lzcnt, isa.three_d_now_prefetch, isa.movbe, isa.bmi2, isa.adx,
+                                     isa.avx512cd, isa.avx512cd, isa.avx512er),
+                                    # TODO: update EU width when KNL is out
+                                    alu_width=512, fpu_width=512, load_with=512, store_width=512)
 k8 = Microarchitecture('K8', (isa.cmov, isa.mmx_plus, isa.three_d_now_plus, isa.three_d_now_prefetch, isa.sse2),
                        alu_width=64, fpu_width=64, load_with=64, store_width=64)
 k10 = Microarchitecture('K10', (isa.cmov, isa.mmx_plus, isa.three_d_now_plus, isa.three_d_now_prefetch, isa.sse4a,
@@ -120,6 +140,14 @@ steamroller = Microarchitecture('Steamroller', (isa.cmov, isa.mmx_plus, isa.sse4
                                                 isa.f16c, isa.three_d_now_prefetch, isa.aes, isa.pclmulqdq, isa.lzcnt,
                                                 isa.popcnt, isa.bmi, isa.tbm),
                                 alu_width=128, fpu_width=256, load_with=256, store_width=128)
+excavator = Microarchitecture('Excavator', (isa.cmov, isa.mmx_plus, isa.sse4a, isa.xop, isa.fma4, isa.fma3, isa.f16c,
+                                            isa.avx2, isa.three_d_now_prefetch, isa.aes, isa.pclmulqdq, isa.rdrand,
+                                            isa.lzcnt, isa.popcnt, isa.bmi2, isa.tbm),
+                              alu_width=256, fpu_width=256, load_with=256, store_width=128)
+# TODO: update info when Zen is out
+zen = Microarchitecture('Zen', (isa.cmov, isa.mmx_plus, isa.fma4, isa.fma3, isa.f16c, isa.avx2,
+                                isa.aes, isa.pclmulqdq, isa.rdseed, isa.sha,
+                                isa.lzcnt, isa.popcnt, isa.bmi2, isa.adx))
 bonnell = Microarchitecture('Bonnell', (isa.cmov, isa.movbe, isa.mmx_plus, isa.ssse3),
                             alu_width=128, fpu_width=64, load_with=128, store_width=128)
 saltwell = Microarchitecture('Saltwell', (isa.cmov, isa.movbe, isa.mmx_plus, isa.ssse3),
@@ -127,6 +155,17 @@ saltwell = Microarchitecture('Saltwell', (isa.cmov, isa.movbe, isa.mmx_plus, isa
 silvermont = Microarchitecture('Silvermont', (isa.cmov, isa.movbe, isa.popcnt, isa.mmx_plus, isa.sse4_2, isa.aes,
                                               isa.pclmulqdq),
                                alu_width=128, fpu_width=64, load_with=128, store_width=128)
+airmont = Microarchitecture('Airmont', (isa.cmov, isa.movbe, isa.popcnt,
+                                        isa.mmx_plus, isa.sse4_2,
+                                        isa.aes, isa.pclmulqdq, isa.rdrand,
+                                        isa.three_d_now_prefetch, isa.rdtscp),
+                            alu_width=128, fpu_width=64, load_with=128, store_width=128)
+# TODO: update info when GLM is out
+goldmont = Microarchitecture('Goldmont', (isa.cmov, isa.movbe, isa.popcnt, isa.adx,
+                                          isa.mmx_plus, isa.sse4_2, isa.three_d_now_prefetch,
+                                          isa.aes, isa.pclmulqdq, isa.rdseed, isa.sha,
+                                          isa.rdtscp),
+                             alu_width=128, fpu_width=64, load_with=128, store_width=128)
 bobcat = Microarchitecture('Bobcat', (isa.cmov, isa.mmx_plus, isa.three_d_now_prefetch, isa.ssse3, isa.sse4a),
                            alu_width=64, fpu_width=64, load_with=64, store_width=64)
 jaguar = Microarchitecture('Jaguar', (isa.cmov, isa.movbe, isa.lzcnt, isa.bmi, isa.popcnt, isa.three_d_now_prefetch,
