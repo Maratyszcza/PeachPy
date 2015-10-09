@@ -152,7 +152,7 @@ class ELFWriter:
             from peachpy.formats.elf.symbol import RelocationWithAddend, RelocationType
             for relocation in encoded_function.code_section.relocations:
                 elf_relocation = RelocationWithAddend(RelocationType.x86_64_pc32,
-                                                      relocation.offset,
+                                                      code_offset + relocation.offset,
                                                       symbol_map[relocation.symbol],
                                                       relocation.offset - relocation.program_counter)
                 self.text_rela_section.add(elf_relocation)
