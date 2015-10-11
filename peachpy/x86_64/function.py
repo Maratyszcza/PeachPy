@@ -997,6 +997,8 @@ class ABIFunction:
         from peachpy.x86_64.registers import rsp
         self._stack_base = rsp
         self._stack_frame_size = 0
+        self._stack_frame_alignment = self.abi.stack_alignment
+        self._local_variables_size = 0
 
         self._instructions = deepcopy(function._instructions)
         self._conflicting_registers = function._conflicting_registers.copy()
@@ -1012,6 +1014,8 @@ class ABIFunction:
             raise ValueError("Unsupported ABI: %s" % str(abi))
 
         self._update_argument_loads(function.arguments)
+
+        self._layout_local_variables()
 
         self._allocate_registers()
         self._bind_registers()
@@ -1131,6 +1135,38 @@ class ABIFunction:
         if self.result_type is not None:
             self.result_offset = roundup(stack_offset, self.result_type.size)
 
+    def _layout_local_variables(self):
+        from peachpy.x86_64.registers import rsp
+
+        local_variables_set = set()
+        local_variables_list = list()
+        for instruction in self._instructions:
+            local_variable = instruction.local_variable
+            if local_variable is not None:
+                local_variable = local_variable.root
+                if local_variable not in local_variables_set:
+                    local_variables_set.add(local_variable)
+                    local_variables_list.append(local_variable)
+        if local_variables_list:
+            local_variables_list = list(sorted(local_variables_list, key=lambda var: var.size))
+            self._stack_frame_alignment = max(var.alignment for var in local_variables_list)
+            local_variable_address = 0
+            from peachpy.util import roundup
+            for local_variable in local_variables_list:
+                local_variable_address = roundup(local_variable_address, local_variable.alignment)
+                local_variable.address = local_variable_address
+                local_variable_address += local_variable.size
+            self._local_variables_size = local_variable_address
+
+            for instruction in self._instructions:
+                local_variable = instruction.local_variable
+                if local_variable is not None:
+                    assert local_variable.address is not None
+                    memory_address = instruction.memory_address
+                    assert memory_address is not None
+                    assert memory_address.base == rsp
+                    instruction.memory_address.displacement = local_variable.address
+
     def _allocate_registers(self):
         from peachpy.x86_64.registers import Register, GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
         from peachpy.util import unique, append_unique
@@ -1222,12 +1258,12 @@ class ABIFunction:
         from peachpy.x86_64.pseudo import RETURN, STORE
         from peachpy.x86_64.mmxsse import MOVAPS
         from peachpy.x86_64.avx import VMOVAPS, VZEROUPPER
-        from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET
+        from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET, AND
         from peachpy.x86_64.nacl import NACLJMP
         from peachpy.x86_64.lower import load_register
         from peachpy.x86_64.abi import native_client_x86_64_abi, \
             gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp, rbp
         from peachpy.util import is_uint32, is_sint32, is_int
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
@@ -1247,14 +1283,21 @@ class ABIFunction:
                     PUSH(reg)
                 else:
                     cloberred_xmm_registers.append(reg)
-            if cloberred_xmm_registers:
+            # If stack needs to be realigned
+            if self._stack_frame_alignment > self.abi.stack_alignment:
+                cloberred_general_purpose_registers.append(rbp)
+                PUSH(rbp)
+                MOV(rbp, rsp)
+            if cloberred_xmm_registers or self._local_variables_size != 0:
                 # Total size of the stack frame less what is already adjusted with PUSH instructions
                 stack_adjustment = \
                     self._stack_frame_size - len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
-                SUB(rsp, stack_adjustment)
+                SUB(rsp, stack_adjustment + self._local_variables_size)
+                if self._stack_frame_alignment > self.abi.stack_alignment:
+                    AND(rsp, -self._stack_frame_alignment)
             for i, xmm_reg in enumerate(cloberred_xmm_registers):
                 movaps = VMOVAPS if self._avx_prolog else MOVAPS
-                movaps([rsp + i * XMMRegister.size], xmm_reg)
+                movaps([rsp + self._local_variables_size + i * XMMRegister.size], xmm_reg)
 
         # TODO: handle situations when entry point is in the middle of a function
         instructions.extend(prolog_stream.instructions)
@@ -1349,12 +1392,15 @@ class ABIFunction:
                     # 3. Restore clobbered general-purpose registers with PUSH instruction
                     for i, xmm_reg in enumerate(cloberred_xmm_registers):
                         movaps = VMOVAPS if self.avx_environment else MOVAPS
-                        movaps([rsp + i * XMMRegister.size], xmm_reg)
-                    if cloberred_xmm_registers:
+                        movaps([rsp + self._local_variables_size + i * XMMRegister.size], xmm_reg)
+                    if self._stack_frame_alignment > self.abi.stack_alignment:
+                        # Restore rsp value from rbp
+                        MOV(rsp, rbp)
+                    elif cloberred_xmm_registers or self._local_variables_size != 0:
                         # Total size of the stack frame less what will be adjusted with POP instructions
                         stack_adjustment = self._stack_frame_size - \
                             len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
-                        ADD(rsp, stack_adjustment)
+                        ADD(rsp, stack_adjustment + self._local_variables_size)
                     # Important: registers must be POPed in reverse order
                     for reg in reversed(cloberred_general_purpose_registers):
                         POP(reg)
@@ -1425,6 +1471,9 @@ class ABIFunction:
                 clobbered_general_purpose_registers += 1
             else:
                 clobbered_xmm_registers += 1
+        # If the stack needs to be aligned, rbp register needs to be preserved too
+        if self._stack_frame_alignment > self.abi.stack_alignment:
+            clobbered_general_purpose_registers += 1
         self._stack_frame_size = \
             clobbered_general_purpose_registers * GeneralPurposeRegister64.size + \
             clobbered_xmm_registers * XMMRegister.size
@@ -1434,7 +1483,7 @@ class ABIFunction:
         #    are pushed on stack
         # 4. If additionally there are clobbered XMM registers, we need to subtract 8 from stack to make it aligned
         #    by 16 after the general-purpose registers are pushed
-        if clobbered_xmm_registers != 0 and clobbered_general_purpose_registers % 2 == 0:
+        if (clobbered_xmm_registers != 0 or self._local_variables_size != 0) and clobbered_general_purpose_registers % 2 == 0:
             self._stack_frame_size += 8
 
     def _bind_registers(self):
@@ -1920,25 +1969,26 @@ class LocalVariable:
             raise TypeError('Unsupported size specification %s: register or integer expected' % size_option)
         if self.alignment is None:
             self.alignment = self.size
-        self._id = active_function.allocate_local_variable()
         self._address = None
-        self.offset = 0
+        self._offset = 0
         self.parent = None
 
     def __eq__(self, other):
-        return isinstance(other, LocalVariable) and self._id == other._id
+        return isinstance(other, LocalVariable) and self.root is other.root and \
+            self.size == other.size and self.offset == other.offset
 
     def __ne__(self, other):
-        return not isinstance(other, LocalVariable) or self._id != other._id
+        return not isinstance(other, LocalVariable) or self.root is not other.root or \
+            self.size != other.size or self.offset != other.offset
 
     def __hash__(self):
-        return hash(self._id)
+        return id(self.root) ^ hash(self.size) ^ hash(self.offset)
 
     def __str__(self):
         if self.address is not None:
             return "[" + str(self.address) + "]"
         else:
-            return "local-variable<%d>" % self._id
+            return "local-variable<%d[%d:%d]>" % (id(self.root), self.offset, self.offset + self.size)
 
     def __repr__(self):
         return str(self)
@@ -1955,26 +2005,35 @@ class LocalVariable:
         return root
 
     @property
-    def address(self):
+    def offset(self):
         node = self
         offset = 0
         while node.parent is not None:
-            offset += node.offset
+            offset += node._offset
             node = node.parent
-        return node._address + offset
+        return offset
+
+    @property
+    def address(self):
+        if self.is_subvariable:
+            base_address = self.root.address
+            if base_address is not None:
+                return base_address + self.offset
+        else:
+            return self._address
 
     @property
     def lo(self):
         assert self.size % 2 == 0
-        child = LocalVariable(self.size // 2)
+        child = LocalVariable(self.size // 2, min(self.size // 2, self.alignment))
         child.parent = self
-        child.offset = 0
+        child._offset = 0
         return child
 
     @property
     def hi(self):
         assert self.size % 2 == 0
-        child = LocalVariable(self.size // 2)
+        child = LocalVariable(self.size // 2, min(self.size // 2, self.alignment))
         child.parent = self
-        child.offset = self.size // 2
+        child._offset = self.size // 2
         return child

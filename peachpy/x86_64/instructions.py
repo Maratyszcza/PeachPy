@@ -188,6 +188,13 @@ class Instruction(object):
                     isinstance(operand, MemoryOperand) and isinstance(operand.symbol, Constant)), None)
 
     @property
+    def local_variable(self):
+        from peachpy.x86_64.operand import MemoryOperand
+        from peachpy.x86_64.function import LocalVariable
+        return next(iter(operand.symbol for operand in self.operands if
+                    isinstance(operand, MemoryOperand) and isinstance(operand.symbol, LocalVariable)), None)
+
+    @property
     def memory_address(self):
         from peachpy.x86_64.operand import MemoryOperand
         memory_operands = [operand for operand in self.operands if isinstance(operand, MemoryOperand)]

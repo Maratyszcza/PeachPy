@@ -16,7 +16,7 @@ def check_operand(operand):
         return copy(operand)
     elif isinstance(operand, (MaskedRegister, MemoryOperand)):
         return deepcopy(operand)
-    elif isinstance(operand, (LocalVariable, Argument, RIPRelativeOffset, Label)):
+    elif isinstance(operand, (Argument, RIPRelativeOffset, Label)):
         return operand
     elif is_int(operand):
         if not is_int64(operand):
@@ -27,6 +27,8 @@ def check_operand(operand):
             raise ValueError("Memory operands must be represented by a list with only one element")
         return MemoryOperand(operand[0])
     elif isinstance(operand, Constant):
+        return MemoryOperand(operand)
+    elif isinstance(operand, LocalVariable):
         return MemoryOperand(operand)
     elif isinstance(operand, set):
         if len(operand) != 1:
@@ -234,9 +236,10 @@ class MemoryOperand:
     def __init__(self, address, size=None, mask=None, broadcast=None):
         from peachpy.x86_64.registers import GeneralPurposeRegister64, \
             XMMRegister, YMMRegister, ZMMRegister, MaskedRegister
+        from peachpy.x86_64.function import LocalVariable
         from peachpy.literal import Constant
         assert isinstance(address, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister,
-                                    MemoryAddress, Constant)) or \
+                                    MemoryAddress, Constant, LocalVariable)) or \
             isinstance(address, MaskedRegister) and \
             isinstance(address.register, (XMMRegister, YMMRegister, ZMMRegister)) and \
             not address.mask.is_zeroing, \
@@ -264,6 +267,11 @@ class MemoryOperand:
             self.mask = address.mask
         elif isinstance(address, Constant):
             self.address = RIPRelativeOffset(0)
+            self.symbol = address
+            self.size = address.size
+        elif isinstance(address, LocalVariable):
+            from peachpy.x86_64.registers import rsp
+            self.address = MemoryAddress(rsp, displacement=address.offset)
             self.symbol = address
             self.size = address.size
         else:
