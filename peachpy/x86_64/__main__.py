@@ -1,6 +1,9 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+from __future__ import absolute_import
+
+
 from peachpy import *
 from peachpy.x86_64 import *
 import sys
@@ -13,6 +16,10 @@ parser.add_argument("-g", dest="debug_level", type=int, default=0,
                     help="Debug information level")
 parser.add_argument("-S", dest="generate_assembly", action="store_true",
                     help="Generate assembly listing on output")
+parser.add_argument("-MMD", dest="generate_dependencies_makefile", action="store_true",
+                    help="Generate Makefile describing the dependencies")
+parser.add_argument("-MF", dest="dependencies_makefile_path",
+                    help="Path to Makefile with dependencies")
 
 abi_map = {
     "ms": (peachpy.x86_64.abi.microsoft_x64_abi, ["masm", "nasm"], ["ms-coff"]),
@@ -128,6 +135,34 @@ def check_abi_image_format_combination(image_format, abi):
         raise ValueError("Image format %s is not supported for %s" % (image_format, str(abi)))
 
 
+def add_module_files(module_files, module, roots):
+    """Recursively adds Python source files for module and its submodules inside the roots directories"""
+    if not hasattr(module, "__file__"):
+        return
+
+    module_file = module.__file__
+    if module_file in module_files:
+        # This module was already added under a different name
+        return
+
+    import os
+    if not any(module_file.startswith(root + os.sep) for root in roots):
+        # The file is not inside any of the monitored roots
+        # This is typical for system modules
+        return
+
+    module_files.add(module_file)
+
+    from types import ModuleType
+    for variable_name in dir(module):
+        if variable_name.startswith("__"):
+            continue
+
+        variable = getattr(module, variable_name)
+        if isinstance(variable, ModuleType):
+            add_module_files(module_files, variable, roots)
+
+
 def main():
     options = parser.parse_args()
     import peachpy.x86_64.options
@@ -160,14 +195,32 @@ def main():
             writer = peachpy.writer.MSCOFFWriter(options.output, abi, options.input[0])
         else:
             raise ValueError("Image format %s is not supported" % image_format)
+    dependencies_makefile_path = options.output + ".d"
+    if options.dependencies_makefile_path:
+        dependencies_makefile_path = options.dependencies_makefile_path
 
     with writer:
+        # PeachPy sources can import other modules or files from the same directory
         import os
         sys.path.append(os.path.dirname(options.input[0]))
+        include_directories = [os.path.dirname(options.input[0])]
+
+        # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
+        sys.dont_write_bytecode = True
+
         with open(options.input[0]) as input_file:
             code = compile(input_file.read(), options.input[0], 'exec')
             exec(code, globals())
 
+        if options.generate_dependencies_makefile:
+            module_files = set()
+            for module in sys.modules.values():
+                add_module_files(module_files, module, include_directories)
+
+            dependencies = list(sorted(module_files))
+            dependencies.insert(0, options.input[0])
+            with open(dependencies_makefile_path, "w") as dependencies_makefile:
+                dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies))
 
 if __name__ == "__main__":
     sys.exit(main())
