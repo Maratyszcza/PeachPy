@@ -1208,7 +1208,10 @@ class ABIFunction:
         # Allocate registers
         for vreg_kind, vreg_ids in six.iteritems(allocation_options):
             # Choose the register to allocate
-            for vreg_id in vreg_ids:
+            regids_to_allocate = vreg_ids.copy()
+            while regids_to_allocate:
+                regids_to_allocate = sorted(regids_to_allocate, key=lambda rid: len(self._conflicting_registers[vreg_kind][rid]))
+                vreg_id = regids_to_allocate.pop()
                 if not vreg_ids[vreg_id]:
                     raise Exception("Not physical registers for vreg_id = " + str(vreg_id))
                 physical_id = vreg_ids[vreg_id].pop(0)
