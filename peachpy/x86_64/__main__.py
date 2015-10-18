@@ -220,7 +220,7 @@ def main():
             dependencies = list(sorted(module_files))
             dependencies.insert(0, options.input[0])
             with open(dependencies_makefile_path, "w") as dependencies_makefile:
-                dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies))
+                dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies) + "\n")
 
 if __name__ == "__main__":
     sys.exit(main())
