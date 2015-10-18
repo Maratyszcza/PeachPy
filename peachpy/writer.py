@@ -134,7 +134,7 @@ class ELFWriter:
         symbol_map = dict()
         for symbol in encoded_function.const_section.symbols:
             const_symbol = Symbol()
-            const_symbol.name = symbol.name
+            const_symbol.name = function.name + "." + symbol.name
             const_symbol.value = const_offset + symbol.offset
             const_symbol.size = symbol.size
             const_symbol.section = self.rodata_section
@@ -229,7 +229,7 @@ class MachOWriter:
         # Map from PeachPy symbol to Mach-O symbol
         symbol_map = dict()
         for symbol in encoded_function.const_section.symbols:
-            macho_symbol = Symbol(symbol.name,
+            macho_symbol = Symbol("_" + function.name + "." + symbol.name,
                                   SymbolType.section_relative, self.image.const_section,
                                   const_offset + symbol.offset)
             macho_symbol.description = SymbolDescription.defined
