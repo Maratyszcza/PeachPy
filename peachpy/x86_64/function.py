@@ -1418,21 +1418,23 @@ class ABIFunction:
                 instruction.destination_offset = self.result_offset
                 instructions.append(instruction)
             else:
-                if self.abi == native_client_x86_64_abi:
+                if self.abi == native_client_x86_64_abi and instruction.name != "LEA":
                     from peachpy.x86_64.operand import is_m
                     memory_operands = list(filter(lambda op: is_m(op), instruction.operands))
                     if memory_operands:
                         assert len(memory_operands) == 1, \
                             "x86-64 instructions can not have more than 1 explicit memory operand"
                         memory_address = memory_operands[0].address
-                        if memory_address.index is not None:
-                            raise ValueError("NaCl does not allow index addressing")
-                        from peachpy.x86_64.registers import rbp, rsp, r15
-                        if memory_address.base is not None and memory_address.base not in {rbp, rsp, r15}:
-                            # Base register is not a restricted register: needs transformation
-                            memory_address.index = memory_address.base
-                            memory_address.scale = 1
-                            memory_address.base = r15
+                        from peachpy.x86_64.operand import MemoryAddress
+                        if isinstance(memory_address, MemoryAddress):
+                            if memory_address.index is not None:
+                                raise ValueError("NaCl does not allow index addressing")
+                            from peachpy.x86_64.registers import rbp, rsp, r15
+                            if memory_address.base is not None and memory_address.base not in {rbp, rsp, r15}:
+                                # Base register is not a restricted register: needs transformation
+                                memory_address.index = memory_address.base
+                                memory_address.scale = 1
+                                memory_address.base = r15
                 instructions.append(instruction)
         self._instructions = instructions
 
@@ -1781,7 +1783,8 @@ class EncodedFunction:
                         instruction_group = [instruction]
 
                         memory_address = instruction.memory_address
-                        if memory_address:
+                        from peachpy.x86_64.operand import MemoryAddress
+                        if isinstance(memory_address, MemoryAddress) and memory_address.index is not None:
                             from peachpy.stream import NullStream
                             with NullStream():
                                 from peachpy.x86_64.generic import MOV
