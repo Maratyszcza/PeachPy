@@ -27,6 +27,11 @@ def check_operand(operand):
             raise ValueError("Memory operands must be represented by a list with only one element")
         return MemoryOperand(operand[0])
     elif isinstance(operand, Constant):
+        from copy import copy, deepcopy
+        operand = copy(operand)
+        import peachpy.x86_64.function
+        if peachpy.x86_64.function.active_function:
+            operand.name = deepcopy(operand.name, peachpy.x86_64.function.active_function._names_memo)
         return MemoryOperand(operand)
     elif isinstance(operand, LocalVariable):
         return MemoryOperand(operand)

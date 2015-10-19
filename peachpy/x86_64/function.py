@@ -84,6 +84,9 @@ class Function:
 
         # This set is only used to ensure that all labels references in branches are defined
         self._label_names = set()
+        # Map from id of Name objects to their copies.
+        # This ensures that Name objects without name can be compared for equality using id
+        self._names_memo = dict()
         self._scope = peachpy.name.Namespace(None)
 
         self._local_variables_count = 0
