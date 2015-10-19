@@ -220,7 +220,7 @@ class MachOWriter:
         const_offset = self.image.const_section.content_size
         const_padding = bytearray([encoded_function.const_section.alignment_byte] *
                                   (roundup(const_offset, encoded_function.const_section.alignment) - const_offset))
-        self.image.text_section.content += const_padding
+        self.image.const_section.content += const_padding
         const_offset += len(const_padding)
         self.image.const_section.content += encoded_function.const_section.content
         self.image.const_section.alignment = \
