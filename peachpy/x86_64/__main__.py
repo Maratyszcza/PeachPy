@@ -20,6 +20,9 @@ parser.add_argument("-MMD", dest="generate_dependencies_makefile", action="store
                     help="Generate Makefile describing the dependencies")
 parser.add_argument("-MF", dest="dependencies_makefile_path",
                     help="Path to Makefile with dependencies")
+parser.add_argument("-fdump-rtl", dest="rtl_dump",
+                    help="Path to file with RTL dump")
+
 
 abi_map = {
     "ms": (peachpy.x86_64.abi.microsoft_x64_abi, ["masm", "nasm"], ["ms-coff"]),
@@ -198,6 +201,8 @@ def main():
     dependencies_makefile_path = options.output + ".d"
     if options.dependencies_makefile_path:
         dependencies_makefile_path = options.dependencies_makefile_path
+    if options.rtl_dump:
+        peachpy.x86_64.options.rtl_dump_file = open(options.rtl_dump, "w")
 
     with writer:
         # PeachPy sources can import other modules or files from the same directory

@@ -8,6 +8,8 @@ debug_level = 0
 package = None
 assembly_format = "go"
 generate_assembly = None
+rtl_dump_file = None
+
 
 def get_debug_level():
     import peachpy.x86_64.function as function

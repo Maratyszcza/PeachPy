@@ -197,6 +197,8 @@ class Function:
             self._check_undefined_labels()
             self._remove_unused_labels()
             self._analize()
+            if peachpy.x86_64.options.rtl_dump_file:
+                peachpy.x86_64.options.rtl_dump_file.write(self.format_instructions())
             self._check_live_registers()
             self._preallocate_registers()
             self._bind_registers()
