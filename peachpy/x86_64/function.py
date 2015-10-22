@@ -100,21 +100,13 @@ class Function:
         self.avx_environment = any([arg.ctype in avx_types for arg in self.arguments]) or self.result_type in avx_types
         self._avx_prolog = None
 
-        from collections import defaultdict
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
-        self._conflicting_registers = {
-            # Map from virtual register id to internal id of conflicting registers
-            GeneralPurposeRegister._kind: defaultdict(set),
-            MMXRegister._kind: defaultdict(set),
-            XMMRegister._kind: defaultdict(set),
-            KRegister._kind: defaultdict(set),
-        }
-        self._register_allocations = {
-            # Map from internal register id to physical register id
-            GeneralPurposeRegister._kind: dict(),
-            MMXRegister._kind: dict(),
-            XMMRegister._kind: dict(),
-            KRegister._kind: dict(),
+        from peachpy.common import RegisterAllocator
+        self._register_allocators = {
+            GeneralPurposeRegister._kind: RegisterAllocator(),
+            MMXRegister._kind: RegisterAllocator(),
+            XMMRegister._kind: RegisterAllocator(),
+            KRegister._kind: RegisterAllocator()
         }
 
     @property
@@ -682,21 +674,19 @@ class Function:
             basic_block.output_blocks = None
 
         # Analyze conflicting registers
+        output_registers = set()
         for instruction in self._instructions:
-            virtual_registers = list(filter(operator.attrgetter("is_virtual"), instruction.registers))
-            for virtual_register in virtual_registers:
+            unallocated_registers = instruction.input_registers
+            unallocated_registers.update(output_registers)
+            unallocated_registers = filter(operator.attrgetter("is_virtual"), unallocated_registers)
+            for virtual_register in unallocated_registers:
                 # TODO: generalize conflicts
-                conflicting_ids = [reg_id for (reg_id, reg_mask)
-                                   in six.iteritems(instruction._live_registers)
-                                   if reg_mask & virtual_register.mask != 0]
-                if conflicting_ids:
-                    self._conflicting_registers[virtual_register.kind][-virtual_register.virtual_id]\
-                        .update(conflicting_ids)
-                # Make sure that conflicting registers are mutually conflicting
-                for conflicting_id in conflicting_ids:
-                    if conflicting_id < 0:
-                        self._conflicting_registers[virtual_register.kind][conflicting_id].\
-                            add(-virtual_register.virtual_id)
+                conflict_internal_ids = [reg_id for (reg_id, reg_mask)
+                                         in six.iteritems(instruction._live_registers)
+                                         if reg_mask & virtual_register.mask != 0]
+                self._register_allocators[virtual_register.kind].add_conflicts(
+                    virtual_register.virtual_id, conflict_internal_ids)
+            output_registers = instruction.output_registers
 
     def _check_live_registers(self):
         """Checks that the number of live registers does not exceed the number of physical registers for each insruction
@@ -712,9 +702,14 @@ class Function:
             live_registers = max_live_registers.copy()
             for reg in instruction.live_registers:
                 live_registers[reg.kind] -= 1
-            if any(map(lambda c: c < 0, six.itervalues(live_registers))):
-                raise peachpy.RegisterAllocationError(
-                    "The number of live virtual registers exceeds physical constaints %s" % str(instruction))
+            if any(surplus_count < 0 for surplus_count in six.itervalues(live_registers)):
+                if instruction.source_file is not None and instruction.line_number is not None:
+                    raise peachpy.RegisterAllocationError(
+                        "The number of live virtual registers exceeds physical constaints %s at %s:%d" %
+                            (str(instruction), instruction.source_file, instruction.line_number))
+                else:
+                    raise peachpy.RegisterAllocationError(
+                        "The number of live virtual registers exceeds physical constaints %s" % str(instruction))
 
     def _preallocate_registers(self):
         """Allocates registers that can be binded only to a single virtual register.
@@ -729,9 +724,9 @@ class Function:
             - PBLENDVB xmm, xmm/m128, xmm0
             - SHA256RNDS2 xmm, xmm/m128, xmm0
             - SHR r/m, cl
-            - SHL r/m, cl
             - SAR r/m, cl
             - SAL r/m, cl
+            - SHL r/m, cl
             - ROR r/m, cl
             - ROL r/m, cl
             - SHRD r/m, r, cl
@@ -813,7 +808,8 @@ class Function:
             for register in instruction.register_objects:
                 if register.is_virtual:
                     register.physical_id = \
-                        self._register_allocations[register.kind].get(register._internal_id, register.physical_id)
+                        self._register_allocators[register.kind].register_allocations.get(
+                            register._internal_id, register.physical_id)
 
     def _allocate_local_variable(self):
         """Returns a new unique ID for a local variable"""
@@ -944,8 +940,7 @@ class ABIFunction:
         self._local_variables_size = 0
 
         self._instructions = deepcopy(function._instructions)
-        self._conflicting_registers = function._conflicting_registers.copy()
-        self._register_allocations = function._register_allocations.copy()
+        self._register_allocators = deepcopy(function._register_allocators)
 
         if abi == microsoft_x64_abi:
             self._setup_windows_arguments()
@@ -1111,21 +1106,11 @@ class ABIFunction:
                     instruction.memory_address.displacement = local_variable.address
 
     def _allocate_registers(self):
-        from peachpy.x86_64.registers import Register, GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
-        from peachpy.util import unique, append_unique
+        for register_kind, register_allocator in six.iteritems(self._register_allocators):
+            register_allocator.set_allocation_options(self.abi, register_kind)
 
-        allocation_options = {
-            # Map from virtual register id to a list of possible allocations in priority order
-            GeneralPurposeRegister._kind: dict(),
-            MMXRegister._kind: dict(),
-            XMMRegister._kind: dict(),
-            KRegister._kind: dict(),
-        }
         from peachpy.x86_64.pseudo import LOAD
-        for vreg_kind, vreg_ids in six.iteritems(self._conflicting_registers):
-            for vreg_id in vreg_ids:
-                allocation_options[vreg_kind][vreg_id] = []
-
+        from peachpy.x86_64.registers import Register, GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
         for instruction in self._instructions:
             if isinstance(instruction, LOAD.ARGUMENT):
                 dst_reg = instruction.operands[0]
@@ -1133,39 +1118,11 @@ class ABIFunction:
                 assert isinstance(dst_reg, Register)
                 assert isinstance(src_arg, Argument)
                 if dst_reg.is_virtual and src_arg.register is not None:
-                    allocation_options[dst_reg.kind][dst_reg._internal_id] = [src_arg.register.physical_id]
+                    self._register_allocators[dst_reg.kind]\
+                        .try_allocate_register(dst_reg.virtual_id, src_arg.register.physical_id)
 
-        # A list of physical register IDs ordered by allocation priority:
-        # - Volatile and argument registers go first
-        # - Then allocation may use non-volatile registers
-        physical_register_ids = list(map(operator.attrgetter("physical_id"), self.abi.volatile_registers +
-                                         list(reversed(self.abi.argument_registers)) + self.abi.callee_save_registers))
-        for vreg_kind, vreg_ids in six.iteritems(allocation_options):
-            for vreg_id in vreg_ids:
-                allocation_options[vreg_kind][vreg_id] = \
-                    unique(allocation_options[vreg_kind][vreg_id] + physical_register_ids)
-                for conflicting_reg_id in self._conflicting_registers[vreg_kind][vreg_id]:
-                    if conflicting_reg_id >= 0 and conflicting_reg_id in allocation_options[vreg_kind][vreg_id]:
-                        allocation_options[vreg_kind][vreg_id].remove(conflicting_reg_id)
-
-        # Allocate registers
-        for vreg_kind, vreg_ids in six.iteritems(allocation_options):
-            # Choose the register to allocate
-            regids_to_allocate = vreg_ids.copy()
-            while regids_to_allocate:
-                regids_to_allocate = sorted(regids_to_allocate, key=lambda rid: len(self._conflicting_registers[vreg_kind][rid]))
-                vreg_id = regids_to_allocate.pop()
-                if not vreg_ids[vreg_id]:
-                    raise Exception("Not physical registers for vreg_id = " + str(vreg_id))
-                physical_id = vreg_ids[vreg_id].pop(0)
-                for vconflict_id in self._conflicting_registers[vreg_kind][vreg_id]:
-                    if vconflict_id in vreg_ids:
-                        valloc_ids = vreg_ids[vconflict_id]
-                        try:
-                            valloc_ids.remove(physical_id)
-                        except ValueError:
-                            pass
-                self._register_allocations[vreg_kind][vreg_id] = physical_id
+        for register_allocator in six.itervalues(self._register_allocators):
+            register_allocator.allocate_registers()
 
     def _lower_argument_loads(self):
         from peachpy.x86_64.pseudo import LOAD
@@ -1441,7 +1398,7 @@ class ABIFunction:
             for register in instruction.register_objects:
                 if register.is_virtual:
                     register.physical_id = \
-                        self._register_allocations[register.kind].get(register._internal_id, register.physical_id)
+                        self._register_allocators[register.kind].register_allocations[register.virtual_id]
 
     def format_code(self, assembly_format="peachpy", line_separator=os.linesep, indent=True):
         """Returns code of assembly instructions comprising the function"""
