@@ -1343,13 +1343,9 @@ class ABIFunction:
             instruction.encodings = instruction._filter_encodings()
 
     def _update_argument_addresses(self):
-        from peachpy.x86_64.registers import rsp
         for argument in self.arguments:
             if argument.stack_offset is not None:
-                return_address_size = 8
-                # TODO: consider non-rsp stack frame base
-                argument.address = rsp + \
-                    (self._stack_frame_size + return_address_size + argument.stack_offset)
+                argument.address = self._argument_stack_base + argument.stack_offset
 
     def _analyze_clobbered_registers(self):
         from peachpy.x86_64.registers import GeneralPurposeRegister, XMMRegister, YMMRegister, ZMMRegister
@@ -1366,7 +1362,7 @@ class ABIFunction:
         return list(sorted(filter(lambda reg: reg in self.abi.callee_save_registers, output_registers)))
 
     def _update_stack_frame(self):
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rbp, rsp
         clobbered_general_purpose_registers = 0
         clobbered_xmm_registers = 0
         for reg in self._clobbered_registers:
@@ -1390,6 +1386,16 @@ class ABIFunction:
         #    by 16 after the general-purpose registers are pushed
         if (clobbered_xmm_registers != 0 or self._local_variables_size != 0) and clobbered_general_purpose_registers % 2 == 0:
             self._stack_frame_size += 8
+
+        # Set stack_argument_base
+        return_address_size = 8
+        if self._stack_frame_alignment > self.abi.stack_alignment:
+            # rsp is realigned, argument addressing uses rbp
+            saved_rbp_size = 8
+            self._argument_stack_base = rbp + return_address_size + saved_rbp_size
+        else:
+            # argument addressing uses rsp
+            self._argument_stack_base = rsp + return_address_size + self._stack_frame_size
 
     def _bind_registers(self):
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
