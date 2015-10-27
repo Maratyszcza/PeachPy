@@ -24,6 +24,8 @@ parser.add_argument("-fdump-rtl", dest="rtl_dump",
                     help="Path to output file for RTL dump")
 parser.add_argument("-emit-json-metadata", dest="json_metadata_file",
                     help="Path to output file for JSON metadata")
+parser.add_argument("-emit-c-header", dest="c_header_file",
+                    help="Path to output file for C/C++ header")
 
 
 abi_map = {
@@ -194,7 +196,7 @@ def main():
     peachpy.x86_64.options.package = options.package
     peachpy.x86_64.options.generate_assembly = options.generate_assembly
 
-    from peachpy.writer import ELFWriter, MachOWriter, MSCOFFWriter, AssemblyWriter, JSONMetadataWriter
+    from peachpy.writer import ELFWriter, MachOWriter, MSCOFFWriter, AssemblyWriter, JSONMetadataWriter, CHeaderWriter
     writers = []
     if peachpy.x86_64.options.generate_assembly:
         assembly_format = options.assembly_format
@@ -221,6 +223,8 @@ def main():
         dependencies_makefile_path = options.dependencies_makefile_path
     if options.rtl_dump:
         peachpy.x86_64.options.rtl_dump_file = open(options.rtl_dump, "w")
+    if options.c_header_file:
+        writers.append(CHeaderWriter(options.c_header_file, options.input[0]))
     if options.json_metadata_file:
         writers.append(JSONMetadataWriter(options.json_metadata_file))
 
