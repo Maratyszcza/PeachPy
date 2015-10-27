@@ -34,9 +34,17 @@ class Type:
             raise TypeError("%s must be either a type name or a type" % base)
 
     def __str__(self):
-        text = str(self.base) + "*" if self.is_pointer else self.name
-        if self.is_const:
-            text += " const"
+        if self.is_pointer:
+            if self.base is None:
+                text = "void*"
+            else:
+                text = str(self.base) + "*"
+            if self.is_const:
+                text += " const"
+        else:
+            text = self.name
+            if self.is_const:
+                text = "const " + text
         return text
 
     def __hash__(self):
