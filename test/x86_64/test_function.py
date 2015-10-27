@@ -158,8 +158,8 @@ class SimpleLoop(unittest.TestCase):
 
         code = function.format()
         ref_code = """
-void square(float const* x, float* y, size_t length)
-    LOAD.ARGUMENT gp64-vreg<1>, float const* x
+void square(const float* x, float* y, size_t length)
+    LOAD.ARGUMENT gp64-vreg<1>, const float* x
     LOAD.ARGUMENT gp64-vreg<2>, float* y
     LOAD.ARGUMENT gp64-vreg<3>, size_t length
 loop.begin:

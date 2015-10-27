@@ -81,7 +81,7 @@ class TestSimpleLoopAnalysis(unittest.TestCase):
 
         listing = function.format_instructions()
         ref_listing = """
-LOAD.ARGUMENT gp64-vreg<1>, float const* x
+LOAD.ARGUMENT gp64-vreg<1>, const float* x
     In regs:
     Out regs:   gp64-vreg<1>
     Live regs:
@@ -232,19 +232,19 @@ class TestBFSAnalysis(unittest.TestCase):
 
         listing = function.format_instructions()
         ref_listing = """
-LOAD.ARGUMENT gp64-vreg<1>, uint32_t const* vertex_edges
+LOAD.ARGUMENT gp64-vreg<1>, const uint32_t* vertex_edges
     In regs:
     Out regs:   gp64-vreg<1>
     Live regs:
     Avail regs:
 
-LOAD.ARGUMENT gp64-vreg<2>, uint32_t const* neighbors
+LOAD.ARGUMENT gp64-vreg<2>, const uint32_t* neighbors
     In regs:
     Out regs:   gp64-vreg<2>
     Live regs:  gp64-vreg<1>
     Avail regs: gp64-vreg<1>
 
-LOAD.ARGUMENT gp64-vreg<3>, uint32_t const* input_queue
+LOAD.ARGUMENT gp64-vreg<3>, const uint32_t* input_queue
     In regs:
     Out regs:   gp64-vreg<3>
     Live regs:  gp64-vreg<1>, gp64-vreg<2>
