@@ -198,8 +198,8 @@ class Function:
             if peachpy.x86_64.options.abi is not None:
                 abi_function = self.finalize(peachpy.x86_64.options.abi)
 
-                if peachpy.writer.active_writer is not None:
-                    peachpy.writer.active_writer.add_function(abi_function)
+                for writer in peachpy.writer.active_writers:
+                    writer.add_function(abi_function)
         else:
             raise
 
@@ -926,6 +926,7 @@ class ABIFunction:
         self.result_offset = None
         self.package = function.package
         self.target = function.target
+        self.isa_extensions = function.isa_extensions
         self.abi = abi
         self.c_signature = function.c_signature
         self.go_signature = function.go_signature
@@ -1465,6 +1466,23 @@ class ABIFunction:
 
     def encode(self):
         return EncodedFunction(self)
+
+    @property
+    def metadata(self):
+        metadata = collections.OrderedDict([
+            ("entry", "function"),
+            ("name", self.name),
+            ("symbol", self.name),
+            ("return",  "void" if self.result_type is None else str(self.result_type)),
+            ("arguments", [collections.OrderedDict([
+                ("name", argument.name),
+                ("type", str(argument.ctype))]) for argument in self.arguments]),
+            ("arch", "x86-64"),
+            ("abi", str(self.abi)),
+            ("uarch", self.target.name),
+            ("isa", [str(extension) for extension in self.isa_extensions.minify()])
+        ])
+        return metadata
 
 
 class InstructionBundle:

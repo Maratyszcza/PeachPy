@@ -200,6 +200,14 @@ class Extensions:
             elif isinstance(extension, Extension):
                 self.extensions.add(extension)
 
+    def minify(self):
+        extensions = list(reversed(sorted(self.extensions)))
+        for extension in extensions:
+            for ancestor in extension.ancestors:
+                if ancestor != extension and ancestor in extensions:
+                    extensions.remove(ancestor)
+        return extensions
+
     def __add__(self, extension):
         return Extensions(extension, *self.extensions)
 
@@ -212,12 +220,7 @@ class Extensions:
         return Extensions(*extensions)
 
     def __str__(self):
-        extensions = list(reversed(sorted(self.extensions)))
-        for extension in extensions:
-            for ancestor in extension.ancestors:
-                if ancestor != extension and ancestor in extensions:
-                    extensions.remove(ancestor)
-        return ", ".join(sorted(map(str, extensions)))
+        return ", ".join(sorted(map(str, self.minify())))
 
     def __contains__(self, extension):
         return extension in self.extensions

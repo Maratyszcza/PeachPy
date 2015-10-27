@@ -1,7 +1,7 @@
 # This file is part of Peach-Py package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-active_writer = None
+active_writers = []
 
 
 class AssemblyWriter:
@@ -28,21 +28,17 @@ class AssemblyWriter:
         import os
         self.output_header = os.linesep.join(header_linea)
 
-        self.previous_writer = None
-
     def __enter__(self):
-        global active_writer
-        self.previous_writer = active_writer
-        active_writer = self
+        global active_writers
+        active_writers.append(self)
         self.output_file = open(self.output_path, "w")
         self.output_file.write(self.output_header)
         self.output_file.flush()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        global active_writer
-        active_writer = self.previous_writer
-        self.previous_writer = None
+        global active_writers
+        active_writers.remove(self)
         if exc_type is None:
             self.output_file.close()
             self.output_file = None
@@ -55,7 +51,7 @@ class AssemblyWriter:
     def add_function(self, function):
         import peachpy.x86_64.function
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
-            "Function must be bindinded to an ABI before its assembly can be used"
+            "Function must be finalized with an ABI before its assembly can be used"
 
         function_code = function.format(self.assembly_format)
 
@@ -64,33 +60,22 @@ class AssemblyWriter:
         self.output_file.flush()
 
 
-class ELFWriter:
-    def __init__(self, output_path, abi, input_path=None):
-        from peachpy.formats.elf.image import Image
-        from peachpy.formats.elf.section import TextSection, ReadOnlyDataSection
-
+class ImageWriter(object):
+    def __init__(self, output_path):
+        super(ImageWriter, self).__init__()
         self.output_path = output_path
-        self.previous_writer = None
-        self.abi = abi
-        self.image = Image(abi, input_path)
-        self.text_section = TextSection()
-        self.image.add_section(self.text_section)
-        self.text_rela_section = None
-        self.rodata_section = None
 
     def __enter__(self):
-        global active_writer
-        self.previous_writer = active_writer
-        active_writer = self
-        self.output_file = open(self.output_path, "w", buffering=0)
+        global active_writers
+        active_writers.append(self)
+        self.output_file = open(self.output_path, "wb", buffering=0)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        global active_writer
-        active_writer = self.previous_writer
-        self.previous_writer = None
+        global active_writers
+        active_writers.remove(self)
         if exc_type is None:
-            self.output_file.write(self.image.as_bytearray)
+            self.output_file.write(self.encode())
             self.output_file.close()
             self.output_file = None
         else:
@@ -99,11 +84,31 @@ class ELFWriter:
             self.output_file = None
             raise
 
+    def encode(self):
+        return bytearray()
+
+
+class ELFWriter(ImageWriter):
+    def __init__(self, output_path, abi, input_path=None):
+        super(ELFWriter, self).__init__(output_path)
+        from peachpy.formats.elf.image import Image
+        from peachpy.formats.elf.section import TextSection
+
+        self.abi = abi
+        self.image = Image(abi, input_path)
+        self.text_section = TextSection()
+        self.image.add_section(self.text_section)
+        self.text_rela_section = None
+        self.rodata_section = None
+
+    def encode(self):
+        return self.image.as_bytearray
+
     def add_function(self, function):
         import peachpy.x86_64.function
         from peachpy.util import roundup
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
-            "Function must be bindinded to an ABI before its assembly can be used"
+            "Function must be finalized with an ABI before its assembly can be used"
 
         encoded_function = function.encode()
 
@@ -167,40 +172,22 @@ class ELFWriter:
         self.image.symtab.add(function_symbol)
 
 
-class MachOWriter:
+class MachOWriter(ImageWriter):
     def __init__(self, output_path, abi):
+        super(MachOWriter, self).__init__(output_path)
+
         from peachpy.formats.macho.image import Image
 
-        self.output_path = output_path
-        self.previous_writer = None
         self.abi = abi
         self.image = Image(abi)
 
-    def __enter__(self):
-        global active_writer
-        self.previous_writer = active_writer
-        active_writer = self
-        self.output_file = open(self.output_path, "w", buffering=0)
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        global active_writer
-        active_writer = self.previous_writer
-        self.previous_writer = None
-        if exc_type is None:
-            self.output_file.write(self.image.encode())
-            self.output_file.close()
-            self.output_file = None
-        else:
-            import os
-            os.unlink(self.output_file.name)
-            self.output_file = None
-            raise
+    def encode(self):
+        return self.image.encode()
 
     def add_function(self, function):
         import peachpy.x86_64.function
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
-            "Function must be bindinded to an ABI before its assembly can be used"
+            "Function must be finalized with an ABI before its assembly can be used"
 
         from peachpy.formats.macho.symbol import Symbol, SymbolType, SymbolDescription, SymbolVisibility, \
             Relocation, RelocationType
@@ -255,12 +242,13 @@ class MachOWriter:
         self.image.symbol_table.add_symbol(function_symbol)
 
 
-class MSCOFFWriter:
+class MSCOFFWriter(ImageWriter):
     def __init__(self, output_path, abi, input_path=None):
+        super(MSCOFFWriter, self).__init__(output_path)
+
         from peachpy.formats.mscoff import Image, TextSection, ReadOnlyDataSection
 
         self.output_path = output_path
-        self.previous_writer = None
         self.abi = abi
         self.image = Image(abi, input_path)
         self.text_section = TextSection()
@@ -268,31 +256,10 @@ class MSCOFFWriter:
         self.rdata_section = ReadOnlyDataSection()
         self.image.add_section(self.rdata_section)
 
-    def __enter__(self):
-        global active_writer
-        self.previous_writer = active_writer
-        active_writer = self
-        self.output_file = open(self.output_path, "w", buffering=0)
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        global active_writer
-        active_writer = self.previous_writer
-        self.previous_writer = None
-        if exc_type is None:
-            self.output_file.write(self.image.encode())
-            self.output_file.close()
-            self.output_file = None
-        else:
-            import os
-            os.unlink(self.output_file.name)
-            self.output_file = None
-            raise
-
     def add_function(self, function):
         import peachpy.x86_64.function
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
-            "Function must be bindinded to an ABI before its assembly can be used"
+            "Function must be finalized with an ABI before its assembly can be used"
         from peachpy.util import roundup
         from peachpy.formats.mscoff import Symbol, SymbolType, StorageClass, Relocation, RelocationType
 
@@ -351,17 +318,46 @@ class MSCOFFWriter:
         self.image.add_symbol(function_symbol)
 
 
-class NullWriter:
-    def __init__(self):
-        pass
+class MetadataWriter(object):
+    def __init__(self, output_path):
+        super(MetadataWriter, self).__init__()
+        self.output_path = output_path
+        self.metadata = []
 
     def __enter__(self):
-        global active_writer
-        self.previous_writer = active_writer
-        active_writer = None
+        global active_writers
+        active_writers.append(self)
+        self.output_file = open(self.output_path, "wb", buffering=0)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        global active_writer
-        active_writer = self.previous_writer
-        self.previous_writer = None
+        global active_writers
+        active_writers.remove(self)
+        if exc_type is None:
+            self.output_file.write(self.serialize())
+            self.output_file.close()
+            self.output_file = None
+        else:
+            import os
+            os.unlink(self.output_file.name)
+            self.output_file = None
+            raise
+
+    def serialize(self):
+        return ""
+
+
+class JSONMetadataWriter(MetadataWriter):
+    def __init__(self, output_path):
+        super(JSONMetadataWriter, self).__init__(output_path)
+
+    def serialize(self):
+        import json
+        return json.dumps(self.metadata)
+
+    def add_function(self, function):
+        import peachpy.x86_64.function
+        assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
+            "Function must be finalized with an ABI before its assembly can be used"
+
+        self.metadata.append(function.metadata)

@@ -19,9 +19,11 @@ parser.add_argument("-S", dest="generate_assembly", action="store_true",
 parser.add_argument("-MMD", dest="generate_dependencies_makefile", action="store_true",
                     help="Generate Makefile describing the dependencies")
 parser.add_argument("-MF", dest="dependencies_makefile_path",
-                    help="Path to Makefile with dependencies")
+                    help="Path to output Makefile with dependencies")
 parser.add_argument("-fdump-rtl", dest="rtl_dump",
-                    help="Path to file with RTL dump")
+                    help="Path to output file for RTL dump")
+parser.add_argument("-emit-json-metadata", dest="json_metadata_file",
+                    help="Path to output file for JSON metadata")
 
 
 abi_map = {
@@ -166,6 +168,17 @@ def add_module_files(module_files, module, roots):
             add_module_files(module_files, variable, roots)
 
 
+def execute_script(writers, source_filename):
+    if writers:
+        writer = writers.pop()
+        with writer:
+            execute_script(writers, source_filename)
+    else:
+        with open(source_filename) as input_file:
+            code = compile(input_file.read(), source_filename, 'exec')
+            exec(code, globals())
+
+
 def main():
     options = parser.parse_args()
     import peachpy.x86_64.options
@@ -176,26 +189,26 @@ def main():
     peachpy.x86_64.options.package = options.package
     peachpy.x86_64.options.generate_assembly = options.generate_assembly
 
-    import peachpy.writer
-    writer = peachpy.writer.NullWriter()
+    from peachpy.writer import ELFWriter, MachOWriter, MSCOFFWriter, AssemblyWriter, JSONMetadataWriter
+    writers = []
     if peachpy.x86_64.options.generate_assembly:
         assembly_format = options.assembly_format
         if assembly_format is None:
             assembly_format = guess_assembly_format_from_abi(options.abi)
         else:
             check_abi_assembly_format_combination(options.abi, assembly_format)
-        writer = peachpy.writer.AssemblyWriter(options.output, assembly_format, options.input[0])
+        writers.append(AssemblyWriter(options.output, assembly_format, options.input[0]))
     else:
         image_format = options.image_format
         if image_format is None:
             raise ValueError("Image format is not specified")
         check_abi_image_format_combination(image_format, options.abi)
         if image_format == "elf":
-            writer = peachpy.writer.ELFWriter(options.output, abi, options.input[0])
+            writers.append(ELFWriter(options.output, abi, options.input[0]))
         elif image_format == "mach-o":
-            writer = peachpy.writer.MachOWriter(options.output, abi)
+            writers.append(MachOWriter(options.output, abi))
         elif image_format == "ms-coff":
-            writer = peachpy.writer.MSCOFFWriter(options.output, abi, options.input[0])
+            writers.append(MSCOFFWriter(options.output, abi, options.input[0]))
         else:
             raise ValueError("Image format %s is not supported" % image_format)
     dependencies_makefile_path = options.output + ".d"
@@ -203,29 +216,28 @@ def main():
         dependencies_makefile_path = options.dependencies_makefile_path
     if options.rtl_dump:
         peachpy.x86_64.options.rtl_dump_file = open(options.rtl_dump, "w")
+    if options.json_metadata_file:
+        writers.append(JSONMetadataWriter(options.json_metadata_file))
 
-    with writer:
-        # PeachPy sources can import other modules or files from the same directory
-        import os
-        sys.path.append(os.path.dirname(options.input[0]))
-        include_directories = [os.path.dirname(options.input[0])]
+    # PeachPy sources can import other modules or files from the same directory
+    import os
+    sys.path.append(os.path.dirname(options.input[0]))
+    include_directories = [os.path.dirname(options.input[0])]
 
-        # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
-        sys.dont_write_bytecode = True
+    execute_script(writers, options.input[0])
 
-        with open(options.input[0]) as input_file:
-            code = compile(input_file.read(), options.input[0], 'exec')
-            exec(code, globals())
+    # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
+    sys.dont_write_bytecode = True
 
-        if options.generate_dependencies_makefile:
-            module_files = set()
-            for module in sys.modules.values():
-                add_module_files(module_files, module, include_directories)
+    if options.generate_dependencies_makefile:
+        module_files = set()
+        for module in sys.modules.values():
+            add_module_files(module_files, module, include_directories)
 
-            dependencies = list(sorted(module_files))
-            dependencies.insert(0, options.input[0])
-            with open(dependencies_makefile_path, "w") as dependencies_makefile:
-                dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies) + "\n")
+        dependencies = list(sorted(module_files))
+        dependencies.insert(0, options.input[0])
+        with open(dependencies_makefile_path, "w") as dependencies_makefile:
+            dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies) + "\n")
 
 if __name__ == "__main__":
     sys.exit(main())
