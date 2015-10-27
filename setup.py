@@ -45,7 +45,7 @@ setup(
     author_email="maratek@gmail.com",
     url="https://github.com/Maratyszcza/PeachPy/",
     packages=["peachpy", "peachpy.c",
-              "peachpy.x86_64", "peachpy.arm",
+              "peachpy.common", "peachpy.x86_64", "peachpy.arm",
               "peachpy.formats", "peachpy.formats.elf", "peachpy.formats.macho", "peachpy.formats.mscoff"],
     keywords=["assembly", "codegen", "x86-64"],
     long_description=read_text_file("README.rst"),
