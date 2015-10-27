@@ -156,6 +156,11 @@ def add_module_files(module_files, module, roots):
         # This is typical for system modules
         return
 
+    if module_file.endswith(".pyc") or module_file.endswith(".pyo"):
+        module_source_file = module_file[:-4] + ".py"
+        if os.path.isfile(module_source_file):
+            module_file = module_source_file
+
     module_files.add(module_file)
 
     from types import ModuleType
@@ -224,10 +229,10 @@ def main():
     sys.path.append(os.path.dirname(options.input[0]))
     include_directories = [os.path.dirname(options.input[0])]
 
-    execute_script(writers, options.input[0])
-
     # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
     sys.dont_write_bytecode = True
+
+    execute_script(writers, options.input[0])
 
     if options.generate_dependencies_makefile:
         module_files = set()
