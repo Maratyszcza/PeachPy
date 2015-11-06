@@ -115,6 +115,44 @@ class Loop:
             raise
 
 
+class Block:
+    def __init__(self, name=None):
+        from peachpy.name import Name
+        if name is None:
+            import inspect
+            prename = parse_assigned_variable_name(inspect.stack(), "Block")
+            if prename is None:
+                prename = parse_with_variable_name(inspect.stack(), "Block")
+            self.name = (Name(prename=prename),)
+        elif isinstance(name, tuple):
+            assert all(isinstance(part, Name) for part in name), \
+                "Name must a string or a tuple or Name objects"
+            self.name = name
+        else:
+            Name.check_name(name)
+            self.name = (Name(name=name),)
+        self.begin = Label(self.name + (Name(name="begin"),))
+        self.end = Label(self.name + (Name(name="end"),))
+
+    def __enter__(self):
+        LABEL(self.begin)
+
+        from peachpy.x86_64.function import active_function
+        if active_function is not None:
+            active_function._indent_level += 1
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        from peachpy.x86_64.function import active_function
+        if active_function is not None:
+            active_function._indent_level -= 1
+
+        if exc_type is None:
+            LABEL(self.end)
+        else:
+            raise
+
+
 class ALIGN(Instruction):
     supported_alignments = (2, 4, 8, 16, 32)
 
