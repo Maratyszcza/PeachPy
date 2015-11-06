@@ -281,7 +281,7 @@ class LOAD:
             elif isinstance(self.operands[0], (XMMRegister, YMMRegister)) and argument.is_floating_point:
                 pass
             elif isinstance(self.operands[0], (XMMRegister, YMMRegister)) and \
-                    (argument.is_vector and argument.ctype != m64):
+                    (argument.is_vector and argument.c_type != m64):
                 pass
             else:
                 raise ValueError("Unsupported combination of instruction operands")

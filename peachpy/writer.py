@@ -390,5 +390,5 @@ class CHeaderWriter(TextWriter):
             "Function must be finalized with an ABI before its assembly can be used"
 
         return_type = "void" if function.result_type is None else str(function.result_type)
-        arguments = [str(arg.ctype) + " " + arg.name for arg in function.arguments]
+        arguments = [str(arg.c_type) + " " + arg.name for arg in function.arguments]
         self.content.append(return_type + " " + function.name + "(" + ", ".join(arguments) + ");")

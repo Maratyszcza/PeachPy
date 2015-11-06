@@ -97,7 +97,7 @@ class Function:
 
         from peachpy.x86_64 import m256, m256d, m256i
         avx_types = [m256, m256d, m256i]
-        self.avx_environment = any([arg.ctype in avx_types for arg in self.arguments]) or self.result_type in avx_types
+        self.avx_environment = any([arg.c_type in avx_types for arg in self.arguments]) or self.result_type in avx_types
         self._avx_prolog = None
 
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, KRegister
@@ -124,37 +124,37 @@ class Function:
 
         None if the function argument or return type is incompatible with Go"""
 
-        def c_to_go_type(ctype):
-            assert isinstance(ctype, peachpy.Type)
-            if ctype.is_pointer and ctype.base is not None:
-                return "*" + c_to_go_type(ctype.base)
-            elif ctype.is_bool:
+        def c_to_go_type(c_type):
+            assert isinstance(c_type, peachpy.Type)
+            if c_type.is_pointer and c_type.base is not None:
+                return "*" + c_to_go_type(c_type.base)
+            elif c_type.is_bool:
                 return "boolean"
-            elif ctype.is_size_integer:
-                return "int" if ctype.is_signed_integer else "uint"
-            elif ctype.is_signed_integer:
+            elif c_type.is_size_integer:
+                return "int" if c_type.is_signed_integer else "uint"
+            elif c_type.is_signed_integer:
                 return {
                     1: "int8",
                     2: "int16",
                     4: "int32",
                     8: "int64"
-                }[ctype.size]
-            elif ctype.is_unsigned_integer:
+                }[c_type.size]
+            elif c_type.is_unsigned_integer:
                 return {
                     1: "uint8",
                     2: "uint16",
                     4: "uint32",
                     8: "uint64"
-                }[ctype.size]
-            elif ctype.is_floating_point:
+                }[c_type.size]
+            elif c_type.is_floating_point:
                 return {
                     4: "float32",
                     8: "float64"
-                }[ctype.size]
+                }[c_type.size]
             else:
                 return None
 
-        go_argument_types = list(map(c_to_go_type, map(operator.attrgetter("ctype"), self.arguments)))
+        go_argument_types = list(map(c_to_go_type, map(operator.attrgetter("c_type"), self.arguments)))
         # Some of the C types doesn't have a Go analog
         if not(all(map(bool, go_argument_types))):
             return None
@@ -893,9 +893,9 @@ class Argument(peachpy.Argument):
         from peachpy.x86_64.abi import ABI
         assert isinstance(abi, ABI), "ABI object expected"
         from copy import deepcopy
-        super(Argument, self).__init__(deepcopy(argument.ctype), argument.name)
-        if self.ctype.size is None:
-            self.ctype.size = self.ctype.get_size(abi)
+        super(Argument, self).__init__(deepcopy(argument.c_type), argument.name)
+        if self.c_type.size is None:
+            self.c_type.size = self.c_type.get_size(abi)
         self.abi = abi
         self.register = None
         self.address = None
@@ -997,7 +997,7 @@ class ABIFunction:
                         argument.is_pointer or \
                         argument.is_codeunit or \
                         argument.is_mask or \
-                        argument.ctype == m64:
+                        argument.c_type == m64:
                     argument_register = integer_argument_registers[index]
                     argument.register = {
                         1: argument_register.as_low_byte,
@@ -1143,7 +1143,7 @@ class ABIFunction:
                     # The argument is passed to function in a register
                     ld_reg = load_register(instruction.operands[0],
                                            instruction.operands[1].register,
-                                           instruction.operands[1].ctype,
+                                           instruction.operands[1].c_type,
                                            prototype=instruction)
                     if ld_reg is not None:
                         lowered_instructions.append(ld_reg)
@@ -1151,7 +1151,7 @@ class ABIFunction:
                     # The argument is passed to function on stack
                     ld_mem = load_memory(instruction.operands[0],
                                          instruction.operands[1].address,
-                                         instruction.operands[1].ctype,
+                                         instruction.operands[1].c_type,
                                          prototype=instruction)
                     lowered_instructions.append(ld_mem)
             else:
@@ -1476,7 +1476,7 @@ class ABIFunction:
             ("return",  "void" if self.result_type is None else str(self.result_type)),
             ("arguments", [collections.OrderedDict([
                 ("name", argument.name),
-                ("type", str(argument.ctype))]) for argument in self.arguments]),
+                ("type", str(argument.c_type))]) for argument in self.arguments]),
             ("arch", "x86-64"),
             ("abi", str(self.abi)),
             ("uarch", self.target.name),
@@ -1868,7 +1868,7 @@ class ExecutableFuntion:
 
         import ctypes
         result_type = None if function.result_type is None else function.result_type.as_ctypes_type
-        argument_types = [arg.ctype.as_ctypes_type for arg in function.arguments]
+        argument_types = [arg.c_type.as_ctypes_type for arg in function.arguments]
         self.function_type = ctypes.CFUNCTYPE(result_type, *argument_types)
         self.function_pointer = self.function_type(self.loader.code_address)
 

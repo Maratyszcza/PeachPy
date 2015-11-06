@@ -1,6 +1,20 @@
 peachpy package
 ===============
 
+peachpy module
+--------------
+
+.. automodule:: peachpy.function
+   :members:
+   :show-inheritance:
+
+peachpy.c module
+----------------
+
+.. automodule:: peachpy.c.types
+   :members:
+   :show-inheritance:
+
 peachpy.x86_64 module
 ---------------------
 
