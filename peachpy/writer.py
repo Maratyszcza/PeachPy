@@ -276,6 +276,9 @@ class MSCOFFWriter(ImageWriter):
         self.rdata_section = ReadOnlyDataSection()
         self.image.add_section(self.rdata_section)
 
+    def encode(self):
+        return self.image.encode()
+
     def add_function(self, function):
         import peachpy.x86_64.function
         assert isinstance(function, peachpy.x86_64.function.ABIFunction), \
