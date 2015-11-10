@@ -231,7 +231,7 @@ def main():
     # PeachPy sources can import other modules or files from the same directory
     import os
     sys.path.append(os.path.dirname(options.input[0]))
-    include_directories = [os.path.dirname(options.input[0])]
+    include_directories = [os.path.abspath(os.path.dirname(options.input[0]))]
 
     # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
     sys.dont_write_bytecode = True
