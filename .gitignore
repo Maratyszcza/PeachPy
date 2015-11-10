@@ -27,6 +27,8 @@ MANIFEST
 *.exe
 *.s
 *.S
+*.d
 
-# Example binaries
+# Example binaries and generated headers
 examples/make/test
+examples/make/matmul-opt.h

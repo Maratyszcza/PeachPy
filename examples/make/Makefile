@@ -8,17 +8,21 @@ else
     PEACHPY_IMAGE_FORMAT=elf
 endif
 
-matmul-opt.o: matmul-opt.py
-	python -m peachpy.x86_64 -mabi=sysv -mimage-format=$(PEACHPY_IMAGE_FORMAT) -mcpu=default -o $@ $<
+PEACHPY_SOURCES = matmul-opt.py
+C_SOURCES = matmul-ref.c test.c
+OBJECTS = $(PEACHPY_SOURCES:.py=.o) $(C_SOURCES:.c=.o)
+DEPENDENCIES = $(PEACHPY_SOURCES:.py=.d) $(C_SOURCES:.c=.d)
 
-matmul-ref.o: matmul-ref.c
-	$(CC) -m64 -std=gnu99 $(CFLAGS) -o $@ -c $<
+-include $(DEPENDENCIES)
 
-test.o: test.c
-	$(CC) -m64 -std=gnu99 $(CFLAGS) -o $@ -c $<
+%.o: %.py
+	python -m peachpy.x86_64 -mabi=sysv -mimage-format=$(PEACHPY_IMAGE_FORMAT) -MMD -MF $(<:.py=.d) -o $(@:.py=.o) $<
 
-test: test.o matmul-ref.o matmul-opt.o
-	$(CC) -m64 -g $^ -o $@
+%.o: %.c
+	$(CC) -m64 -std=gnu99 $(CFLAGS) -MMD -MF $(<:.c=.d) -o $(@:.c=.o) -c $<
+
+test: $(OBJECTS)
+	$(CC) -m64 -g $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 clean:
-	-rm -f matmul-opt.o matmul-ref.o test.o test
+	-rm -f $(OBJECTS) $(DEPENDENCIES) test
