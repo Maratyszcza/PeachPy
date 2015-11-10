@@ -148,9 +148,6 @@ def add_module_files(module_files, module, roots):
         return
 
     module_file = module.__file__
-    if module_file in module_files:
-        # This module was already added under a different name
-        return
 
     import os
     if not any(module_file.startswith(root + os.sep) for root in roots):
@@ -163,6 +160,9 @@ def add_module_files(module_files, module, roots):
         if os.path.isfile(module_source_file):
             module_file = module_source_file
 
+    if module_file in module_files:
+        # This module was already added under a different name
+        return
     module_files.add(module_file)
 
     from types import ModuleType
