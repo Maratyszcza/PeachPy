@@ -47,6 +47,12 @@ PeachPy aims to simplify writing optimized assembly kernels while preserving all
   * Excluding x87 FPU and most system instructions.
   * Rigorously tested with `auto-generated tests <https://github.com/Maratyszcza/PeachPy/tree/master/test/x86_64/encoding>`_ to produce the same opcodes as binutils.
 
+- Auto-generation of metadata files
+
+  * Makefile with module dependencies (`-MMD` and `-MF` options)
+  * C header for the generated functions
+  * Function metadata in JSON format
+
 - Python-based metaprogramming and code-generation.
 - Multiplexing of multiple instruction streams (helpful for software pipelining).
 - Compatible with Python 2 and Python 3, CPython and PyPy.
