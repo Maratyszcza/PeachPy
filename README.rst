@@ -207,10 +207,21 @@ Dependencies and Users
 
 - PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
 
-Publications
-------------
+Peer-Reviewed Publications
+--------------------------
 
 - Marat Dukhan "PeachPy: A Python Framework for Developing High-Performance Assembly Kernels", Python for High-Performance Computing (PyHPC) 2013 (`slides <http://www.yeppp.info/resources/peachpy-slides.pdf>`_, `paper <http://www.yeppp.info/resources/peachpy-paper.pdf>`_, code uses deprecated syntax)
+
+- Marat Dukhan "PeachPy meets Opcodes: Direct Machine Code Generation from Python", to be presented on Python for High-Performance Computing (PyHPC) 2015 on November 15, 2015.
+
+Other Presentations
+-------------------
+
+- Marat Dukhan "Developing Low-Level Assembly Kernels in PeachPy", presentation on `The First BLIS Retreat Workshop <https://www.cs.utexas.edu/users/flame/BLISRetreat/>`_, 2013 (`slides <https://www.cs.utexas.edu/users/flame/BLISRetreat/BLISRetreatTalks/PeachPy.pdf>`_, code uses deprecated syntax)
+
+- Marat Dukhan "Porting BLIS micro-kernels to PeachPy", presentation on `The Third BLIS Retreat Workshop <https://www.cs.utexas.edu/users/flame/BLISRetreat2015/>`_, 2015 (`slides <http://www.peachpy.io/slides/blis-retreat-2015/>`_)
+
+- Marat Dukhan "Accelerating Data Processing in Go with SIMD Instructions", presentation on `Atlanta Go Meetup <http://www.meetup.com/Go-Users-Group-Atlanta>`_, September 16, 2015 (`slides <https://docs.google.com/presentation/d/1MYg8PyhEf0oIvZ9YU2panNkVXsKt5UQBl_vGEaCeB1k/edit?usp=sharing>`_)
 
 Acknowledgements
 ----------------
