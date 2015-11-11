@@ -196,8 +196,8 @@ PeachPy can be used to explore instruction length, opcodes, and alternative enco
                                                          #     7: bytearray(b'\xc4\xe2uGD&\x08'),
                                                          #     9: bytearray(b'\xc4\xe2uG\x86\x08\x00\x00\x00')}
 
-Dependencies and Users
-----------------------
+Dependencies
+------------
 
 - Nearly all instruction classes in PeachPy are generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
 
@@ -205,7 +205,14 @@ Dependencies and Users
 
 - PeachPy uses `six <https://pythonhosted.org/six/>`_ and `enum34 <https://pypi.python.org/pypi/enum34>`_ packages as a compatibility layer between Python 2 and Python 3
 
-- PeachPy powers `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy.
+Users
+-----
+
+- `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy (uses old version of PeachPy with deprecated syntax).
+
+- `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
+
+- NNPACK (to be announced) -- an acceleration layer for convolutional networks on CPU.
 
 Peer-Reviewed Publications
 --------------------------
