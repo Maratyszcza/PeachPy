@@ -967,6 +967,8 @@ class ABIFunction:
         self._lower_pseudoinstructions()
         self._filter_instruction_encodings()
 
+        self.mangled_name = self.mangle_name()
+
     def _update_argument_loads(self, arguments):
         from peachpy.x86_64.pseudo import LOAD
         for instruction in self._instructions:
@@ -1436,9 +1438,9 @@ class ABIFunction:
             if package_string is None:
                 package_string = ""
             if six.PY2:
-                text_arguments = [package_string + "\xC2\xB7" + self.name + "(SB)"]
+                text_arguments = [package_string + "\xC2\xB7" + self.mangled_name + "(SB)"]
             else:
-                text_arguments = [package_string + "\u00B7" + self.name + "(SB)"]
+                text_arguments = [package_string + "\u00B7" + self.mangled_name + "(SB)"]
 
             text_arguments.append("4")
             stack_size = sum(map(operator.attrgetter("size"), self.arguments))
@@ -1472,7 +1474,7 @@ class ABIFunction:
         metadata = collections.OrderedDict([
             ("entry", "function"),
             ("name", self.name),
-            ("symbol", self.name),
+            ("symbol", self.mangled_name),
             ("return",  "void" if self.result_type is None else str(self.result_type)),
             ("arguments", [collections.OrderedDict([
                 ("name", argument.name),
@@ -1483,6 +1485,20 @@ class ABIFunction:
             ("isa", [str(extension) for extension in self.isa_extensions.minify()])
         ])
         return metadata
+
+    def mangle_name(self):
+        import peachpy.x86_64.options
+        import string
+        name = peachpy.x86_64.options.name_mangling \
+            .replace("${Name}", self.name) \
+            .replace("${name}", self.name.lower()) \
+            .replace("${NAME}", self.name.upper()) \
+            .replace("${uArch}", self.target.id) \
+            .replace("${uarch}", self.target.id.lower()) \
+            .replace("${UARCH}", self.target.id.upper()) \
+            .replace("${ISA}", "_".join([extension.safe_name for extension in self.isa_extensions.minify()])) \
+            .replace("${isa}", "_".join([extension.safe_name.lower() for extension in self.isa_extensions.minify()]))
+        return name
 
 
 class InstructionBundle:
@@ -1595,6 +1611,7 @@ class EncodedFunction:
         from copy import copy, deepcopy
         assert isinstance(function, ABIFunction), "ABIFunction object expected"
         self.name = function.name
+        self.mangled_name = function.mangled_name
         self.arguments = list(map(copy, function.arguments))
         self.result_type = function.result_type
         self.target = function.target

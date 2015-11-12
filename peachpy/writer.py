@@ -159,7 +159,7 @@ class ELFWriter(ImageWriter):
         symbol_map = dict()
         for symbol in encoded_function.const_section.symbols:
             const_symbol = Symbol()
-            const_symbol.name = function.name + "." + symbol.name
+            const_symbol.name = function.mangled_name + "." + symbol.name
             const_symbol.value = const_offset + symbol.offset
             const_symbol.size = symbol.size
             const_symbol.section = self.rodata_section
@@ -183,7 +183,7 @@ class ELFWriter(ImageWriter):
                 self.text_rela_section.add(elf_relocation)
 
         function_symbol = Symbol()
-        function_symbol.name = function.name
+        function_symbol.name = function.mangled_name
         function_symbol.value = code_offset
         function_symbol.content_size = len(encoded_function.code_section)
         function_symbol.section = self.text_section
@@ -236,7 +236,7 @@ class MachOWriter(ImageWriter):
         # Map from PeachPy symbol to Mach-O symbol
         symbol_map = dict()
         for symbol in encoded_function.const_section.symbols:
-            macho_symbol = Symbol("_" + function.name + "." + symbol.name,
+            macho_symbol = Symbol("_" + function.mangled_name + "." + symbol.name,
                                   SymbolType.section_relative, self.image.const_section,
                                   const_offset + symbol.offset)
             macho_symbol.description = SymbolDescription.defined
@@ -255,7 +255,7 @@ class MachOWriter(ImageWriter):
 
             self.image.text_section.relocations.append(macho_relocation)
 
-        function_symbol = Symbol("_" + function.name, SymbolType.section_relative, self.image.text_section,
+        function_symbol = Symbol("_" + function.mangled_name, SymbolType.section_relative, self.image.text_section,
                                  value=code_offset)
         function_symbol.description = SymbolDescription.defined
         function_symbol.visibility = SymbolVisibility.external
@@ -333,7 +333,7 @@ class MSCOFFWriter(ImageWriter):
             self.text_section.relocations.append(mscoff_relocation)
 
         function_symbol = Symbol()
-        function_symbol.name = function.name
+        function_symbol.name = function.mangled_name
         function_symbol.value = code_offset
         function_symbol.section = self.text_section
         function_symbol.symbol_type = SymbolType.function
@@ -394,4 +394,4 @@ class CHeaderWriter(TextWriter):
 
         return_type = "void" if function.result_type is None else str(function.result_type)
         arguments = [str(arg.c_type) + " " + arg.name for arg in function.arguments]
-        self.content.append(return_type + " " + function.name + "(" + ", ".join(arguments) + ");")
+        self.content.append(return_type + " " + function.mangled_name + "(" + ", ".join(arguments) + ");")

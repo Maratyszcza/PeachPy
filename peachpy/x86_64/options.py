@@ -9,6 +9,7 @@ package = None
 assembly_format = "go"
 generate_assembly = None
 rtl_dump_file = None
+name_mangling = "${Name}"
 
 
 def get_debug_level():

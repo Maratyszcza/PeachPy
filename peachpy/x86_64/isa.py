@@ -3,9 +3,13 @@
 
 
 class Extension:
-    def __init__(self, name):
+    def __init__(self, name, safe_name=None):
         assert isinstance(name, str), "name must be a string"
         self.name = name
+        if safe_name is None:
+            self.safe_name = self.name
+        else:
+            self.safe_name = safe_name
 
     def __hash__(self):
         return hash(self.name)
@@ -140,18 +144,18 @@ rdtsc = Extension("RDTSC")
 rdtscp = Extension("RDTSCP")
 cpuid = Extension("CPUID")
 mmx = Extension("MMX")
-mmx_plus = Extension("MMX+")
-three_d_now = Extension("3dnow!")
-three_d_now_plus = Extension("3dnow!+")
-three_d_now_prefetch = Extension("3dnow! Prefetch")
+mmx_plus = Extension("MMX+", safe_name="MMXPlus")
+three_d_now = Extension("3dnow!", safe_name="3dnow")
+three_d_now_plus = Extension("3dnow!+", safe_name="3dnowPlus")
+three_d_now_prefetch = Extension("3dnow! Prefetch", safe_name="3dnowPrefetch")
 femms = Extension("FEMMS")
 sse = Extension("SSE")
 sse2 = Extension("SSE2")
 sse3 = Extension("SSE3")
 ssse3 = Extension("SSSE3")
 sse4a = Extension("SSE4A")
-sse4_1 = Extension("SSE4.1")
-sse4_2 = Extension("SSE4.2")
+sse4_1 = Extension("SSE4.1", safe_name="SSE4_1")
+sse4_2 = Extension("SSE4.2", safe_name="SSE4_2")
 aes = Extension("AES")
 pclmulqdq = Extension("PCLMULQDQ")
 rdrand = Extension("RDRAND")

@@ -26,6 +26,8 @@ parser.add_argument("-emit-json-metadata", dest="json_metadata_file",
                     help="Path to output file for JSON metadata")
 parser.add_argument("-emit-c-header", dest="c_header_file",
                     help="Path to output file for C/C++ header")
+parser.add_argument("-fname-mangling", dest="name_mangling",
+                    help="Mangling of function names")
 
 
 abi_map = {
@@ -195,6 +197,8 @@ def main():
     peachpy.x86_64.options.target = cpu_map[options.cpu]
     peachpy.x86_64.options.package = options.package
     peachpy.x86_64.options.generate_assembly = options.generate_assembly
+    if options.name_mangling:
+        peachpy.x86_64.options.name_mangling = options.name_mangling
 
     from peachpy.writer import ELFWriter, MachOWriter, MSCOFFWriter, AssemblyWriter, JSONMetadataWriter, CHeaderWriter
     writers = []
