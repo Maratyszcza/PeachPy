@@ -28,7 +28,7 @@ from peachpy.x86_64.function import Function, LocalVariable
 from peachpy.x86_64.operand import byte, word, dword, qword, oword, hword, yword, zword, \
     rn_sae, rz_sae, ru_sae, rd_sae, sae
 
-from peachpy.x86_64.pseudo import Label, Loop, \
+from peachpy.x86_64.pseudo import Label, Loop, Block, \
     LABEL, ALIGN, RETURN, LOAD, STORE, SWAP, REDUCE
 from peachpy.x86_64.nacl import NACLJMP
 
