@@ -219,7 +219,7 @@ Peer-Reviewed Publications
 
 - Marat Dukhan "PeachPy: A Python Framework for Developing High-Performance Assembly Kernels", Python for High-Performance Computing (PyHPC) 2013 (`slides <http://www.yeppp.info/resources/peachpy-slides.pdf>`_, `paper <http://www.yeppp.info/resources/peachpy-paper.pdf>`_, code uses deprecated syntax)
 
-- Marat Dukhan "PeachPy meets Opcodes: Direct Machine Code Generation from Python", to be presented on Python for High-Performance Computing (PyHPC) 2015 on November 15, 2015 (`paper on ACM Digital Library <https://dl.acm.org/citation.cfm?id=2835860>`_).
+- Marat Dukhan "PeachPy meets Opcodes: Direct Machine Code Generation from Python", Python for High-Performance Computing (PyHPC) 2015 (`slides <http://www.peachpy.io/slides/pyhpc2015>`_, `paper on ACM Digital Library <https://dl.acm.org/citation.cfm?id=2835860>`_).
 
 Other Presentations
 -------------------
