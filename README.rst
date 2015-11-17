@@ -57,6 +57,11 @@ PeachPy aims to simplify writing optimized assembly kernels while preserving all
 - Multiplexing of multiple instruction streams (helpful for software pipelining).
 - Compatible with Python 2 and Python 3, CPython and PyPy.
 
+Online Demo
+-----------
+
+You can try online demo on `PeachPy.IO <http://www.peachpy.io>`_
+
 Installation
 ------------
 
