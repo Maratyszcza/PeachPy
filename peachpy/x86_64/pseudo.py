@@ -194,7 +194,8 @@ class RETURN(Instruction):
                 raise ValueError("Void function should not return a value")
             if active_function.result_type.is_integer or active_function.result_type.is_pointer:
                 if is_int64(self.operands[0]):
-                    if active_function.result_type.size < int_size(self.operands[0]):
+                    if active_function.result_type.size is None and int_size(self.operands[0]) > 4 or \
+                            active_function.result_type.size < int_size(self.operands[0]):
                         raise ValueError("Value {0} can not be represented with return type {1}".
                                          format(str(self.operands[0]), str(active_function.result_type)))
                     self.in_regs = (False,)
