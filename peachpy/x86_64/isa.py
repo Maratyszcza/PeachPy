@@ -184,13 +184,7 @@ bmi = Extension("BMI")
 bmi2 = Extension("BMI2")
 tbm = Extension("TBM")
 adx = Extension("ADX")
-default = (mmx, mmx_plus,
-           three_d_now, three_d_now_plus, three_d_now_prefetch,
-           sse, sse2, sse3, ssse3, sse4a, sse4_1, sse4_2,
-           avx, avx2, f16c, xop, fma3, fma4,
-           aes, pclmulqdq,
-           cmov, popcnt, lzcnt, movbe,
-           bmi, bmi2, tbm, adx)
+default = (cpuid, rdtsc, cmov, mmx, mmx_plus, sse, sse2)
 
 
 class Extensions:
