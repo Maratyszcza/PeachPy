@@ -8,7 +8,7 @@ x = Argument(ptr(const_float_))
 y = Argument(ptr(const_float_))
 length = Argument(size_t)
 
-with Function("DotProduct", (x, y, length), float_) as function:
+with Function("DotProduct", (x, y, length), float_, target=uarch.default + isa.fma3) as function:
     reg_x = GeneralPurposeRegister64()
     reg_y = GeneralPurposeRegister64()
     reg_length = GeneralPurposeRegister64()
