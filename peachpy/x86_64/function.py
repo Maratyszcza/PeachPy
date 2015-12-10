@@ -1164,12 +1164,12 @@ class ABIFunction:
         from peachpy.x86_64.pseudo import RETURN, STORE
         from peachpy.x86_64.mmxsse import MOVAPS
         from peachpy.x86_64.avx import VMOVAPS, VZEROUPPER
-        from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET, AND
-        from peachpy.x86_64.nacl import NACLJMP
+        from peachpy.x86_64.generic import PUSH, SUB, ADD, XOR, MOV, POP, RET, AND, LEA
+        from peachpy.x86_64.nacl import NACLJMP, NACLRESTBP, NACLRESTSP, NACLASP, NACLSSP
         from peachpy.x86_64.lower import load_register
         from peachpy.x86_64.abi import native_client_x86_64_abi, \
             gosyso_amd64_abi, gosyso_amd64p32_abi, goasm_amd64_abi, goasm_amd64p32_abi
-        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp, rbp
+        from peachpy.x86_64.registers import GeneralPurposeRegister64, XMMRegister, rsp, rbp, eax
         from peachpy.util import is_uint32, is_sint32, is_int
         from peachpy.stream import InstructionStream
         # The new list with lowered instructions
@@ -1198,9 +1198,18 @@ class ABIFunction:
                 # Total size of the stack frame less what is already adjusted with PUSH instructions
                 stack_adjustment = \
                     self._stack_frame_size - len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
-                SUB(rsp, stack_adjustment + self._local_variables_size)
-                if self._stack_frame_alignment > self.abi.stack_alignment:
-                    AND(rsp, -self._stack_frame_alignment)
+                if self.abi != native_client_x86_64_abi:
+                    SUB(rsp, stack_adjustment + self._local_variables_size)
+                    if self._stack_frame_alignment > self.abi.stack_alignment:
+                        AND(rsp, -self._stack_frame_alignment)
+                else:
+                    if self._stack_frame_alignment > self.abi.stack_alignment:
+                        # Note: do not modify rcx/rdx/r8/r9 as they may contain function arguments
+                        LEA(eax, [rsp - (stack_adjustment + self._local_variables_size)])
+                        AND(eax, -self._stack_frame_alignment)
+                        NACLRESTSP(eax)
+                    else:
+                        NACLSSP(stack_adjustment + self._local_variables_size)
             for i, xmm_reg in enumerate(cloberred_xmm_registers):
                 movaps = VMOVAPS if self._avx_prolog else MOVAPS
                 movaps([rsp + self._local_variables_size + i * XMMRegister.size], xmm_reg)
@@ -1306,10 +1315,17 @@ class ABIFunction:
                         # Total size of the stack frame less what will be adjusted with POP instructions
                         stack_adjustment = self._stack_frame_size - \
                             len(cloberred_general_purpose_registers) * GeneralPurposeRegister64.size
-                        ADD(rsp, stack_adjustment + self._local_variables_size)
+                        if self.abi != native_client_x86_64_abi:
+                            ADD(rsp, stack_adjustment + self._local_variables_size)
+                        else:
+                            NACLASP(stack_adjustment + self._local_variables_size)
                     # Important: registers must be POPed in reverse order
                     for reg in reversed(cloberred_general_purpose_registers):
-                        POP(reg)
+                        if reg == rbp and self.abi == native_client_x86_64_abi:
+                            POP(rcx)
+                            NACLRESTBP(ecx)
+                        else:
+                            POP(reg)
                     # Return from the function
                     if self.abi == native_client_x86_64_abi:
                         POP(rcx, prototype=instruction)
