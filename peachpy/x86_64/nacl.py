@@ -6,7 +6,7 @@ import inspect
 
 import peachpy.stream
 from peachpy.x86_64.instructions import Instruction
-from peachpy.x86_64.operand import check_operand, format_operand_type, is_r32
+from peachpy.x86_64.operand import check_operand, format_operand_type, is_r32, is_imm32
 
 
 # Permitted pseudo-instructions:
@@ -77,45 +77,197 @@ class NACLJMP(Instruction):
         """Supported forms:
 
             * NACLJMP(r32)
-            * NACLJMP(r32, rZP)
         """
 
-# - nacljmp %eXX,%rZP (sandboxed indirect jump)
-#       AND(eXX, -32)
-#       ADD(rXX, rZP)
-#       JMP(rxx)
-
         origin = kwargs.get("origin")
-        if origin is None and peachpy.x86_64.options.get_debug_level() > 0:
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLJMP, self).__init__("NACLJMP", origin=origin)
+        super(NACLJMP, self).__init__("NACLJMP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
-        self.encodings = []
-        if len(self.operands) not in {1, 2}:
-            raise SyntaxError("Instruction \"NACLJMP\" requires 1 or 2 operands")
-        from peachpy.x86_64.registers import r15
-        if len(self.operands) == 1:
-            self.operands = tuple(list(self.operands) + [r15])
-        if is_r32(self.operands[0]) and r15 == self.operands[1]:
-            self._gas_name = "nacljmp"
-            self.out_regs = (False, False)
-            self.in_regs = (True, False)
-            self.out_operands = (False, False)
-        else:
+        if len(self.operands) != 1:
+            raise SyntaxError("Instruction \"NACLJMP\" requires 1 operand")
+        self.in_regs = (True,)
+        self.out_regs = (False,)
+        self.out_operands = (True,)
+        self._gas_name = "nacljmp"
+        if not is_r32(self.operands[0]):
             raise SyntaxError("Invalid operand types: NACLJMP " + ", ".join(map(format_operand_type, self.operands)))
-        self._instructions = self._lower()
         if peachpy.stream.active_stream is not None:
             peachpy.stream.active_stream.add_instruction(self)
 
     def _lower(self):
         from peachpy.stream import InstructionStream
         from peachpy.x86_64.generic import AND, ADD, JMP
+        from peachpy.x86_64.registers import r15
         with InstructionStream() as stream:
             AND(self.operands[0], -32)
-            ADD(self.operands[0].as_qword, self.operands[1])
+            ADD(self.operands[0].as_qword, r15)
             JMP(self.operands[0].as_qword)
         return stream.instructions
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._instructions), bytearray())
+        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+
+
+class NACLASP(Instruction):
+    """Sandboxed RSP Increment (Addition)"""
+    def __init__(self, *args, **kwargs):
+        """Supported forms:
+
+            * NACLASP(r32)
+            * NACLASP(imm32)
+        """
+
+        origin = kwargs.get("origin")
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+            origin = inspect.stack()
+        super(NACLASP, self).__init__("NACLASP", origin=origin, prototype=prototype)
+        self.operands = tuple(map(check_operand, args))
+        if len(self.operands) != 1:
+            raise SyntaxError("Instruction \"NACLASP\" requires 1 operand")
+        self.in_regs = (True,)
+        self.out_regs = (False,)
+        self.out_operands = (True,)
+        self._gas_name = "naclasp"
+        if not is_r32(self.operands[0]) and not is_imm32(self.operands[0]):
+            raise SyntaxError("Invalid operand types: NACLASP" + ", ".join(map(format_operand_type, self.operands)))
+        if peachpy.stream.active_stream is not None:
+            peachpy.stream.active_stream.add_instruction(self)
+
+    def _lower(self):
+        from peachpy.stream import InstructionStream
+        from peachpy.x86_64.generic import ADD
+        from peachpy.x86_64.registers import esp, rsp, r15
+        with InstructionStream() as stream:
+            ADD(esp, self.operands[0])
+            ADD(rsp, r15)
+        return stream.instructions
+
+    def encode(self):
+        import operator
+        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+
+
+class NACLSSP(Instruction):
+    """Sandboxed RSP Decrement (Subtraction)"""
+    def __init__(self, *args, **kwargs):
+        """Supported forms:
+
+            * NACLSSP(r32)
+            * NACLSSP(imm32)
+        """
+
+        origin = kwargs.get("origin")
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+            origin = inspect.stack()
+        super(NACLSSP, self).__init__("NACLSSP", origin=origin, prototype=prototype)
+        self.operands = tuple(map(check_operand, args))
+        if len(self.operands) != 1:
+            raise SyntaxError("Instruction \"NACLSSP\" requires 1 operand")
+        self.in_regs = (True,)
+        self.out_regs = (False,)
+        self.out_operands = (True,)
+        self._gas_name = "naclssp"
+        if not is_r32(self.operands[0]) and not is_imm32(self.operands[0]):
+            raise SyntaxError("Invalid operand types: NACLSSP" + ", ".join(map(format_operand_type, self.operands)))
+        if peachpy.stream.active_stream is not None:
+            peachpy.stream.active_stream.add_instruction(self)
+
+    def _lower(self):
+        from peachpy.stream import InstructionStream
+        from peachpy.x86_64.generic import SUB, ADD
+        from peachpy.x86_64.registers import esp, rsp, r15
+        with InstructionStream() as stream:
+            SUB(esp, self.operands[0])
+            ADD(rsp, r15)
+        return stream.instructions
+
+    def encode(self):
+        import operator
+        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+
+
+class NACLRESTSP(Instruction):
+    """Sandboxed RSP Restore"""
+    def __init__(self, *args, **kwargs):
+        """Supported forms:
+
+            * NACLRESTSP(r32)
+        """
+
+        origin = kwargs.get("origin")
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+            origin = inspect.stack()
+        super(NACLRESTSP, self).__init__("NACLRESTSP", origin=origin, prototype=prototype)
+        self.operands = tuple(map(check_operand, args))
+        if len(self.operands) != 1:
+            raise SyntaxError("Instruction \"NACLRESTSP\" requires 1 operand")
+        self.in_regs = (True,)
+        self.out_regs = (False,)
+        self.out_operands = (True,)
+        self._gas_name = "naclrestsp"
+        if is_r32(self.operands[0]):
+            pass
+        else:
+            raise SyntaxError("Invalid operand types: NACLRESTSP " + ", ".join(map(format_operand_type, self.operands)))
+        if peachpy.stream.active_stream is not None:
+            peachpy.stream.active_stream.add_instruction(self)
+
+    def _lower(self):
+        from peachpy.stream import InstructionStream
+        from peachpy.x86_64.generic import MOV, ADD
+        from peachpy.x86_64.registers import esp, rsp, r15
+        with InstructionStream() as stream:
+            MOV(esp, self.operands[0])
+            ADD(rsp, r15)
+        return stream.instructions
+
+    def encode(self):
+        import operator
+        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+
+
+class NACLRESTBP(Instruction):
+    """Sandboxed RBP Restore"""
+    def __init__(self, *args, **kwargs):
+        """Supported forms:
+
+            * NACLRESTBP(r32)
+        """
+
+        origin = kwargs.get("origin")
+        prototype = kwargs.get("prototype")
+        if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+            origin = inspect.stack()
+        super(NACLRESTBP, self).__init__("NACLRESTBP", origin=origin, prototype=prototype)
+        self.operands = tuple(map(check_operand, args))
+        if len(self.operands) != 1:
+            raise SyntaxError("Instruction \"NACLRESTBP\" requires 1 operand")
+        self.in_regs = (True,)
+        self.out_regs = (False,)
+        self.out_operands = (True,)
+        self._gas_name = "naclrestbp"
+        if is_r32(self.operands[0]):
+            pass
+        else:
+            raise SyntaxError("Invalid operand types: NACLRESTBP " + ", ".join(map(format_operand_type, self.operands)))
+        if peachpy.stream.active_stream is not None:
+            peachpy.stream.active_stream.add_instruction(self)
+
+    def _lower(self):
+        from peachpy.stream import InstructionStream
+        from peachpy.x86_64.generic import MOV, ADD
+        from peachpy.x86_64.registers import ebp, rbp, r15
+        with InstructionStream() as stream:
+            MOV(ebp, self.operands[0])
+            ADD(rbp, r15)
+        return stream.instructions
+
+    def encode(self):
+        import operator
+        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
