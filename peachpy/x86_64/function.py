@@ -1518,11 +1518,11 @@ class ABIFunction:
 
 
 class InstructionBundle:
-    def __init__(self, capacity, start_address):
+    def __init__(self, capacity, address):
         if capacity not in {16, 32, 64}:
             raise ValueError("Bundle capacity must be 16, 32, or 64")
         self.capacity = capacity
-        self.start_address = start_address
+        self.address = address
         self.size = 0
         self._instructions = []
         # Map from instruction position to tuple (label address, long encoding, short range)
@@ -1546,7 +1546,7 @@ class InstructionBundle:
         from peachpy.x86_64.instructions import BranchInstruction
         assert isinstance(instruction, BranchInstruction), \
             "BranchInstruction instance expected"
-        long_encoding, bytecode = instruction._encode_label_branch(self.end_address, label_address, long_encoding)
+        long_encoding, bytecode = instruction._encode_label_branch(self.address + self.size, label_address, long_encoding)
         if self.capacity - self.size > len(bytecode):
             self.size += len(bytecode)
             if not long_encoding and label_address is not None:
@@ -1557,7 +1557,7 @@ class InstructionBundle:
                 #
                 # -> branch_pos >= label_address - self.start_address - len(bytecode) - 127
                 # -> branch_pos <= label_address - self.start_address - len(bytecode) + 128
-                branch_pos = label_address - self.start_address - len(bytecode)
+                branch_pos = label_address - self.address - len(bytecode)
                 branch_pos_max = min(branch_pos + 128, self.capacity)
             else:
                 branch_pos_max = self.capacity
@@ -1568,10 +1568,11 @@ class InstructionBundle:
             raise BufferError()
 
     def fill(self):
-        from peachpy.x86_64.generic import NOP
-        while self.capacity > self.size:
-            self.add([NOP()])
-        self.size = self.capacity
+        pass
+        # from peachpy.x86_64.generic import NOP
+        # while self.capacity > self.size:
+        #     self.add([NOP()])
+        # self.size = self.capacity
 
         # from peachpy.x86_64.instructions import BranchInstruction, Instruction
         # from peachpy.x86_64.pseudo import LABEL
@@ -1601,17 +1602,13 @@ class InstructionBundle:
     def label_address_map(self):
         from peachpy.x86_64.pseudo import LABEL
         label_address_map = dict()
-        code_address = self.start_address
+        code_address = self.address
         for instruction in self._instructions:
             if isinstance(instruction, LABEL):
                 label_address_map[instruction.identifier] = code_address
             else:
                 code_address += len(instruction.bytecode)
         return label_address_map
-
-    @property
-    def end_address(self):
-        return self.start_address + self.size
 
     def __len__(self):
         return self.size
@@ -1734,7 +1731,7 @@ class EncodedFunction:
                         except BufferError:
                             current_bundle.fill()
                             bundles.append(current_bundle)
-                            current_bundle = InstructionBundle(32, current_bundle.end_address)
+                            current_bundle = InstructionBundle(32, current_bundle.address + current_bundle.capacity)
                             current_bundle.add_label_branch(instruction, label_address, is_long)
                     else:
                         instruction_group = [instruction]
@@ -1753,14 +1750,31 @@ class EncodedFunction:
                         except BufferError:
                             current_bundle.fill()
                             bundles.append(current_bundle)
-                            current_bundle = InstructionBundle(32, current_bundle.end_address)
+                            current_bundle = InstructionBundle(32, current_bundle.address + current_bundle.capacity)
                             current_bundle.add(instruction_group)
-                    code_address = current_bundle.end_address
+                    code_address = current_bundle.address + current_bundle.size
                 current_bundle.fill()
                 bundles.append(current_bundle)
             self._instructions = list()
             for bundle in bundles:
-                self._instructions.extend(bundle._instructions)
+                for instruction in bundle._instructions:
+                    constant = instruction.constant
+                    if constant:
+                        relocation = instruction.relocation
+                        for index in range(relocation.offset, relocation.offset + 4):
+                            instruction.bytecode[index] = 0
+                        relocation.offset += len(self.code_section)
+                        relocation.program_counter += len(self.code_section)
+                        relocation.symbol = self._constant_symbol_map[instruction.constant.name]
+                        self.code_section.add_relocation(relocation)
+
+                    if instruction.bytecode:
+                        self.code_section.content += instruction.bytecode
+                if bundle.size < bundle.capacity:
+                    if bundle is not bundles[-1]:
+                        self.code_section.content += self._encode_nops(bundle.capacity - bundle.size)
+                    else:
+                        self.code_section.content += self._encode_abort(bundle.capacity - bundle.size)
         else:
             has_updated_branches = True
             has_unresolved_labels = True
@@ -1786,19 +1800,19 @@ class EncodedFunction:
                     if instruction.bytecode:
                         code_address += len(instruction.bytecode)
 
-        for instruction in self._instructions:
-            constant = instruction.constant
-            if constant:
-                relocation = instruction.relocation
-                for index in range(relocation.offset, relocation.offset + 4):
-                    instruction.bytecode[index] = 0
-                relocation.offset += len(self.code_section)
-                relocation.program_counter += len(self.code_section)
-                relocation.symbol = self._constant_symbol_map[instruction.constant.name]
-                self.code_section.add_relocation(relocation)
+            for instruction in self._instructions:
+                constant = instruction.constant
+                if constant:
+                    relocation = instruction.relocation
+                    for index in range(relocation.offset, relocation.offset + 4):
+                        instruction.bytecode[index] = 0
+                    relocation.offset += len(self.code_section)
+                    relocation.program_counter += len(self.code_section)
+                    relocation.symbol = self._constant_symbol_map[instruction.constant.name]
+                    self.code_section.add_relocation(relocation)
 
-            if instruction.bytecode:
-                self.code_section.content += instruction.bytecode
+                if instruction.bytecode:
+                    self.code_section.content += instruction.bytecode
 
     def _encode_nops(self, length):
         assert 1 <= length <= 31
