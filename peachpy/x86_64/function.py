@@ -1528,6 +1528,10 @@ class InstructionBundle:
         # Map from instruction position to tuple (label address, long encoding, short range)
         self.branch_info_map = dict()
 
+    @property
+    def padding(self):
+        return self.capacity - self.size
+
     def add(self, instructions):
         from peachpy.x86_64.instructions import Instruction
         assert isinstance(instructions, list)
@@ -1567,30 +1571,28 @@ class InstructionBundle:
         else:
             raise BufferError()
 
-    def fill(self):
-        pass
-        # from peachpy.x86_64.generic import NOP
-        # while self.capacity > self.size:
-        #     self.add([NOP()])
-        # self.size = self.capacity
+    def optimize(self):
+        from peachpy.x86_64.instructions import BranchInstruction
+        from peachpy.x86_64.pseudo import LABEL
 
-        # from peachpy.x86_64.instructions import BranchInstruction, Instruction
-        # from peachpy.x86_64.pseudo import LABEL
-        # from peachpy.util import diff
-        # encoding_options = []
-        # for i, instruction in enumerate(self._instructions):
-        #     assert isinstance(instruction, Instruction)
-        #     if isinstance(instruction, BranchInstruction):
-        #         (label_address, long_encoding, branch_pos_max) = self.branch_info_map[i]
-        #         length_encoding_map = dict()
-        #         _, bytecode = instruction._encode_label_branch(self.end_address, label_address, long_encoding)
-        #         encoding_options.append(list())
-        #     else:
-        #         length_options = instruction.encode_length_options().keys()
-        #         min_length = min(length_options)
-        #         encoding_options.append(
-        #             diff(sorted([length - min_length for length in length_options])))
-        # gap = self.capacity - self.size
+        if any(isinstance(instruction, (BranchInstruction, LABEL)) for instruction in self._instructions):
+            return
+
+        def suitable_encodings(instruction):
+            return [(encoding, length) for (length, encoding) in six.iteritems(instruction.encode_length_options())
+                    if 0 < length - len(instruction.bytecode) <= self.padding]
+
+        while self.size < self.capacity:
+            suitable_instructions = [instr for instr in self._instructions if any(suitable_encodings(instr))]
+            if not suitable_instructions:
+                break
+
+            shortest_suitable_instruction = min(suitable_instructions, key=lambda instr: len(instr.bytecode))
+            new_encoding, new_length = min(suitable_encodings(shortest_suitable_instruction),
+                                           key=operator.itemgetter(1))
+            self.size += new_length - len(shortest_suitable_instruction.bytecode)
+            assert self.size <= self.capacity
+            shortest_suitable_instruction.bytecode = new_encoding
 
     def finalize(self):
         from peachpy.x86_64.generic import NOP
@@ -1716,6 +1718,7 @@ class EncodedFunction:
                 for (i, instruction) in enumerate(self._instructions):
                     if isinstance(instruction, LABEL):
                         label_address_map[instruction.identifier] = code_address
+                        current_bundle.add([instruction])
                     elif isinstance(instruction, BranchInstruction) and instruction.label_name:
                         label_address = label_address_map.get(instruction.label_name)
                         if label_address is None:
@@ -1729,7 +1732,6 @@ class EncodedFunction:
                         try:
                             current_bundle.add_label_branch(instruction, label_address, is_long)
                         except BufferError:
-                            current_bundle.fill()
                             bundles.append(current_bundle)
                             current_bundle = InstructionBundle(32, current_bundle.address + current_bundle.capacity)
                             current_bundle.add_label_branch(instruction, label_address, is_long)
@@ -1748,15 +1750,14 @@ class EncodedFunction:
                         try:
                             current_bundle.add(instruction_group)
                         except BufferError:
-                            current_bundle.fill()
                             bundles.append(current_bundle)
                             current_bundle = InstructionBundle(32, current_bundle.address + current_bundle.capacity)
                             current_bundle.add(instruction_group)
                     code_address = current_bundle.address + current_bundle.size
-                current_bundle.fill()
                 bundles.append(current_bundle)
             self._instructions = list()
             for bundle in bundles:
+                bundle.optimize()
                 for instruction in bundle._instructions:
                     constant = instruction.constant
                     if constant:
