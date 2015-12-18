@@ -1040,7 +1040,9 @@ class ABIFunction:
                 if argument.size in {4, 8, 16}:
                     pass
                 elif argument.size == 32:
-                    argument.register = argument.register.as_xmm
+                    argument.register = argument.register.as_ymm
+                elif argument.size == 64:
+                    argument.register = argument.register.as_zmm
                 else:
                     assert False
             elif (argument.is_integer or argument.is_pointer or argument.is_codeunit) \
