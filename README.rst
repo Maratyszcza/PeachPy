@@ -217,6 +217,8 @@ Users
 
 - `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
 
+- `newhope <https://github.com/Yawning/newhope>`_ -- Go implementation of cryptographic codes from "Post-quantum key exchange – a new hope" paper
+
 - NNPACK (to be announced) -- an acceleration layer for convolutional networks on CPU.
 
 Peer-Reviewed Publications
