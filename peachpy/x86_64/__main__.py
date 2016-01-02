@@ -8,6 +8,7 @@ from peachpy import *
 from peachpy.x86_64 import *
 import sys
 import argparse
+import six
 
 
 parser = argparse.ArgumentParser(
@@ -40,8 +41,8 @@ abi_map = {
     "gosyso-p32": (peachpy.x86_64.abi.gosyso_amd64p32_abi, ["gas"], ["elf", "mach-o", "ms-coff"]),
     "goasm-p32": (peachpy.x86_64.abi.goasm_amd64p32_abi, ["go"], [])
 }
-parser.add_argument("-mabi", dest="abi", required=True,
-                    choices=("ms", "sysv", "x32", "nacl", "gosyso", "gosyso-p32", "goasm", "goasm-p32"),
+parser.add_argument("-mabi", dest="abi", default="native",
+                    choices=("native", "ms", "sysv", "x32", "nacl", "gosyso", "gosyso-p32", "goasm", "goasm-p32"),
                     help="Generate code for specified ABI")
 
 cpu_map = {
@@ -82,8 +83,8 @@ parser.add_argument("-mcpu", dest="cpu", default="default",
                              "knightslanding"),
                     help="Target specified microarchitecture")
 
-parser.add_argument("-mimage-format", dest="image_format",
-                    choices=("elf", "mach-o", "ms-coff"),
+parser.add_argument("-mimage-format", dest="image_format", default="native",
+                    choices=("native", "elf", "mach-o", "ms-coff"),
                     help="Target binary image format")
 parser.add_argument("-massembly-format", dest="assembly_format",
                     choices=("golang", "nasm", "gas", "masm"),
@@ -144,6 +145,17 @@ def check_abi_image_format_combination(image_format, abi):
         raise ValueError("Image format %s is not supported for %s" % (image_format, str(abi)))
 
 
+def detect_native_image_format():
+    import platform
+    osname = platform.system()
+    if osname == "Darwin":
+        return "mach-o"
+    elif osname == "Linux" or osname == "NaCl":
+        return "elf"
+    elif osname == "Windows":
+        return "ms-coff"
+
+
 def add_module_files(module_files, module, roots):
     """Recursively adds Python source files for module and its submodules inside the roots directories"""
     if not hasattr(module, "__file__"):
@@ -192,7 +204,14 @@ def main():
     options = parser.parse_args()
     import peachpy.x86_64.options
     peachpy.x86_64.options.debug_level = options.debug_level
-    abi, _, _ = abi_map[options.abi]
+    if options.abi == "native":
+        abi = peachpy.x86_64.abi.detect()
+        if abi is None:
+            raise ValueError("Could not auto-detect ABI: specify it with -mabi option")
+        # Set options.abi to the corresponding string value because it is used later on
+        options.abi = {abi: name for name, (abi, _, _) in six.iteritems(abi_map)}[abi]
+    else:
+        abi, _, _ = abi_map[options.abi]
     peachpy.x86_64.options.abi = abi
     peachpy.x86_64.options.target = cpu_map[options.cpu]
     peachpy.x86_64.options.package = options.package
@@ -211,8 +230,10 @@ def main():
         writers.append(AssemblyWriter(options.output, assembly_format, options.input[0]))
     else:
         image_format = options.image_format
-        if image_format is None:
-            raise ValueError("Image format is not specified")
+        if image_format == "native":
+            image_format = detect_native_image_format()
+            if image_format is None:
+                raise ValueError("Could not auto-detect image format: specify it with -mimage-format option")
         check_abi_image_format_combination(image_format, options.abi)
         if image_format == "elf":
             writers.append(ELFWriter(options.output, abi, options.input[0]))
