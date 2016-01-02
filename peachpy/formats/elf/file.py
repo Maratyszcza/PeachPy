@@ -46,6 +46,14 @@ class MachineType(IntEnum):
     k1om = 181
     # ARMv8 AArch64
     arm64 = 183
+    # ATI/AMD GPU code (for any GPU arch)
+    cal = 125
+    # nVidia CUDA GPU code (for any GPU arch)
+    cuda = 190
+    # HSAIL code (32-bit ELF)
+    hsail32 = 0xAF5A
+    # HSAIL code (64-bit ELF)
+    hsail64 = 0xAF5B
 
 
 class FormatVersion(IntEnum):
@@ -71,6 +79,15 @@ class DataEncoding(IntEnum):
     little_endian = 1
     # Most significant byte first (Big-Endian)
     big_endian = 2
+
+
+class OSABI(IntEnum):
+    # No extensions or unspecified
+    none = 0
+    # GNU Linux
+    gnu = 3
+    # ATI/AMD GPU ABI
+    cal = 100
 
 
 class FileIdentification:
