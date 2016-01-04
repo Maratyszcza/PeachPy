@@ -92,7 +92,11 @@ Using PeachPy as a command-line tool
   y = Argument(ptr(const_float_))
 
   # Everything inside the `with` statement is function body
-  with Function("DotProduct", (x, y), float_):
+  with Function("DotProduct", (x, y), float_,
+    # Enable instructions up to SSE4.2
+    # PeachPy will report error if you accidentially use a newer instruction
+    target=uarch.default + isa.sse4_2):
+  
     # Request two 64-bit general-purpose registers. No need to specify exact names.
     reg_x, reg_y = GeneralPurposeRegister64(), GeneralPurposeRegister64()
 
