@@ -118,20 +118,28 @@ goasm_amd64p32_abi = ABI("Go/Asm x32 ABI", endianness=Endianness.Little,
                                              xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15])
 
 
-def detect():
+def detect(system_abi=False):
+    """Detects host ABI (either process ABI or system ABI, depending on parameters)
+
+    :param bool system_abi: specified whether system ABI or process ABI should be detected. The two may differ, e.g.
+        when a 64-bit system runs 32-bit Python interpreter.
+
+    :returns: the host ABI or None if the host is not recognized or is not x86-64.
+    :rtype: ABI or None
+    """
     import platform
     import os
     import struct
     (osname, node, release, version, machine, processor) = platform.uname()  # pylint:disable=unpacking-non-sequence
     pointer_size = struct.calcsize("P")
-    if osname == "Darwin" and machine == "x86_64" and pointer_size == 8:
+    if osname == "Darwin" and machine == "x86_64" and (system_abi or pointer_size == 8):
         return system_v_x86_64_abi
     elif osname == "Linux" and machine == "x86_64":
-        if pointer_size == 8:
+        if system_abi or pointer_size == 8:
             return system_v_x86_64_abi
         else:
             return linux_x32_abi
-    elif osname == "Windows" and machine == "AMD64" and pointer_size == 8:
+    elif osname == "Windows" and machine == "AMD64" and (system_abi or pointer_size == 8):
         return microsoft_x64_abi
-    elif osname == "NaCl" and os.environ.get("NACL_ARCH") == "x86_64" and pointer_size == 4:
+    elif osname == "NaCl" and os.environ.get("NACL_ARCH") == "x86_64" and (system_abi or pointer_size == 4):
         return native_client_x86_64_abi
