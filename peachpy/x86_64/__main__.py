@@ -205,7 +205,7 @@ def main():
     import peachpy.x86_64.options
     peachpy.x86_64.options.debug_level = options.debug_level
     if options.abi == "native":
-        abi = peachpy.x86_64.abi.detect()
+        abi = peachpy.x86_64.abi.detect(system_abi=True)
         if abi is None:
             raise ValueError("Could not auto-detect ABI: specify it with -mabi option")
         # Set options.abi to the corresponding string value because it is used later on
@@ -274,4 +274,4 @@ def main():
             dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies) + "\n")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
