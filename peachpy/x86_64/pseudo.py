@@ -479,3 +479,45 @@ def REDUCE(reduction_instruction, registers):
             reduction_instruction(registers[i - offset], registers[i])
         offset *= 2
     return registers[0]
+
+
+class IACA:
+
+    class START(Instruction):
+        def __init__(self, *args, **kwargs):
+            origin = kwargs.get("origin")
+            prototype = kwargs.get("prototype")
+            if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+                origin = inspect.stack()
+            super(IACA.START, self).__init__("IACA.START", origin=origin)
+
+            self.operands = tuple(map(check_operand, args))
+            if len(self.operands) == 0:
+                # It is not an error to return nothing from a function with a return type
+                self.in_regs = tuple()
+                self.out_regs = tuple()
+                self.out_operands = tuple()
+                self.encodings.append((0x0, lambda op: bytearray([0x0F, 0x0B, 0xBB, 0x6F, 0x00, 0x00, 0x00, 0x64, 0x67, 0x90])))
+            else:
+                raise SyntaxError("Pseudo-instruction \"IACA.START\" requires 0 operands")
+            if peachpy.stream.active_stream is not None:
+                peachpy.stream.active_stream.add_instruction(self)
+
+    class END(Instruction):
+        def __init__(self, *args, **kwargs):
+            origin = kwargs.get("origin")
+            prototype = kwargs.get("prototype")
+            if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
+                origin = inspect.stack()
+            super(IACA.END, self).__init__("IACA.END", origin=origin)
+
+            self.operands = tuple(map(check_operand, args))
+            if len(self.operands) == 0:
+                self.in_regs = tuple()
+                self.out_regs = tuple()
+                self.out_operands = tuple()
+                self.encodings.append((0x0, lambda op: bytearray([0xBB, 0xDE, 0x00, 0x00, 0x00, 0x64, 0x67, 0x90, 0x0F, 0x0B])))
+            else:
+                raise SyntaxError("Pseudo-instruction \"IACA.END\" requires 0 operands")
+            if peachpy.stream.active_stream is not None:
+                peachpy.stream.active_stream.add_instruction(self)
