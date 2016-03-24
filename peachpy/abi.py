@@ -11,7 +11,7 @@ class ABI(object):
                  bool_size, wchar_size, short_size, int_size, long_size, longlong_size,
                  pointer_size, index_size,
                  stack_alignment, red_zone,
-                 callee_save_registers, argument_registers, volatile_registers,
+                 callee_save_registers, argument_registers, volatile_registers, restricted_registers=[],
                  elf_class=None, elf_data_encoding=None, elf_machine_type=None,
                  mscoff_machine_type=None):
         super(ABI, self).__init__()
@@ -30,6 +30,7 @@ class ABI(object):
         self.callee_save_registers = callee_save_registers
         self.argument_registers = argument_registers
         self.volatile_registers = volatile_registers
+        self.restricted_registers = restricted_registers
         self.elf_class = elf_class
         self.elf_data_encoding = elf_data_encoding
         self.elf_machine_type = elf_machine_type

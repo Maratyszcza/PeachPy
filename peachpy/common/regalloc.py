@@ -27,6 +27,9 @@ class RegisterAllocator:
             [reg.physical_id for reg in abi.volatile_registers if reg.kind == register_kind] + \
             [reg.physical_id for reg in abi.argument_registers if reg.kind == register_kind][::-1] + \
             [reg.physical_id for reg in abi.callee_save_registers if reg.kind == register_kind]
+        for reg in abi.restricted_registers:
+            if reg.kind == register_kind and reg.physical_id in physical_ids:
+                physical_ids.remove(reg.physical_id)
         # TODO: account the pre-allocated registers in allocation options
         for virtual_id, conflict_internal_ids in six.iteritems(self.conflicting_registers):
             self.allocation_options[virtual_id] = \

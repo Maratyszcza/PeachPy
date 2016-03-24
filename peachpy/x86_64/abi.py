@@ -61,6 +61,7 @@ native_client_x86_64_abi = ABI("Native Client x86-64 ABI", endianness=Endianness
                                volatile_registers=[rax, r10, r11,
                                                    mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7,
                                                    xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15],
+                               restricted_registers=[rbp],
                                elf_class=peachpy.formats.elf.file.ElfClass.class64,
                                elf_data_encoding=peachpy.formats.elf.file.DataEncoding.little_endian,
                                elf_machine_type=peachpy.formats.elf.file.MachineType.x86_64)
