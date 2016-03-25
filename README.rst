@@ -223,7 +223,7 @@ Users
 
 - `newhope <https://github.com/Yawning/newhope>`_ -- Go implementation of cryptographic codes from "Post-quantum key exchange – a new hope" paper
 
-- NNPACK (to be announced) -- an acceleration layer for convolutional networks on CPU.
+- `NNPACK <https://github.com/Maratyszcza/NNPACK>`_ -- an acceleration layer for convolutional networks on multi-core CPUs.
 
 Peer-Reviewed Publications
 --------------------------
