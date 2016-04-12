@@ -221,7 +221,7 @@ Users
 
 - `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
 
-- `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20`_ -- Go implementation of ChaCha20 cryptographic cypher.
+- `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20`_ -- Go implementation of ChaCha20 cryptographic cipher.
 
 - `NNPACK <https://github.com/Maratyszcza/NNPACK>`_ -- an acceleration layer for convolutional networks on multi-core CPUs.
 
