@@ -1309,7 +1309,7 @@ class ABIFunction:
                     # 3. Restore clobbered general-purpose registers with PUSH instruction
                     for i, xmm_reg in enumerate(cloberred_xmm_registers):
                         movaps = VMOVAPS if self.avx_environment else MOVAPS
-                        movaps([rsp + self._local_variables_size + i * XMMRegister.size], xmm_reg)
+                        movaps(xmm_reg, [rsp + self._local_variables_size + i * XMMRegister.size])
                     if self._stack_frame_alignment > self.abi.stack_alignment:
                         # Restore rsp value from rbp
                         MOV(rsp, rbp)
