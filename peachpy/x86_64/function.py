@@ -1416,7 +1416,7 @@ class ABIFunction:
             self._argument_stack_base = rbp + return_address_size + saved_rbp_size
         else:
             # argument addressing uses rsp
-            self._argument_stack_base = rsp + return_address_size + self._stack_frame_size
+            self._argument_stack_base = rsp + return_address_size + self._stack_frame_size + self._local_variables_size
 
     def _bind_registers(self):
         """Iterates through the list of instructions and assigns physical IDs to allocated registers"""
