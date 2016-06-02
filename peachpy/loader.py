@@ -46,7 +46,7 @@ class Loader:
             munmap_function.argtype = [ctypes.c_void_p, ctypes.c_size_t]
 
             def munmap(address, size):
-                munmap_result = munmap_function(address, size)
+                munmap_result = munmap_function(ctypes.c_void_p(address), size)
                 assert munmap_result == 0
 
             self._release_memory = lambda address_size: munmap(address_size[0], address_size[1])
