@@ -67,7 +67,7 @@ def load_register(dst_reg, src_reg, data_type, prototype):
 
 
 def load_memory(dst_reg, src_address, src_type, prototype):
-    assert dst_reg >= src_type.size
+    assert dst_reg.size >= src_type.size
     assert isinstance(src_type, Type)
     with NullStream():
         if isinstance(dst_reg, GeneralPurposeRegister):
