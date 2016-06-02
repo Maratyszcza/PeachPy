@@ -15,20 +15,16 @@ class TextWriter(object):
     def __enter__(self):
         global active_writers
         active_writers.append(self)
-        self.output_file = open(self.output_path, "w")
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         global active_writers
         active_writers.remove(self)
         if exc_type is None:
-            self.output_file.write(self.serialize())
-            self.output_file.close()
-            self.output_file = None
+            output_file = open(self.output_path, "w")
+            output_file.write(self.serialize())
+            output_file.close()
         else:
-            import os
-            os.unlink(self.output_file.name)
-            self.output_file = None
             raise
 
     def serialize(self):
@@ -88,20 +84,16 @@ class ImageWriter(object):
     def __enter__(self):
         global active_writers
         active_writers.append(self)
-        self.output_file = open(self.output_path, "wb", buffering=0)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         global active_writers
         active_writers.remove(self)
         if exc_type is None:
-            self.output_file.write(self.encode())
-            self.output_file.close()
-            self.output_file = None
+            output_file = open(self.output_path, "wb", buffering=0)
+            output_file.write(self.encode())
+            output_file.close()
         else:
-            import os
-            os.unlink(self.output_file.name)
-            self.output_file = None
             raise
 
     def encode(self):
