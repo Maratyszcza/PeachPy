@@ -106,6 +106,7 @@ class Extension:
             "PCLMULQDQ": (pclmulqdq,),
             "RDRAND": (rdrand,),
             "RDSEED": (rdrand, rdseed),
+            "SHA": (sha,),
             "AVX": (avx,),
             "F16C": (f16c,),
             "AVX2": (avx, avx2),
