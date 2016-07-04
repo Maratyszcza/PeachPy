@@ -21,6 +21,8 @@ parser.add_argument("-MMD", dest="generate_dependencies_makefile", action="store
                     help="Generate Makefile describing the dependencies")
 parser.add_argument("-MF", dest="dependencies_makefile_path",
                     help="Path to output Makefile with dependencies")
+parser.add_argument("-I", dest="include", nargs="*",
+                    help="Add directory to module search path")
 parser.add_argument("-fdump-rtl", dest="rtl_dump",
                     help="Path to output file for RTL dump")
 parser.add_argument("-emit-json-metadata", dest="json_metadata_file",
@@ -255,8 +257,9 @@ def main():
 
     # PeachPy sources can import other modules or files from the same directory
     import os
-    sys.path.append(os.path.dirname(options.input[0]))
-    include_directories = [os.path.abspath(os.path.dirname(options.input[0]))]
+    include_directories = [os.path.abspath(include_dir) for include_dir in options.include]
+    include_directories.insert(0, os.path.abspath(os.path.dirname(options.input[0])))
+    sys.path.extend(include_directories)
 
     # We would like to avoid situations where source file has changed, but Python uses its old precompiled version
     sys.dont_write_bytecode = True
