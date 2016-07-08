@@ -21,7 +21,7 @@ parser.add_argument("-MMD", dest="generate_dependencies_makefile", action="store
                     help="Generate Makefile describing the dependencies")
 parser.add_argument("-MF", dest="dependencies_makefile_path",
                     help="Path to output Makefile with dependencies")
-parser.add_argument("-I", dest="include", nargs="*",
+parser.add_argument("-I", dest="include", nargs="*", default=list(),
                     help="Add directory to module search path")
 parser.add_argument("-fdump-rtl", dest="rtl_dump",
                     help="Path to output file for RTL dump")
