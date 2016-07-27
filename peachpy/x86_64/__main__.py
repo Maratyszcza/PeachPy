@@ -228,7 +228,7 @@ def main():
         if assembly_format is None:
             assembly_format = guess_assembly_format_from_abi(options.abi)
         else:
-            check_abi_assembly_format_combination(options.abi, assembly_format)
+            check_abi_assembly_format_combination(assembly_format, options.abi)
         writers.append(AssemblyWriter(options.output, assembly_format, options.input[0]))
     else:
         image_format = options.image_format
