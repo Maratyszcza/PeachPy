@@ -135,7 +135,7 @@ def guess_assembly_format_from_abi(abi):
     return supported_assembly_formats[0]
 
 
-def check_abi_assembly_format_combination(assembly_format, abi):
+def check_abi_assembly_format_combination(abi, assembly_format):
     _, supported_assembly_formats, _ = abi_map[abi]
     if assembly_format not in supported_assembly_formats:
         raise ValueError("Assembly format %s is not supported for %s" % (assembly_format, str(abi)))
