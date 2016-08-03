@@ -752,7 +752,7 @@ class Function:
                             ("Instruction %s requires operand 3 to be allocated to xmm0 register, " +
                             "but xmm0 is a live register") % str(instruction.name))
                     xmm0_binded_registers.add(xmm0_operand._internal_id)
-            elif instruction.name in {"SAL", "SAR", "SHL", "SHR", "ROL", "ROR"}:
+            elif instruction.name in {"SAL", "SAR", "SHL", "SHR", "ROL", "ROR", "RCL", "RCR"}:
                 assert len(instruction.operands) == 2, \
                     "expected 2 operands, got %d (%s)" % \
                     (len(instruction.operands), ", ".join(map(str, instruction.operands)))
@@ -767,7 +767,7 @@ class Function:
 
                     cl_binded_registers.add(count_operand._internal_id)
             elif instruction.name in {"SHLD", "SHRD"}:
-                assert len(instruction.operands) == 2, \
+                assert len(instruction.operands) == 3, \
                     "expected 3 operands, got %d (%s)" % \
                     (len(instruction.operands), ", ".join(map(str, instruction.operands)))
                 count_operand = instruction.operands[2]
