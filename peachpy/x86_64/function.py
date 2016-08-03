@@ -745,12 +745,12 @@ class Function:
                 xmm0_operand = instruction.operands[2]
                 assert isinstance(xmm0_operand, XMMRegister), \
                     "expected xmm registers in the 3rd operand, got %s" % str(xmm0_operand)
-                # Check that xmm0 is not live at this instruction
-                if instruction._live_registers.get(xmm0._internal_id, 0) & XMMRegister._mask != 0:
-                    raise RegisterAllocationError(
-                        "Instruction %s requires operand 3 to be allocated to xmm0 register, " +
-                        "but xmm0 is a live register" % instruction.name)
                 if xmm0_operand.is_virtual:
+                    # Check that xmm0 is not live at this instruction
+                    if instruction._live_registers.get(xmm0._internal_id, 0) & XMMRegister._mask != 0:
+                        raise RegisterAllocationError(
+                            ("Instruction %s requires operand 3 to be allocated to xmm0 register, " +
+                            "but xmm0 is a live register") % str(instruction.name))
                     xmm0_binded_registers.add(xmm0_operand._internal_id)
             elif instruction.name in {"SAL", "SAR", "SHL", "SHR", "ROL", "ROR"}:
                 assert len(instruction.operands) == 2, \
