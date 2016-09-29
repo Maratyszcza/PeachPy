@@ -99,13 +99,13 @@ class Loop:
     def __enter__(self):
         LABEL(self.begin)
 
-        from peachpy.x86_64.function import active_function
+        from peachpy.common.function import active_function
         if active_function is not None:
             active_function._indent_level += 1
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        from peachpy.x86_64.function import active_function
+        from peachpy.common.function import active_function
         if active_function is not None:
             active_function._indent_level -= 1
 
@@ -137,13 +137,13 @@ class Block:
     def __enter__(self):
         LABEL(self.begin)
 
-        from peachpy.x86_64.function import active_function
+        from peachpy.common.function import active_function
         if active_function is not None:
             active_function._indent_level += 1
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        from peachpy.x86_64.function import active_function
+        from peachpy.common.function import active_function
         if active_function is not None:
             active_function._indent_level -= 1
 
@@ -173,7 +173,7 @@ class ALIGN(Instruction):
 
 class RETURN(Instruction):
     def __init__(self, *args, **kwargs):
-        from peachpy.x86_64.function import active_function
+        from peachpy.common.function import active_function
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
 
         origin = kwargs.get("origin")
@@ -253,7 +253,7 @@ class RETURN(Instruction):
 class LOAD:
     class ARGUMENT(Instruction):
         def __init__(self, *args, **kwargs):
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             from peachpy.x86_64.registers import GeneralPurposeRegister, XMMRegister, YMMRegister
             from peachpy.x86_64 import m64
 
@@ -359,7 +359,7 @@ class LOAD:
 class STORE:
     class RESULT(Instruction):
         def __init__(self, *args, **kwargs):
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
             from peachpy.util import is_int16, is_int32
             from peachpy.x86_64.abi import goasm_amd64_abi, goasm_amd64p32_abi

@@ -17,8 +17,6 @@ import peachpy.x86_64.avx
 import peachpy.x86_64.options
 import peachpy.x86_64.meta
 
-active_function = None
-
 
 class Function:
     """Generalized x86-64 assembly function.
@@ -211,13 +209,14 @@ class Function:
         While the function is active, generated instructions are checked for compatibility with the function target.
         """
         import peachpy.stream
-        global active_function
+        import peachpy.common.function
 
-        if active_function is not None:
-            raise ValueError("Can not attach the function: alternative function %s is active" % active_function.name)
+        if peachpy.common.function.active_function is not None:
+            raise ValueError("Can not attach the function: alternative function %s is active" %
+                             peachpy.common.function.active_function.name)
         if peachpy.stream.active_stream is not None:
             raise ValueError("Can not attach the function instruction stream: alternative instruction stream is active")
-        active_function = self
+        peachpy.common.function.active_function = self
         peachpy.stream.active_stream = self
         return self
 
@@ -227,12 +226,12 @@ class Function:
         The function and its instruction stream must be active before calling the method.
         """
         import peachpy.stream
-        global active_function
-        if active_function is None:
+        import peachpy.common.function
+        if peachpy.common.function.active_function is None:
             raise ValueError("Can not detach the function: no function is active")
-        if active_function is not self:
+        if peachpy.common.function.active_function is not self:
             raise ValueError("Can not detach the function: a different function is active")
-        active_function = None
+        peachpy.common.function.active_function = None
         peachpy.stream.active_stream = None
         return self
 

@@ -244,7 +244,7 @@ class GeneralPurposeRegister64(GeneralPurposeRegister):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(GeneralPurposeRegister64, self).__init__(GeneralPurposeRegister64._mask,
                                                            active_function._allocate_general_purpose_register_id())
         else:
@@ -303,7 +303,7 @@ class GeneralPurposeRegister32(GeneralPurposeRegister):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(GeneralPurposeRegister32, self).__init__(GeneralPurposeRegister32._mask,
                                                            active_function._allocate_general_purpose_register_id())
         else:
@@ -363,7 +363,7 @@ class GeneralPurposeRegister16(GeneralPurposeRegister):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(GeneralPurposeRegister16, self).__init__(GeneralPurposeRegister16._mask,
                                                            active_function._allocate_general_purpose_register_id())
         else:
@@ -414,7 +414,7 @@ class GeneralPurposeRegister8(GeneralPurposeRegister):
     def __init__(self, physical_id=None, virtual_id=None, is_high=False):
         mask = GeneralPurposeRegister8._high_mask if is_high else GeneralPurposeRegister8._mask
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(GeneralPurposeRegister8, self).__init__(mask, active_function._allocate_general_purpose_register_id())
         else:
             super(GeneralPurposeRegister8, self).__init__(mask, virtual_id, physical_id)
@@ -470,7 +470,7 @@ class MMXRegister(Register):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(MMXRegister, self).__init__(MMXRegister._mask,
                                               active_function._allocate_mmx_register_id())
         else:
@@ -517,7 +517,7 @@ class XMMRegister(Register):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(XMMRegister, self).__init__(XMMRegister._mask,
                                               active_function._allocate_xmm_register_id())
         else:
@@ -630,7 +630,7 @@ class YMMRegister(Register):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(YMMRegister, self).__init__(YMMRegister._mask,
                                               active_function._allocate_xmm_register_id())
         else:
@@ -730,7 +730,7 @@ class ZMMRegister(Register):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(ZMMRegister, self).__init__(ZMMRegister._mask,
                                               active_function._allocate_xmm_register_id())
         else:
@@ -830,7 +830,7 @@ class KRegister(Register):
 
     def __init__(self, physical_id=None, virtual_id=None):
         if virtual_id is None and physical_id is None:
-            from peachpy.x86_64.function import active_function
+            from peachpy.common.function import active_function
             super(KRegister, self).__init__(KRegister._mask,
                                                active_function._allocate_mask_register_id())
         else:

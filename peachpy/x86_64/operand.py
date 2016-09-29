@@ -29,9 +29,9 @@ def check_operand(operand):
     elif isinstance(operand, Constant):
         from copy import copy, deepcopy
         operand = copy(operand)
-        import peachpy.x86_64.function
-        if peachpy.x86_64.function.active_function:
-            operand.name = deepcopy(operand.name, peachpy.x86_64.function.active_function._names_memo)
+        import peachpy.common.function
+        if peachpy.common.function.active_function:
+            operand.name = deepcopy(operand.name, peachpy.common.function.active_function._names_memo)
         return MemoryOperand(operand)
     elif isinstance(operand, LocalVariable):
         return MemoryOperand(operand)
