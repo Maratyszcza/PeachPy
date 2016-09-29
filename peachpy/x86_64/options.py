@@ -13,8 +13,8 @@ name_mangling = "${Name}"
 
 
 def get_debug_level():
-    import peachpy.x86_64.function as function
-    if function.active_function is None:
+    from peachpy.common.function import active_function
+    if active_function is None:
         return debug_level
     else:
-        return function.active_function.debug_level
+        return active_function.debug_level
