@@ -2,8 +2,6 @@
 #    See license.rst for the full text of the license.
 
 
-import sys
-
 import peachpy.x86_64.abi
 import peachpy.x86_64.uarch
 import peachpy.x86_64.isa
