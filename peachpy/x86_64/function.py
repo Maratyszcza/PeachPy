@@ -124,8 +124,11 @@ class Function:
 
         def c_to_go_type(c_type):
             assert isinstance(c_type, peachpy.Type)
-            if c_type.is_pointer and c_type.base is not None:
-                return "*" + c_to_go_type(c_type.base)
+            if c_type.is_pointer:
+                if c_type.base is not None:
+                    return "*" + c_to_go_type(c_type.base)
+                else:
+                    return "uintptr"
             elif c_type.is_bool:
                 return "boolean"
             elif c_type.is_size_integer:
