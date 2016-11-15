@@ -82,14 +82,14 @@ class Loader:
             # LPVOID WINAPI VirtualAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect)
             VirtualAlloc_function = ctypes.windll.kernel32.VirtualAlloc
             VirtualAlloc_function.restype = ctypes.c_void_p
-            VirtualAlloc_function.argtype = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong, ctypes.c_ulong]
+            VirtualAlloc_function.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong, ctypes.c_ulong]
             # BOOL WINAPI VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD  dwFreeType)
             VirtualFree_function = ctypes.windll.kernel32.VirtualFree
             VirtualFree_function.restype = ctypes.c_int
-            VirtualFree_function.argtype = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong]
+            VirtualFree_function.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong]
 
             def VirtualFree(address, size):
-                VirtualFree_result = VirtualFree_function(address, size, MEM_RELEASE)
+                VirtualFree_result = VirtualFree_function(address, 0, MEM_RELEASE)
                 assert VirtualFree_result != 0
 
             self._release_memory = lambda address_size: VirtualFree(address_size[0], address_size[1])
