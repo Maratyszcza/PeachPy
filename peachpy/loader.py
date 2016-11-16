@@ -89,7 +89,7 @@ class Loader:
             VirtualFree_function.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.c_ulong]
 
             def VirtualFree(address, size):
-                VirtualFree_result = VirtualFree_function(address, size, MEM_RELEASE)
+                VirtualFree_result = VirtualFree_function(address, 0, MEM_RELEASE)
                 assert VirtualFree_result != 0
 
             self._release_memory = lambda address_size: VirtualFree(address_size[0], address_size[1])
