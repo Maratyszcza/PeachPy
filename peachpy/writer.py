@@ -291,6 +291,7 @@ class MSCOFFWriter(ImageWriter):
         code_offset = len(self.text_section.content)
         code_padding = bytearray([encoded_function.code_section.alignment_byte] *
                                  (roundup(code_offset, encoded_function.code_section.alignment) - code_offset))
+        self.text_section.content += code_padding
         code_offset += len(code_padding)
         self.text_section.content += encoded_function.code_section.content
         self.text_section.alignment = \
