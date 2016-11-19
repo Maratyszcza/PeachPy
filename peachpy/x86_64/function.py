@@ -1637,11 +1637,14 @@ class EncodedFunction:
         self.abi = function.abi
 
         from peachpy.x86_64.meta import Section, SectionType
-        self.code_section = Section(SectionType.code)
         from peachpy.x86_64.abi import native_client_x86_64_abi
         if self.abi == native_client_x86_64_abi:
+            # Align with HLT instruction
+            self.code_section = Section(SectionType.code, alignment_byte=0xF4)
             self.code_section.alignment = 32
         else:
+            # Align with INT 3 instruction
+            self.code_section = Section(SectionType.code, alignment_byte=0xCC)
             self.code_section.alignment = 16
 
         self.const_section = Section(SectionType.const_data)
