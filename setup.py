@@ -1,16 +1,26 @@
 #!/usr/bin/env python
 
-from peachpy import __version__
 import distutils.log
+from distutils.command.build import build
+from setuptools.command.develop import develop
 from distutils.cmd import Command
-from distutils.core import setup
-
+from setuptools import setup
 
 def read_text_file(path):
     import os
     with open(os.path.join(os.path.dirname(__file__), path)) as f:
         return f.read()
 
+
+class BuildGenerateInstructions(build):
+    def run(self):
+        self.run_command("generate")
+        build.run(self)
+
+class DevelopGenerateInstructions(develop):
+    def run(self):
+        self.run_command("generate")
+        develop.run(self)
 
 class GenerateInstructions(Command):
     description = "Generate Peach-Py instructions from Opcodes DB"
@@ -39,7 +49,7 @@ class GenerateInstructions(Command):
 
 setup(
     name="PeachPy",
-    version=__version__,
+    version="0.2.0",
     description="Portable Efficient Assembly Codegen in Higher-level Python",
     author="Marat Dukhan",
     author_email="maratek@gmail.com",
@@ -77,6 +87,10 @@ setup(
         "Topic :: Software Development :: Compilers",
         "Topic :: Software Development :: Libraries"
         ],
+    setup_requires=["Opcodes==0.3.10", "six"],
+    install_requires=["six", "enum34"],
     cmdclass={
-        "generate": GenerateInstructions
+        "build": BuildGenerateInstructions,
+        "develop": DevelopGenerateInstructions,
+        "generate": GenerateInstructions,
     })
