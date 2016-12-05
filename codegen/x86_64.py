@@ -9,6 +9,7 @@ from opcodes.x86_64 import *
 from codegen.code import CodeWriter, CodeBlock
 import operator
 import json
+import os
 
 instruction_set = read_instruction_set()
 for instruction in instruction_set:
