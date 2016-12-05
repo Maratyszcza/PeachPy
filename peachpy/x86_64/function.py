@@ -675,6 +675,8 @@ class Function:
             basic_block.input_blocks = None
             basic_block.output_blocks = None
 
+        from peachpy.x86_64.registers import Register
+
         # Analyze conflicting registers
         output_registers = set()
         for instruction in self._instructions:
@@ -689,6 +691,18 @@ class Function:
                 self._register_allocators[virtual_register.kind].add_conflicts(
                     virtual_register.virtual_id, conflict_internal_ids)
             output_registers = instruction.output_registers
+
+            # Notify all live virtual registers about conflicts with any live
+            # physical registers.
+            live = Register._reconstruct_multiple(instruction._live_registers)
+            virtuals = set(l for l in live if l.is_virtual)
+            physicals = live - virtuals
+            physical_conflicts = set(physical._internal_id
+                                     for physical in physicals)
+
+            for v in virtuals:
+                allocator = self._register_allocators[v.kind]
+                allocator.add_conflicts(v.virtual_id, physical_conflicts)
 
     def _check_live_registers(self):
         """Checks that the number of live registers does not exceed the number of physical registers for each insruction
