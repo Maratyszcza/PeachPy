@@ -69,11 +69,19 @@ PeachPy is actively developed, and thus there are presently no stable releases o
 
 .. code-block:: bash
 
+  pip install --upgrade git+https://github.com/Maratyszcza/PeachPy
+
+Installation for development
+****************************
+
+If you plan to modify PeachPy, we recommend the following installation procedure:
+
+.. code-block:: bash
+
   git clone https://github.com/Maratyszcza/PeachPy.git
   cd PeachPy
-  pip install -r requirements.txt
-  python setup.py generate
-  pip install .
+  python setup.py develop
+
 
 Using PeachPy as a command-line tool
 ------------------------------------
