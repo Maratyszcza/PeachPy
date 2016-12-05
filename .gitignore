@@ -19,6 +19,8 @@ doc/
 
 # Generated distributions
 dist/
+.eggs/
+PeachPy.egg-info/
 MANIFEST
 
 # Generated object/assembly files
