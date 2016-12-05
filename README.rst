@@ -213,25 +213,26 @@ PeachPy can be used to explore instruction length, opcodes, and alternative enco
                                                          #     7: bytearray(b'\xc4\xe2uGD&\x08'),
                                                          #     9: bytearray(b'\xc4\xe2uG\x86\x08\x00\x00\x00')}
 
-Dependencies
-------------
-
-- Nearly all instruction classes in PeachPy are generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
-
-- Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
-
-- PeachPy uses `six <https://pythonhosted.org/six/>`_ and `enum34 <https://pypi.python.org/pypi/enum34>`_ packages as a compatibility layer between Python 2 and Python 3
-
 Users
 -----
 
-- `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy (uses old version of PeachPy with deprecated syntax).
-
-- `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
+- `NNPACK <https://github.com/Maratyszcza/NNPACK>`_ -- an acceleration layer for convolutional networks on multi-core CPUs.
 
 - `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20>`_ -- Go implementation of ChaCha20 cryptographic cipher.
 
-- `NNPACK <https://github.com/Maratyszcza/NNPACK>`_ -- an acceleration layer for convolutional networks on multi-core CPUs.
+- `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
+
+- `go-marvin32 <https://github.com/dgryski/go-marvin32>`_ -- Go implementation of Microsoft's Marvin32 hash function.
+
+- `go-highway <https://github.com/dgryski/go-highway>`_ -- Go implementation of Google's Highway hash function.
+
+- `go-sip13 <https://github.com/dgryski/go-sip13>`_ -- Go implementation of SipHash 1-3 function.
+
+- `go-bloomindex <https://github.com/dgryski/go-bloomindex>`_ - Go implementation of Bloom-filter based search index.
+
+- `go-groupvariant <https://github.com/dgryski/go-groupvarint>`_ - SSE-optimized group varint integer encoding in Go.
+
+- `Yeppp! <http://www.yeppp.info>`_ performance library. All optimized kernels in Yeppp! are implemented in PeachPy (uses old version of PeachPy with deprecated syntax).
 
 Peer-Reviewed Publications
 --------------------------
@@ -248,6 +249,15 @@ Other Presentations
 - Marat Dukhan "Porting BLIS micro-kernels to PeachPy", presentation on `The Third BLIS Retreat Workshop <https://www.cs.utexas.edu/users/flame/BLISRetreat2015/>`_, 2015 (`slides <http://www.peachpy.io/slides/blis-retreat-2015/>`_)
 
 - Marat Dukhan "Accelerating Data Processing in Go with SIMD Instructions", presentation on `Atlanta Go Meetup <http://www.meetup.com/Go-Users-Group-Atlanta>`_, September 16, 2015 (`slides <https://docs.google.com/presentation/d/1MYg8PyhEf0oIvZ9YU2panNkVXsKt5UQBl_vGEaCeB1k/edit?usp=sharing>`_)
+
+Dependencies
+------------
+
+- Nearly all instruction classes in PeachPy are generated from `Opcodes Database <https://github.com/Maratyszcza/Opcodes>`_
+
+- Instruction encodings in PeachPy are validated against `binutils <https://www.gnu.org/software/binutils/>`_ using auto-generated tests
+
+- PeachPy uses `six <https://pythonhosted.org/six/>`_ and `enum34 <https://pypi.python.org/pypi/enum34>`_ packages as a compatibility layer between Python 2 and Python 3
 
 Acknowledgements
 ----------------
