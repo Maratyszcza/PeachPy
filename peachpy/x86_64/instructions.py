@@ -111,16 +111,8 @@ class Instruction(object):
 
     @property
     def input_registers(self):
-        from peachpy.x86_64.operand import get_operand_registers
-        registers_set = set()
-        for (has_input_registers, operand) in zip(self.in_regs, self.operands):
-            if has_input_registers:
-                registers_set.update(get_operand_registers(operand))
-        # Instruction forms with cancelling inputs have exactly 2 input operands, both of which are registers.
-        # If they are the same, only one of them is added to registers_set, thus len(registers_set) == 1
-        if self._cancelling_inputs and len(registers_set) == 1:
-            return set()
-        return registers_set
+        from peachpy.x86_64.registers import Register
+        return Register._reconstruct_multiple(self.input_registers_masks)
 
     @property
     def input_registers_masks(self):
@@ -147,19 +139,8 @@ class Instruction(object):
 
     @property
     def output_registers(self):
-        from peachpy.x86_64.operand import get_operand_registers
-        from peachpy.x86_64.registers import GeneralPurposeRegister32, XMMRegister
-        registers_set = set()
-        for (is_output_register, operand) in zip(self.out_regs, self.operands):
-            if is_output_register:
-                for register in get_operand_registers(operand):
-                    if isinstance(register, GeneralPurposeRegister32):
-                        registers_set.add(register.as_qword)
-                    elif bool(self.avx_mode) and isinstance(register, XMMRegister):
-                        registers_set.add(register.as_ymm)
-                    else:
-                        registers_set.add(register)
-        return registers_set
+        from peachpy.x86_64.registers import Register
+        return Register._reconstruct_multiple(self.output_registers_masks)
 
     @property
     def output_registers_masks(self):
