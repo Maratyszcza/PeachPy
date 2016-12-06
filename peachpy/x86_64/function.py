@@ -678,16 +678,27 @@ class Function:
         # Analyze conflicting registers
         output_registers = set()
         for instruction in self._instructions:
-            unallocated_registers = instruction.input_registers
-            unallocated_registers.update(output_registers)
-            unallocated_registers = filter(operator.attrgetter("is_virtual"), unallocated_registers)
-            for virtual_register in unallocated_registers:
-                # TODO: generalize conflicts
-                conflict_internal_ids = [reg_id for (reg_id, reg_mask)
-                                         in six.iteritems(instruction._live_registers)
-                                         if reg_mask & virtual_register.mask != 0]
-                self._register_allocators[virtual_register.kind].add_conflicts(
-                    virtual_register.virtual_id, conflict_internal_ids)
+            instruction_registers = instruction.input_registers
+            instruction_registers.update(output_registers)
+            for instruction_register in instruction_registers:
+                if instruction_register.is_virtual:
+                    conflict_internal_ids = [reg_id for (reg_id, reg_mask)
+                                             in six.iteritems(instruction._live_registers)
+                                             if reg_mask & instruction_register.mask != 0]
+                    self._register_allocators[instruction_register.kind].add_conflicts(
+                        instruction_register.virtual_id, conflict_internal_ids)
+            physical_registers = filter(lambda r: not r.is_virtual, instruction_registers)
+            if physical_registers:
+                from peachpy.x86_64.registers import Register
+                live_virtual_registers = \
+                    Register._reconstruct_multiple({reg_id: reg_mask for (reg_id, reg_mask)
+                                                   in six.iteritems(instruction._live_registers)
+                                                   if reg_id < 0})
+                for live_virtual_register in live_virtual_registers:
+                    conflict_internal_ids = [reg._internal_id for reg in physical_registers
+                                             if reg.mask & live_virtual_register.mask != 0]
+                    self._register_allocators[live_virtual_register.kind].add_conflicts(
+                        live_virtual_register.virtual_id, conflict_internal_ids)
             output_registers = instruction.output_registers
 
     def _check_live_registers(self):
