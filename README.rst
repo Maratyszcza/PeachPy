@@ -213,6 +213,11 @@ PeachPy can be used to explore instruction length, opcodes, and alternative enco
                                                          #     7: bytearray(b'\xc4\xe2uGD&\x08'),
                                                          #     9: bytearray(b'\xc4\xe2uG\x86\x08\x00\x00\x00')}
 
+Tutorials
+---------
+
+`Writing Go assembly functions with PeachPy <https://blog.gopheracademy.com/advent-2016/peachpy/>`_ by Damian Gryski
+
 Users
 -----
 
