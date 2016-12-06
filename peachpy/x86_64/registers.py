@@ -160,7 +160,12 @@ class Register(object):
         """Returns the bits 0-2 of register encoding"""
         assert self.physical_id is not None, \
             "The method returns encoding detail for a physical register"
-        return self.physical_id & 0x7
+        if self.mask == GeneralPurposeRegister8._high_mask:
+            assert self.physical_id & ~0x3 == 0, \
+                "Only ah, bh, ch, dh can be the high 8-bit registers"
+            return 0x4 | self.physical_id
+        else:
+            return self.physical_id & 0x7
 
     @property
     def hcode(self):
@@ -181,6 +186,8 @@ class Register(object):
         """Returns the bits 0-3 of register encoding"""
         assert self.physical_id is not None, \
             "The method returns encoding detail for a physical register"
+        assert self.mask != GeneralPurposeRegister8._high_mask, \
+            "ah/bh/ch/dh registers never use 4-bit encoding"
         return self.physical_id & 0xF
 
     @property
@@ -399,12 +406,12 @@ class GeneralPurposeRegister8(GeneralPurposeRegister):
     size = 1
 
     _physical_id_map = {(0x0, 0x1): 'al',   (0x1, 0x1): 'cl',   (0x2, 0x1): 'dl',   (0x3, 0x1): 'bl',
-                        (0x4, 0x2): 'ah',   (0x5, 0x2): 'ch',   (0x6, 0x2): 'dh',   (0x7, 0x2): 'bh',
+                        (0x0, 0x2): 'ah',   (0x1, 0x2): 'ch',   (0x2, 0x2): 'dh',   (0x3, 0x2): 'bh',
                         (0x4, 0x1): 'spl',  (0x5, 0x1): 'bpl',  (0x6, 0x1): 'sil',  (0x7, 0x1): 'dil',
                         (0x8, 0x1): 'r8b',  (0x9, 0x1): 'r9b',  (0xA, 0x1): 'r10b', (0xB, 0x1): 'r11b',
                         (0xC, 0x1): 'r12b', (0xD, 0x1): 'r13b', (0xE, 0x1): 'r14b', (0xF, 0x1): 'r15b'}
     _go_physical_id_map = {(0x0, 0x1): 'AX',   (0x1, 0x1): 'CX',   (0x2, 0x1): 'DX',   (0x3, 0x1): 'BX',
-                           (0x4, 0x2): 'AH',   (0x5, 0x2): 'CH',   (0x6, 0x2): 'DH',   (0x7, 0x2): 'BH',
+                           (0x0, 0x2): 'AH',   (0x1, 0x2): 'CH',   (0x2, 0x2): 'DH',   (0x3, 0x2): 'BH',
                            (0x4, 0x1): 'SP',  (0x5, 0x1): 'BP',  (0x6, 0x1): 'SI',  (0x7, 0x1): 'DI',
                            (0x8, 0x1): 'R8',  (0x9, 0x1): 'R9',  (0xA, 0x1): 'R10', (0xB, 0x1): 'R11',
                            (0xC, 0x1): 'R12', (0xD, 0x1): 'R13', (0xE, 0x1): 'R14', (0xF, 0x1): 'R15'}
@@ -441,10 +448,10 @@ al = GeneralPurposeRegister8(0)
 cl = GeneralPurposeRegister8(1)
 dl = GeneralPurposeRegister8(2)
 bl = GeneralPurposeRegister8(3)
-ah = GeneralPurposeRegister8(4, is_high=True)
-ch = GeneralPurposeRegister8(5, is_high=True)
-dh = GeneralPurposeRegister8(6, is_high=True)
-bh = GeneralPurposeRegister8(7, is_high=True)
+ah = GeneralPurposeRegister8(0, is_high=True)
+ch = GeneralPurposeRegister8(1, is_high=True)
+dh = GeneralPurposeRegister8(2, is_high=True)
+bh = GeneralPurposeRegister8(3, is_high=True)
 spl = GeneralPurposeRegister8(4)
 bpl = GeneralPurposeRegister8(5)
 sil = GeneralPurposeRegister8(6)
