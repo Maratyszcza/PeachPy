@@ -23,7 +23,7 @@ class DevelopGenerateInstructions(develop):
         develop.run(self)
 
 class GenerateInstructions(Command):
-    description = "Generate Peach-Py instructions from Opcodes DB"
+    description = "Generate PeachPy instructions from Opcodes DB"
     user_options = []
 
     def initialize_options(self):

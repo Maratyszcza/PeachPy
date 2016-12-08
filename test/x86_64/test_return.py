@@ -14,7 +14,7 @@ class Return0(unittest.TestCase):
 
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "XOR eax, eax", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnOne(unittest.TestCase):
@@ -26,7 +26,7 @@ class ReturnOne(unittest.TestCase):
 
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOV eax, 1", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnMinusOne(unittest.TestCase):
@@ -38,14 +38,14 @@ class ReturnMinusOne(unittest.TestCase):
 
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOV eax, -1", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             with Function("return_minus_one", tuple(), int64_t) as function:
                 RETURN(-1)
 
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOV rax, -1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class Return0xFFFFFFFF(unittest.TestCase):
@@ -57,7 +57,7 @@ class Return0xFFFFFFFF(unittest.TestCase):
 
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOV eax, 4294967295", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnGeneralPurposeRegister(unittest.TestCase):
@@ -68,60 +68,60 @@ class ReturnGeneralPurposeRegister(unittest.TestCase):
                     RETURN(dl)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOVSX eax, dl", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             for return_type in [int16_t, int32_t]:
                 with Function("return_r16_intX", tuple(), return_type) as function:
                     RETURN(dx)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOVSX eax, dx", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             for return_type in [uint8_t, uint16_t, uint32_t, uint64_t]:
                 with Function("return_r8_uintX", tuple(), return_type) as function:
                     RETURN(dl)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOVZX eax, dl", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             for return_type in [uint16_t, uint32_t, uint64_t]:
                 with Function("return_r16_uintX", tuple(), return_type) as function:
                     RETURN(dx)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOVZX eax, dx", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             for return_type in [int32_t, uint32_t, uint64_t]:
                 with Function("return_r32", tuple(), return_type) as function:
                     RETURN(edx)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOV eax, edx", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             for return_type in [int64_t, uint64_t]:
                 with Function("return_r64", tuple(), return_type) as function:
                     RETURN(rdx)
                 code = function.finalize(abi).format_code(line_separator=None, indent=False)
                 assert code[0] == "MOV rax, rdx", \
-                    "Unexpected Peach-Py code:\n" + "\n".join(code)
+                    "Unexpected PeachPy code:\n" + "\n".join(code)
 
             with Function("return_r8_int64", tuple(), int64_t) as function:
                 RETURN(dl)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVSX rax, dl", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
             with Function("return_r16_int64", tuple(), int64_t) as function:
                 RETURN(dx)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVSX rax, dx", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
             with Function("return_r32_int64", tuple(), int64_t) as function:
                 RETURN(edx)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVSXD rax, edx", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnFloat(unittest.TestCase):
@@ -131,7 +131,7 @@ class ReturnFloat(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] in ["MOVSS xmm0, xmm1", "MOVAPS xmm0, xmm1"], \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnDouble(unittest.TestCase):
@@ -141,7 +141,7 @@ class ReturnDouble(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] in ["MOVSD xmm0, xmm1", "MOVAPD xmm0, xmm1"], \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnFloatAVX(unittest.TestCase):
@@ -152,7 +152,7 @@ class ReturnFloatAVX(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] in ["VMOVSS xmm0, xmm1", "VMOVAPS xmm0, xmm1"], \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "VZEROUPPER" not in code
             assert "VZEROALL" not in code
 
@@ -165,7 +165,7 @@ class ReturnDoubleAVX(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] in ["VMOVSD xmm0, xmm1", "VMOVAPD xmm0, xmm1"], \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "VZEROUPPER" not in code
             assert "VZEROALL" not in code
 
@@ -177,7 +177,7 @@ class ReturnM64(unittest.TestCase):
                 RETURN(mm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVQ mm0, mm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "EMMS" not in code
             assert "FEMMS" not in code
 
@@ -189,7 +189,7 @@ class ReturnM128(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVAPS xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnM128D(unittest.TestCase):
@@ -199,7 +199,7 @@ class ReturnM128D(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVAPD xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnM128I(unittest.TestCase):
@@ -209,7 +209,7 @@ class ReturnM128I(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "MOVDQA xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnM128AVX(unittest.TestCase):
@@ -220,7 +220,7 @@ class ReturnM128AVX(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVAPS xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "VZEROUPPER" not in code
             assert "VZEROALL" not in code
 
@@ -233,7 +233,7 @@ class ReturnM128DAVX(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVAPD xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "VZEROUPPER" not in code
             assert "VZEROALL" not in code
 
@@ -246,7 +246,7 @@ class ReturnM128IAVX(unittest.TestCase):
                 RETURN(xmm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVDQA xmm0, xmm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
             assert "VZEROUPPER" not in code
             assert "VZEROALL" not in code
 
@@ -258,7 +258,7 @@ class ReturnM256(unittest.TestCase):
                 RETURN(ymm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVAPS ymm0, ymm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnM256D(unittest.TestCase):
@@ -268,7 +268,7 @@ class ReturnM256D(unittest.TestCase):
                 RETURN(ymm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVAPD ymm0, ymm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)
 
 
 class ReturnM256I(unittest.TestCase):
@@ -278,4 +278,4 @@ class ReturnM256I(unittest.TestCase):
                 RETURN(ymm1)
             code = function.finalize(abi).format_code(line_separator=None, indent=False)
             assert code[0] == "VMOVDQA ymm0, ymm1", \
-                "Unexpected Peach-Py code:\n" + "\n".join(code)
+                "Unexpected PeachPy code:\n" + "\n".join(code)

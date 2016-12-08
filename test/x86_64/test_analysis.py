@@ -51,7 +51,7 @@ RETURN
     Live regs:
     Avail regs: gp64-vreg<1>, gp64-vreg<2>, rax
 """
-        assert equal_codes(listing, ref_listing), "Unexpected Peach-Py listing:\n" + listing
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
 
 
 class TestSimpleLoopAnalysis(unittest.TestCase):
@@ -137,7 +137,7 @@ RETURN
     Live regs:
     Avail regs: gp64-vreg<1>, gp64-vreg<2>, gp64-vreg<3>, xmm-vreg<1>
 """
-        assert equal_codes(listing, ref_listing), "Unexpected Peach-Py code:\n" + listing
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy code:\n" + listing
 
 
 class TestBFSAnalysis(unittest.TestCase):
@@ -432,4 +432,4 @@ RETURN
     Live regs:
     Avail regs: gp64-vreg<10>, gp64-vreg<11>, gp64-vreg<12>, gp64-vreg<13>, gp64-vreg<14>, gp64-vreg<15>, gp64-vreg<1>, gp64-vreg<2>, gp64-vreg<3>, gp64-vreg<4>, gp64-vreg<5>, gp64-vreg<6>, gp64-vreg<7>, gp64-vreg<8>, gp64-vreg<9>, rax
 """
-        assert equal_codes(listing, ref_listing), "Unexpected Peach-Py code:\n" + listing
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy code:\n" + listing

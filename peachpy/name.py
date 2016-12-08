@@ -1,4 +1,4 @@
-# This file is part of Peach-Py package and is licensed under the Simplified BSD license.
+# This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
 import six
@@ -42,7 +42,7 @@ class Name:
         if not re.match("^[_a-zA-Z]\\w*$", name):
             raise ValueError("Invalid name: " + name)
         if name.startswith("__"):
-            raise ValueError("Invalid name %s: names starting with __ are reserved for Peach-Py purposes" % name)
+            raise ValueError("Invalid name %s: names starting with __ are reserved for PeachPy purposes" % name)
 
 
 class Namespace:

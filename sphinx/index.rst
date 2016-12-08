@@ -1,4 +1,4 @@
-Peach-Py documentation!
+PeachPy documentation!
 =======================
 
 Contents:

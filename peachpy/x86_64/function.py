@@ -1,4 +1,4 @@
-# This file is part of Peach-Py package and is licensed under the Simplified BSD license.
+# This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
 from __future__ import print_function
@@ -1148,7 +1148,7 @@ class ABIFunction:
         from peachpy.x86_64.registers import GeneralPurposeRegister, MMXRegister, XMMRegister, YMMRegister
         from peachpy.x86_64.lower import load_register, load_memory
         if self.abi == goasm_amd64_abi or self.abi == goasm_amd64p32_abi:
-            # Like Peach-Py, Go assembler uses pseudo-instructions for argument loads
+            # Like PeachPy, Go assembler uses pseudo-instructions for argument loads
             return
         lowered_instructions = []
         for (i, instruction) in enumerate(self._instructions):

@@ -36,7 +36,7 @@ void autonamed_label()
 skip_nop:
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class TestDuplicateNamedLabels(unittest.TestCase):
@@ -91,7 +91,7 @@ skip0:
     RETURN
 """
         assert equal_codes(code, ref_code0) or equal_codes(code, ref_code1), \
-            "Unexpected Peach-Py code:\n" + code
+            "Unexpected PeachPy code:\n" + code
 
 
 class TestUndefinedLabels(unittest.TestCase):
@@ -130,4 +130,4 @@ void unreferenced_labels()
 used:
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code

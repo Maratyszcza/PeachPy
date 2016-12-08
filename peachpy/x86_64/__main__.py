@@ -1,4 +1,4 @@
-# This file is part of Peach-Py package and is licensed under the Simplified BSD license.
+# This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
 from __future__ import absolute_import
@@ -12,7 +12,7 @@ import six
 
 
 parser = argparse.ArgumentParser(
-    description="Peach-Py: Portable Efficient Assembly Code-generation in High-level Python")
+    description="PeachPy: Portable Efficient Assembly Code-generation in High-level Python")
 parser.add_argument("-g", dest="debug_level", type=int, default=0,
                     help="Debug information level")
 parser.add_argument("-S", dest="generate_assembly", action="store_true",
@@ -127,7 +127,7 @@ avx2_group.add_argument("-mno-avx2", dest="avx2", action="store_false",
 parser.add_argument("-o", dest="output", required=True,
                     help="Output file name (ELF/Mach-O/COFF image or Go assembly source)")
 parser.add_argument("input", nargs=1,
-                    help="Input file name (must be a Peach-Py Python script)")
+                    help="Input file name (must be a PeachPy Python script)")
 
 
 def guess_assembly_format_from_abi(abi):

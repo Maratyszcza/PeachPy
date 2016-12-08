@@ -15,7 +15,7 @@ class Empty(unittest.TestCase):
 void empty()
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class ReturnIntegerArgument(unittest.TestCase):
@@ -37,7 +37,7 @@ uint32_t return_int_arg(uint32_t n)
     MOV eax, gp32-vreg<1>
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class ReturnFloatArgument(unittest.TestCase):
@@ -58,7 +58,7 @@ float return_float_arg(float x)
     MOVSS xmm0, xmm-vreg<1>
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class ReturnDoubleArgument(unittest.TestCase):
@@ -79,7 +79,7 @@ double return_float_arg(double x)
     MOVSD xmm0, xmm-vreg<1>
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class ReturnM128Argument(unittest.TestCase):
@@ -100,7 +100,7 @@ __m128 return_m128_arg(__m128 x)
     MOVAPS xmm0, xmm-vreg<1>
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class ComputeIntegerSum(unittest.TestCase):
@@ -128,7 +128,7 @@ uint32_t integer_sum(uint32_t x, uint32_t y)
     MOV eax, gp32-vreg<1>
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 
 class SimpleLoop(unittest.TestCase):
@@ -170,7 +170,7 @@ loop.begin:
     JNZ loop.begin
     RETURN
 """
-        assert equal_codes(code, ref_code), "Unexpected Peach-Py code:\n" + code
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 # class SSEArgument(unittest.TestCase):
 #     def runTest(self):
