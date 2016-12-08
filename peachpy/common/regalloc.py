@@ -61,9 +61,14 @@ class RegisterAllocator:
         return sum(1 for reg in self.allocation_options[virtual_id] if reg != physical_id)
 
     def _min_conflict_allocation_alternatives(self, virtual_id, physical_id):
-        return min(self._allocation_alternatives(-conflict_internal_id, physical_id)
-                   for conflict_internal_id in self.conflicting_registers[virtual_id]
-                   if conflict_internal_id < 0)
+        alternatives = [
+            self._allocation_alternatives(-conflict_internal_id, physical_id)
+            for conflict_internal_id in self.conflicting_registers[virtual_id]
+            if conflict_internal_id < 0
+        ]
+        if not alternatives:
+            return 0
+        return min(alternatives)
 
     def allocate_registers(self):
         unallocated_registers = [reg for reg in six.iterkeys(self.allocation_options)
