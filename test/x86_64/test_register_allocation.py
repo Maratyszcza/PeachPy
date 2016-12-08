@@ -62,3 +62,39 @@ TEXT \xc2\xB7implicit_reg(SB),4,$0-8
 	RET
 """
         assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
+
+
+class TestIssue65(unittest.TestCase):
+    def runTest(self):
+        with Function("crash", (), int64_t) as function:
+            r = GeneralPurposeRegister64()
+            MOV(r, 999)
+            RETURN(rax)
+
+        listing = function.finalize(abi.goasm_amd64_abi).format("go")
+        ref_listing = """
+// func crash() int64
+TEXT \xc2\xB7crash(SB),4,$0-8
+	MOVQ $999, BX
+	MOVQ AX, ret+0(FP)
+	RET
+"""
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
+
+class TestIssue65SecondComment(unittest.TestCase):
+    def runTest(self):
+        with Function("crash", (), int64_t) as function:
+            r = GeneralPurposeRegister64()
+            MOV(r, 1)
+            MOV(r, [rax])
+            RET()
+
+        listing = function.finalize(abi.goasm_amd64_abi).format("go")
+        ref_listing = """
+// func crash() int64
+TEXT \xc2\xB7crash(SB),4,$0-8
+MOVQ $1, BX
+MOVQ 0(AX), BX
+RET
+"""
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
