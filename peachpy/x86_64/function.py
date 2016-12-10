@@ -687,7 +687,8 @@ class Function:
                                              if reg_mask & instruction_register.mask != 0]
                     self._register_allocators[instruction_register.kind].add_conflicts(
                         instruction_register.virtual_id, conflict_internal_ids)
-            physical_registers = filter(lambda r: not r.is_virtual, instruction_registers)
+            physical_registers = [r for r in instruction_registers
+                                  if not r.is_virtual]
             if physical_registers:
                 from peachpy.x86_64.registers import Register
                 live_virtual_registers = \
