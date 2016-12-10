@@ -648,6 +648,7 @@ def implicit_regs_init(code, instruction_form):
         "rbx": (3, 0xF),
         "rsi": (6, 0xF),
         "rdi": (7, 0xF),
+        "r11": (11, 0xF),
         "xmm0": (0, 0x100)}
     implicit_in_regs = dict()
     for in_reg_name in instruction_form.implicit_inputs:

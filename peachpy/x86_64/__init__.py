@@ -83,6 +83,7 @@ from peachpy.x86_64.generic import \
     PAUSE, NOP, \
     INT, UD2, \
     CPUID, RDTSC, RDTSCP, XGETBV, \
+    SYSCALL, \
     STC, CLC, CMC, \
     STD, CLD, \
     XADD, XCHG, \
