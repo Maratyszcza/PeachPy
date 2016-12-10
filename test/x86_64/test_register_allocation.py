@@ -24,6 +24,32 @@ TEXT \xc2\xB7explicit_reg_input(SB),4,$0-8
         assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
 
 
+class TestExplicitRegisterConflict2(unittest.TestCase):
+    def runTest(self):
+        with Function("explicit_reg_input_2", ()) as function:
+            g1 = GeneralPurposeRegister64()
+            g2 = GeneralPurposeRegister64()
+            MOV(g1, 0)
+            MOV(g2, 0)
+            MOV(rax, 0)
+            MOV([g1], 0)
+            MOV([g2], 0)
+            RET()
+
+        listing = function.finalize(abi.goasm_amd64_abi).format("go")
+        ref_listing = """
+// func explicit_reg_input_2()
+TEXT \xc2\xB7explicit_reg_input_2(SB),4,$0
+        MOVQ $0, BX
+        MOVQ $0, CX
+        MOVQ $0, AX
+        MOVB $0, 0(BX)
+        MOVB $0, 0(CX)
+        RET
+"""
+        assert equal_codes(listing, ref_listing), "Unexpected PeachPy listing:\n" + listing
+
+
 class TestExplicitRegisterOutputConflict(unittest.TestCase):
     def runTest(self):
         with Function("explicit_reg_output", (), uint64_t) as function:
