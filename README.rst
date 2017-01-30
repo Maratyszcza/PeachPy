@@ -33,7 +33,7 @@ PeachPy aims to simplify writing optimized assembly kernels while preserving all
       
 - Automatic register allocation.
   
-  * PeachPy is flexible and lets mix auto-allocated and hardcoded registers in the same code.
+  * PeachPy is flexible and allows mixing auto-allocated and hardcoded registers in the same code.
 
 - Automation of routine tasks in assembly programming:
 
