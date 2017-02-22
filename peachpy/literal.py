@@ -115,6 +115,26 @@ class Constant:
         return Constant(4 * n, n, tuple(args), uint32_t, name)
 
     @staticmethod
+    def _uint16xN(name, n, *args):
+        from peachpy.util import is_int, is_int32
+        assert is_int(n)
+        args = [arg for arg in args if arg is not None]
+        if len(args) == 0:
+            raise ValueError("At least one constant value must be specified")
+        if len(args) != 1 and len(args) != n:
+            raise ValueError("Either 1 or %d values must be specified" % n)
+        for i, number in enumerate(args):
+            if not is_int(number):
+                raise TypeError("The value %s is not an integer" % str(number))
+            if not is_int32(number):
+                raise ValueError("The number %d is not a 16-bit integer" % number)
+            if number < 0:
+                args[i] += 0x100000000
+        if len(args) == 1:
+            args = [args[0]] * n
+        return Constant(2 * n, n, tuple(args), uint32_t, name)
+
+    @staticmethod
     def _float64xN(name, n, *args):
         args = [arg for arg in args if arg is not None]
         if len(args) == 0:
@@ -246,6 +266,37 @@ class Constant:
             name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint32x16"))
 
         return Constant._uint32xN(name, 16,
+                                  number1, number2, number3, number4, number5, number6, number7, number8,
+                                  number9, number10, number11, number12, number13, number14, number15, number16)
+
+    @staticmethod
+    def uint16x8(number1, number2=None, number3=None, number4=None,
+                 number5=None, number6=None, number7=None, number8=None,
+                 name=None):
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
+            import inspect
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint16x8"))
+
+        return Constant._uint16xN(name, 8,
+                                  number1, number2, number3, number4, number5, number6, number7, number8)
+
+    @staticmethod
+    def uint16x16(number1, number2=None, number3=None, number4=None,
+                  number5=None, number6=None, number7=None, number8=None,
+                  number9=None, number10=None, number11=None, number12=None,
+                  number13=None, number14=None, number15=None, number16=None,
+                  name=None):
+        if name is not None:
+            Name.check_name(name)
+            name = Name(name=name)
+        else:
+            import inspect
+            name = Name(prename=parse_assigned_variable_name(inspect.stack(), "Constant.uint16x16"))
+
+        return Constant._uint16xN(name, 16,
                                   number1, number2, number3, number4, number5, number6, number7, number8,
                                   number9, number10, number11, number12, number13, number14, number15, number16)
 
