@@ -181,7 +181,7 @@ But it also works the other way around: PeachPy can represent your assembly func
   x = Argument(int32_t)
   y = Argument(int32_t)
 
-  with Function("DotProduct", (x, y), int32_t) as asm_function:
+  with Function("Add", (x, y), int32_t) as asm_function:
       reg_x = GeneralPurposeRegister32()
       reg_y = GeneralPurposeRegister32()
 
