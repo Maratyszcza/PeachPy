@@ -1111,7 +1111,7 @@ class ABIFunction:
             from peachpy.util import roundup
             for local_variable in local_variables_list:
                 local_variable_address = roundup(local_variable_address, local_variable.alignment)
-                local_variable.address = local_variable_address
+                local_variable._address = local_variable_address
                 local_variable_address += local_variable.size
             self._local_variables_size = local_variable_address
 
