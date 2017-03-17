@@ -130,6 +130,40 @@ uint32_t integer_sum(uint32_t x, uint32_t y)
 """
         assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
+class ComputeIntegerSumWithLocalVariable(unittest.TestCase):
+    def runTest(self):
+
+        x = Argument(uint32_t)
+        y = Argument(uint32_t)
+
+        with Function("integer_sum", (x, y), uint32_t) as function:
+            r_x = GeneralPurposeRegister32()
+            r_x_temp = GeneralPurposeRegister32()
+            r_y = GeneralPurposeRegister32()
+            buffer = LocalVariable(4)
+
+            LOAD.ARGUMENT(r_x, x)
+            LOAD.ARGUMENT(r_y, y)
+
+            MOV(buffer, r_x)
+            MOV(r_x_temp, buffer)
+
+            ADD(r_x_temp, r_y)
+            MOV(eax, r_x_temp)
+            RETURN()
+
+        code = function.format()
+        ref_code = """
+uint32_t integer_sum(uint32_t x, uint32_t y)
+    LOAD.ARGUMENT gp32-vreg<1>, uint32_t x
+    LOAD.ARGUMENT gp32-vreg<3>, uint32_t y
+    MOV dword [rsp], gp32-vreg<1>
+    MOV gp32-vreg<2>, dword [rsp]
+    ADD gp32-vreg<2>, gp32-vreg<3>
+    MOV eax, gp32-vreg<2>
+    RETURN
+"""
+        assert equal_codes(code, ref_code), "Unexpected PeachPy code:\n" + code
 
 class SimpleLoop(unittest.TestCase):
     def runTest(self):
