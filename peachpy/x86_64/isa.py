@@ -34,9 +34,8 @@ class Extension:
             "CPUID": (cpuid,),
             "MMX": (mmx,),
             "MMX+": (mmx, mmx_plus),
-            "3dnow!": (mmx, three_d_now, three_d_now_prefetch),
-            "3dnow!+": (mmx, three_d_now, three_d_now_prefetch, three_d_now_plus),
-            "3dnow! Prefetch": (three_d_now_prefetch,),
+            "3dnow!": (mmx, three_d_now, prefetch, prefetchw),
+            "3dnow!+": (mmx, three_d_now, three_d_now_plus, prefetch, prefetchw),
             "FEMMS": (mmx, femms),
             "SSE": (mmx, mmx_plus, sse),
             "SSE2": (mmx, mmx_plus, sse, sse2),
@@ -73,6 +72,9 @@ class Extension:
                            avx512f, avx512vbmi),
             "AVX512IFMA": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2,
                            avx512f, avx512ifma),
+            "PREFETCH": (prefetch,),
+            "PREFETCHW": (prefetchw,),
+            "PREFETCHWT1": (prefetchwt1,),
             "CMOV": (cmov,),
             "POPCNT": (popcnt,),
             "LZCNT": (lzcnt,),
@@ -93,7 +95,6 @@ class Extension:
             "MMX+": (mmx, mmx_plus),
             "3dnow!": (mmx, three_d_now),
             "3dnow!+": (mmx, three_d_now, three_d_now_plus),
-            "3dnow! Prefetch": (three_d_now_prefetch,),
             "FEMMS": (femms,),
             "SSE": (sse,),
             "SSE2": (sse, sse2),
@@ -122,6 +123,9 @@ class Extension:
             "AVX512CD": (avx, fma3, f16c, avx2, avx512f, avx512cd),
             "AVX512VBMI": (avx, fma3, f16c, avx2, avx512f, avx512vbmi),
             "AVX512IFMA": (avx, fma3, f16c, avx2, avx512f, avx512ifma),
+            "PREFETCH": (prefetch,),
+            "PREFETCHW": (prefetchw,),
+            "PREFETCHWT1": (prefetchwt1,),
             "CMOV": (cmov,),
             "POPCNT": (popcnt,),
             "LZCNT": (lzcnt,),
@@ -148,7 +152,6 @@ mmx = Extension("MMX")
 mmx_plus = Extension("MMX+", safe_name="MMXPlus")
 three_d_now = Extension("3dnow!", safe_name="3dnow")
 three_d_now_plus = Extension("3dnow!+", safe_name="3dnowPlus")
-three_d_now_prefetch = Extension("3dnow! Prefetch", safe_name="3dnowPrefetch")
 femms = Extension("FEMMS")
 sse = Extension("SSE")
 sse2 = Extension("SSE2")
@@ -173,6 +176,9 @@ avx512bw = Extension("AVX512BW")
 avx512vl = Extension("AVX512VL")
 avx512ifma = Extension("AVX512IFMA")
 avx512vbmi = Extension("AVX512VBMI")
+prefetch = Extension("PREFETCH")
+prefetchw = Extension("PREFETCHW")
+prefetchwt1 = Extension("PREFETCHWT1")
 xop = Extension("XOP")
 f16c = Extension("F16C")
 fma3 = Extension("FMA3")
