@@ -1982,3 +1982,18 @@ class TestPREFETCHT2(unittest.TestCase):
         self.assertEqual(bytearray([0x41, 0x0F, 0x18, 0x5C, 0xBE, 0x85]), PREFETCHT2(byte[r14 + rdi*4 - 123]).encode())
 
 
+class TestPREFETCH(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x41, 0x0F, 0x0D, 0x44, 0xBE, 0x85]), PREFETCH(byte[r14 + rdi*4 - 123]).encode())
+
+
+class TestPREFETCHW(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x41, 0x0F, 0x0D, 0x4C, 0xBE, 0x85]), PREFETCHW(byte[r14 + rdi*4 - 123]).encode())
+
+
+class TestPREFETCHWT1(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x41, 0x0F, 0x0D, 0x54, 0xBE, 0x85]), PREFETCHWT1(byte[r14 + rdi*4 - 123]).encode())
+
+

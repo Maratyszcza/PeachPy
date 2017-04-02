@@ -58,7 +58,7 @@
         "PAUSE", "NOP",
         "INT", "UD2",
         "CPUID", "RDTSC", "RDTSCP", "XGETBV",
-	"SYSCALL",
+        "SYSCALL",
 
         "STC", "CLC", "CMC",
         "STD", "CLD",
@@ -68,7 +68,8 @@
 
         "SFENCE", "MFENCE", "LFENCE",
 
-        "PREFETCHNTA", "PREFETCHT0", "PREFETCHT1", "PREFETCHT2"
+        "PREFETCHNTA", "PREFETCHT0", "PREFETCHT1", "PREFETCHT2",
+        "PREFETCH", "PREFETCHW", "PREFETCHWT1"
     ],
     "mmxsse": [
         "MOVSS", "EXTRACTPS", "INSERTPS",
