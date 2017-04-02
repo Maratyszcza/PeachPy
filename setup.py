@@ -87,7 +87,7 @@ setup(
         "Topic :: Software Development :: Compilers",
         "Topic :: Software Development :: Libraries"
         ],
-    setup_requires=["Opcodes==0.3.11", "six"],
+    setup_requires=["Opcodes==0.3.12", "six"],
     install_requires=["six", "enum34"],
     cmdclass={
         "build": BuildGenerateInstructions,
