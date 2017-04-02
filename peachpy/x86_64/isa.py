@@ -75,6 +75,10 @@ class Extension:
             "PREFETCH": (prefetch,),
             "PREFETCHW": (prefetchw,),
             "PREFETCHWT1": (prefetchwt1,),
+            "CLFLUSH": (clflush,),
+            "CLFLUSHOPT": (clflushopt,),
+            "CLWB": (clwb,),
+            "CLZERO": (clzero,),
             "CMOV": (cmov,),
             "POPCNT": (popcnt,),
             "LZCNT": (lzcnt,),
@@ -126,6 +130,10 @@ class Extension:
             "PREFETCH": (prefetch,),
             "PREFETCHW": (prefetchw,),
             "PREFETCHWT1": (prefetchwt1,),
+            "CLFLUSH": (clflush,),
+            "CLFLUSHOPT": (clflushopt,),
+            "CLWB": (clwb,),
+            "CLZERO": (clzero,),
             "CMOV": (cmov,),
             "POPCNT": (popcnt,),
             "LZCNT": (lzcnt,),
@@ -179,6 +187,10 @@ avx512vbmi = Extension("AVX512VBMI")
 prefetch = Extension("PREFETCH")
 prefetchw = Extension("PREFETCHW")
 prefetchwt1 = Extension("PREFETCHWT1")
+clflush = Extension("CLFLUSH")
+clflushopt = Extension("CLFLUSHOPT")
+clwb = Extension("CLWB")
+clzero = Extension("CLZERO")
 xop = Extension("XOP")
 f16c = Extension("F16C")
 fma3 = Extension("FMA3")

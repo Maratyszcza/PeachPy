@@ -69,7 +69,9 @@
         "SFENCE", "MFENCE", "LFENCE",
 
         "PREFETCHNTA", "PREFETCHT0", "PREFETCHT1", "PREFETCHT2",
-        "PREFETCH", "PREFETCHW", "PREFETCHWT1"
+        "PREFETCH", "PREFETCHW", "PREFETCHWT1",
+
+        "CLFLUSH", "CLFLUSHOPT", "CLWB", "CLZERO"
     ],
     "mmxsse": [
         "MOVSS", "EXTRACTPS", "INSERTPS",

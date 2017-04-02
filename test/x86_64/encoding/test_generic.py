@@ -1997,3 +1997,23 @@ class TestPREFETCHWT1(unittest.TestCase):
         self.assertEqual(bytearray([0x41, 0x0F, 0x0D, 0x54, 0xBE, 0x85]), PREFETCHWT1(byte[r14 + rdi*4 - 123]).encode())
 
 
+class TestCLFLUSH(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x41, 0x0F, 0xAE, 0x7C, 0xBE, 0x85]), CLFLUSH(byte[r14 + rdi*4 - 123]).encode())
+
+
+class TestCLFLUSHOPT(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x66, 0x41, 0x0F, 0xAE, 0x7C, 0xBE, 0x85]), CLFLUSHOPT(byte[r14 + rdi*4 - 123]).encode())
+
+
+class TestCLWB(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x66, 0x41, 0x0F, 0xAE, 0x74, 0xBE, 0x85]), CLWB(byte[r14 + rdi*4 - 123]).encode())
+
+
+class TestCLZERO(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x0F, 0x01, 0xFC]), CLZERO().encode())
+
+
