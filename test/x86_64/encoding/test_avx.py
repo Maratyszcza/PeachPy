@@ -4479,6 +4479,18 @@ class TestVPMULTISHIFTQB(unittest.TestCase):
         self.assertEqual(bytearray([0x62, 0x52, 0xAD, 0xC6, 0x83, 0xC9]), VPMULTISHIFTQB(zmm9(k6.z), zmm26, zmm9).encode())
 
 
+class TestVPOPCNTD(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x62, 0x52, 0x7D, 0xCE, 0x55, 0x8C, 0xD9, 0xBE, 0xFF, 0xFF, 0xFF]), VPOPCNTD(zmm9(k6.z), zword[r9 + rbx*8 - 66]).encode())
+        self.assertEqual(bytearray([0x62, 0x12, 0x7D, 0xCE, 0x55, 0xCA]), VPOPCNTD(zmm9(k6.z), zmm26).encode())
+
+
+class TestVPOPCNTQ(unittest.TestCase):
+    def runTest(self):
+        self.assertEqual(bytearray([0x62, 0x52, 0xFD, 0xCE, 0x55, 0x8C, 0xD9, 0xBE, 0xFF, 0xFF, 0xFF]), VPOPCNTQ(zmm9(k6.z), zword[r9 + rbx*8 - 66]).encode())
+        self.assertEqual(bytearray([0x62, 0x12, 0xFD, 0xCE, 0x55, 0xCA]), VPOPCNTQ(zmm9(k6.z), zmm26).encode())
+
+
 class TestVPCMPESTRI(unittest.TestCase):
     def runTest(self):
         self.assertEqual(bytearray([0xC4, 0xC3, 0x79, 0x61, 0xCE, 0x02]), VPCMPESTRI(xmm1, xmm14, 2).encode())

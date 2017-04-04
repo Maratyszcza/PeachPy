@@ -72,6 +72,12 @@ class Extension:
                            avx512f, avx512vbmi),
             "AVX512IFMA": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2,
                            avx512f, avx512ifma),
+            "AVX512VPOPCNTDQ": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2,
+                           avx512f, avx512vpopcntdq),
+            "AVX512_4VNNIW": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2,
+                              avx512f, avx512_4vnniw),
+            "AVX512_4FMAPS": (mmx, mmx_plus, sse, sse2, sse3, ssse3, sse4_1, sse4_2, sse4_2, avx, f16c, fma3, avx2,
+                              avx512f, avx512_4fmaps),
             "PREFETCH": (prefetch,),
             "PREFETCHW": (prefetchw,),
             "PREFETCHWT1": (prefetchwt1,),
@@ -127,6 +133,9 @@ class Extension:
             "AVX512CD": (avx, fma3, f16c, avx2, avx512f, avx512cd),
             "AVX512VBMI": (avx, fma3, f16c, avx2, avx512f, avx512vbmi),
             "AVX512IFMA": (avx, fma3, f16c, avx2, avx512f, avx512ifma),
+            "AVX512VPOPCNTDQ": (avx, f16c, fma3, avx2, avx512f, avx512vpopcntdq),
+            "AVX512_4VNNIW": (avx, f16c, fma3, avx2, avx512f, avx512_4vnniw),
+            "AVX512_4FMAPS": (avx, f16c, fma3, avx2, avx512f, avx512_4fmaps),
             "PREFETCH": (prefetch,),
             "PREFETCHW": (prefetchw,),
             "PREFETCHWT1": (prefetchwt1,),
@@ -184,6 +193,9 @@ avx512bw = Extension("AVX512BW")
 avx512vl = Extension("AVX512VL")
 avx512ifma = Extension("AVX512IFMA")
 avx512vbmi = Extension("AVX512VBMI")
+avx512vpopcntdq = Extension("AVX512VPOPCNTDQ")
+avx512_4vnniw = Extension("AVX512_4VNNIW")
+avx512_4fmaps = Extension("AVX512_4FMAPS")
 prefetch = Extension("PREFETCH")
 prefetchw = Extension("PREFETCHW")
 prefetchwt1 = Extension("PREFETCHWT1")
