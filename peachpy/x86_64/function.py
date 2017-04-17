@@ -1553,7 +1553,7 @@ class InstructionBundle:
         assert isinstance(instructions, list)
         assert all(isinstance(instruction, Instruction) for instruction in instructions), \
             "Instruction instance expected"
-        bytecode = sum([instruction.encode() for instruction in instructions], bytearray())
+        bytecode = bytearray().join([instruction.encode() for instruction in instructions])
         if self.size + len(bytecode) <= self.capacity:
             self.size += len(bytecode)
             for instruction in instructions:
