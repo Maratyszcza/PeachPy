@@ -108,7 +108,7 @@ class NACLJMP(Instruction):
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+        return bytearray().join(map(operator.methodcaller("encode"), self._lower()))
 
 
 class NACLASP(Instruction):
@@ -148,7 +148,7 @@ class NACLASP(Instruction):
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+        return bytearray().join(map(operator.methodcaller("encode"), self._lower()))
 
 
 class NACLSSP(Instruction):
@@ -188,7 +188,7 @@ class NACLSSP(Instruction):
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+        return bytearray().join(map(operator.methodcaller("encode"), self._lower()))
 
 
 class NACLRESTSP(Instruction):
@@ -229,7 +229,7 @@ class NACLRESTSP(Instruction):
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+        return bytearray().join(map(operator.methodcaller("encode"), self._lower()))
 
 
 class NACLRESTBP(Instruction):
@@ -270,4 +270,4 @@ class NACLRESTBP(Instruction):
 
     def encode(self):
         import operator
-        return sum(map(operator.methodcaller("encode"), self._lower()), bytearray())
+        return bytearray().join(map(operator.methodcaller("encode"), self._lower()))

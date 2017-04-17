@@ -53,7 +53,7 @@ class Constant:
             4: encoder.uint32,
             8: encoder.uint64
         }[self.size / self.repeats]
-        return sum([encode_function(data) for data in self.data], bytearray())
+        return bytearray().join([encode_function(data) for data in self.data])
 
     @property
     def alignment(self):
