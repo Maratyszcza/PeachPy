@@ -281,6 +281,6 @@ Acknowledgements
 
 This work is a research project at the HPC Garage lab in the Georgia Institute of Technology, College of Computing, School of Computational Science and Engineering.
 
-The work was supported in part by grants to Prof. Richard Vuduc’s research lab, `The HPC Garage <www.hpcgarage.org>`_, from the National Science Foundation (NSF) under NSF CAREER award number 0953100; and a grant from the Defense Advanced Research Projects Agency (DARPA) Computer Science Study Group program
+The work was supported in part by grants to Prof. Richard Vuduc's research lab, `The HPC Garage <www.hpcgarage.org>`_, from the National Science Foundation (NSF) under NSF CAREER award number 0953100; and a grant from the Defense Advanced Research Projects Agency (DARPA) Computer Science Study Group program
 
 Any opinions, conclusions or recommendations expressed in this software and documentation are those of the authors and not necessarily reflect those of NSF or DARPA.
