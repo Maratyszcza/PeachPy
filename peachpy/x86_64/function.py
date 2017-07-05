@@ -1486,11 +1486,38 @@ class ABIFunction:
             code = ["TEXT " + ",".join(text_arguments)]
             if self.go_signature is not None:
                 code.insert(0, "// " + self.go_signature)
+        elif assembly_format == "gas":
+            from peachpy.util import ilog2
+            code_alignment = 16
+            code = [
+                "#ifdef __APPLE__",
+                ".section __TEXT,__text,regular,pure_instructions",
+                ".globl _{name}".format(name=self.mangled_name),
+                ".p2align {ilog2alignment}, 0x90".format(
+                    ilog2alignment=ilog2(code_alignment)),
+                "_{name}:".format(name=self.mangled_name),
+                "#else /* !__APPLE__ */",
+                ".text",
+                ".p2align {ilog2alignment},,{max_alignment_bytes}".format(
+                    ilog2alignment=ilog2(code_alignment),
+                    max_alignment_bytes=code_alignment - 1),
+                ".globl " + self.mangled_name,
+                ".type {name}, @function".format(name=self.mangled_name),
+                "{name}:".format(name=self.mangled_name),
+                "#endif /* !__APPLE */",
+            ]
         else:
             code = []
 
         code.extend(self.format_code(assembly_format, line_separator=None, indent=True))
-        if assembly_format == "go":
+        if assembly_format == "gas":
+            code += [
+                "#ifndef __APPLE__",
+                ".size {name}, .-{name}".format(name=self.mangled_name),
+                "#endif /* !__APPLE__ */",
+            ]
+
+        if assembly_format in ["go", "gas"]:
             # Add trailing line or assembler will refuse to compile
             code.append("")
         if line_separator is None:

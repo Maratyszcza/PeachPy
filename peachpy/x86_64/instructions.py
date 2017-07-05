@@ -65,7 +65,10 @@ class Instruction(object):
         elif assembly_format == "nasm":
             return text + str(self)
         elif assembly_format == "gas":
-            return text + str(self)
+            if self.operands:
+                return text + self.gas_name + " " + ", ".join(format_operand(op, assembly_format) for op in reversed(self.operands))
+            else:
+                return text + self.gas_name
         elif assembly_format == "go":
             if self.go_name:
                 from peachpy.util import is_int

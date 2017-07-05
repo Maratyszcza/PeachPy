@@ -30,8 +30,8 @@ class Label:
         return ".".join(map(str, self.name))
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with underscore symbol
@@ -60,8 +60,8 @@ class LABEL(Instruction):
         return ".".join(map(str, self.identifier)) + ":"
 
     def format(self, assembly_format, indent):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             # Go assembler rejects label names with a dot, so we replace it with underscore symbol

@@ -64,12 +64,12 @@ def get_operand_registers(operand):
 
 
 def format_operand(operand, assembly_format):
-    assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-        "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+    assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+        "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
     immediate_prefix_map = {
         "peachpy": "",
-        "gnu": "$",
+        "gas": "$",
         "nasm": "",
         "go": "$"
     }
@@ -303,8 +303,8 @@ class MemoryOperand:
         return MemoryOperand(self.address, self.size, mask)
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             text = str(self.address.displacement)
@@ -313,8 +313,21 @@ class MemoryOperand:
             if self.address.index is not None:
                 text += "(%s*%d)" % (self.address.index.format(assembly_format), self.address.scale)
             return text
-        elif assembly_format == "gnu":
-            return "%" + str(self)
+        elif assembly_format == "gas":
+            if isinstance(self.address, RIPRelativeOffset):
+                return str(self.address.offset) + "(%%rip)"
+            else:
+                base = self.address.base
+                if self.address.index is None:
+                    return "{displacement}({base})".format(
+                        displacement=self.address.displacement,
+                        base=base.format(assembly_format))
+                else:
+                    return "{displacement}({base},{index},{scale})".format(
+                        displacement=self.address.displacement,
+                        base="" if base is None else base.format(assembly_format),
+                        index=self.address.index,
+                        scale=self.address.scale)
         else:
             return str(self)
 

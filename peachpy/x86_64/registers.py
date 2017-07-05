@@ -226,14 +226,14 @@ class GeneralPurposeRegister(Register):
         return GeneralPurposeRegister64(self.physical_id, self.virtual_id)
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             assert not self.is_virtual, \
                 "Go assembler does not support virtual registers"
             return GeneralPurposeRegister._go_physical_id_map[self.physical_id]
-        elif assembly_format == "gnu":
+        elif assembly_format == "gas":
             return "%" + str(self)
         else:
             return str(self)
@@ -433,8 +433,8 @@ class GeneralPurposeRegister8(GeneralPurposeRegister):
             return GeneralPurposeRegister8._physical_id_map[(self.physical_id, self.mask)]
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             assert not self.is_virtual, \
@@ -490,14 +490,14 @@ class MMXRegister(Register):
             return MMXRegister._physical_id_map[self.physical_id]
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             assert not self.is_virtual, \
                 "Go assembler does not support virtual registers"
             return MMXRegister._go_physical_id_map[self.physical_id]
-        elif assembly_format == "gnu":
+        elif assembly_format == "gas":
             return "%" + str(self)
         else:
             return str(self)
@@ -537,14 +537,14 @@ class XMMRegister(Register):
             return XMMRegister._physical_id_map[self.physical_id]
 
     def format(self, assembly_format):
-        assert assembly_format in {"peachpy", "gnu", "nasm", "go"}, \
-            "Supported assembly formats are 'peachpy', 'gnu', 'nasm', 'go'"
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
         if assembly_format == "go":
             assert not self.is_virtual, \
                 "Go assembler does not support virtual registers"
             return XMMRegister._go_physical_id_map[self.physical_id]
-        elif assembly_format == "gnu":
+        elif assembly_format == "gas":
             return "%" + str(self)
         else:
             return str(self)
@@ -648,6 +648,19 @@ class YMMRegister(Register):
             return "ymm-vreg<%d>" % self.virtual_id
         else:
             return YMMRegister._physical_id_map[self.physical_id]
+
+    def format(self, assembly_format):
+        assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
+            "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
+
+        if assembly_format == "go":
+            assert not self.is_virtual, \
+                "Go assembler does not support virtual registers"
+            return XMMRegister._go_physical_id_map[self.physical_id]
+        elif assembly_format == "gas":
+            return "%" + str(self)
+        else:
+            return str(self)
 
     @property
     def as_xmm(self):
