@@ -1441,11 +1441,18 @@ class ABIFunction:
                     register.physical_id = \
                         self._register_allocators[register.kind].register_allocations[register.virtual_id]
 
-    def format_code(self, assembly_format="peachpy", line_separator=os.linesep, indent=True):
+    def format_code(self, assembly_format="peachpy", line_separator=os.linesep, indent=True, line_number=1):
         """Returns code of assembly instructions comprising the function"""
 
         code = []
-        for instruction in self._instructions:
+        if assembly_format == "gas":
+            # Pre-assign line number to labels
+            from peachpy.x86_64.pseudo import LABEL
+            for i, instruction in enumerate(self._instructions):
+                if isinstance(instruction, LABEL):
+                    instruction.operands[0].line_number = line_number + i
+
+        for i, instruction in enumerate(self._instructions):
             from peachpy.x86_64.instructions import Instruction
             # if isinstance(instruction, Instruction):
             #     try:
@@ -1455,13 +1462,13 @@ class ABIFunction:
             #         import sys
             #         code.append(e.message)
             #         # raise
-            code.append(instruction.format(assembly_format=assembly_format, indent=indent))
+            code.append(instruction.format(assembly_format=assembly_format, indent=indent, line_number=line_number + i))
         if line_separator is None:
             return code
         else:
             return str(line_separator).join(code)
 
-    def format(self, assembly_format="peachpy", line_separator=os.linesep):
+    def format(self, assembly_format="peachpy", line_separator=os.linesep, line_number=1):
         """Formats assembly listing of the function according to specified parameters"""
 
         if assembly_format == "go":
@@ -1509,7 +1516,7 @@ class ABIFunction:
         else:
             code = []
 
-        code.extend(self.format_code(assembly_format, line_separator=None, indent=True))
+        code += self.format_code(assembly_format, line_separator=None, indent=True, line_number=line_number + len(code))
         if assembly_format == "gas":
             code += [
                 "#ifndef __APPLE__",

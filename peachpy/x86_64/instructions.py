@@ -57,7 +57,7 @@ class Instruction(object):
         else:
             return self._gas_name
 
-    def format(self, assembly_format, indent):
+    def format(self, assembly_format, indent, line_number):
         from peachpy.x86_64.operand import format_operand
         text = "\t" * self._indent_level if indent else ""
         if assembly_format == "peachpy":
@@ -66,7 +66,17 @@ class Instruction(object):
             return text + str(self)
         elif assembly_format == "gas":
             if self.operands:
-                return text + self.gas_name + " " + ", ".join(format_operand(op, assembly_format) for op in reversed(self.operands))
+                from peachpy.x86_64.pseudo import Label
+                if len(self.operands) == 1 and isinstance(self.operands[0], Label):
+                    label = self.operands[0]
+                    return "{indent}{mnemonic} {label_line}{direction} # {label_name}".format(
+                        indent=text,
+                        mnemonic=self.gas_name,
+                        label_line=self.operands[0].line_number,
+                        label_name=str(self.operands[0]),
+                        direction="b" if self.operands[0].line_number < line_number else "f")
+                else:
+                    return text + self.gas_name + " " + ", ".join(format_operand(op, assembly_format) for op in reversed(self.operands))
             else:
                 return text + self.gas_name
         elif assembly_format == "go":
