@@ -60,7 +60,7 @@ class LABEL(Instruction):
     def __str__(self):
         return ".".join(map(str, self.identifier)) + ":"
 
-    def format(self, assembly_format, indent, line_number):
+    def format(self, assembly_format, indent=False, line_number=None):
         assert assembly_format in {"peachpy", "gas", "nasm", "go"}, \
             "Supported assembly formats are 'peachpy', 'gas', 'nasm', 'go'"
 
@@ -249,7 +249,7 @@ class RETURN(Instruction):
         else:
             return "RETURN " + ", ".join(map(str, self.operands))
 
-    def format(self, assembly_format, indent, line_number):
+    def format(self, assembly_format, indent=False, line_number=None):
         text = "\t" if indent else ""
         if assembly_format == "peachpy":
             return text + str(self)
@@ -298,7 +298,7 @@ class LOAD:
             if peachpy.stream.active_stream is not None:
                 peachpy.stream.active_stream.add_instruction(self)
 
-        def format(self, assembly_format, indent, line_number):
+        def format(self, assembly_format, indent=False, line_number=None):
             assert assembly_format in {"peachpy", "go"}, \
                 "Supported assembly formats are 'peachpy' and 'go'"
 
@@ -423,7 +423,7 @@ class STORE:
             if peachpy.stream.active_stream is not None:
                 peachpy.stream.active_stream.add_instruction(self)
 
-        def format(self, assembly_format, indent, line_number):
+        def format(self, assembly_format, indent=False, line_number=None):
             assert assembly_format in {"peachpy", "go"}, \
                 "Supported assembly formats are 'peachpy' and 'go'"
 
