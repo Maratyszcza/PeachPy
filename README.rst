@@ -227,6 +227,8 @@ Users
 
 - `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20>`_ -- Go implementation of ChaCha20 cryptographic cipher.
 
+- `AEZ <https://git.schwanenlied.me/yawning/aez>`_ -- Go implemenetation of AEZ authenticated-encryption scheme.
+
 - `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
 
 - `go-marvin32 <https://github.com/dgryski/go-marvin32>`_ -- Go implementation of Microsoft's Marvin32 hash function.
