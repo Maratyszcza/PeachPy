@@ -216,7 +216,9 @@ PeachPy can be used to explore instruction length, opcodes, and alternative enco
 Tutorials
 ---------
 
-`Writing Go assembly functions with PeachPy <https://blog.gopheracademy.com/advent-2016/peachpy/>`_ by Damian Gryski
+- `Writing Go assembly functions with PeachPy <https://blog.gopheracademy.com/advent-2016/peachpy/>`_ by `Damian Gryski <https://github.com/dgryski>`_
+
+- `Adventured in JIT compilation (Part 4) <http://eli.thegreenplace.net/2017/adventures-in-jit-compilation-part-4-in-python/>`_ by `Eli Bendersky <https://github.com/eliben>`_
 
 Users
 -----
