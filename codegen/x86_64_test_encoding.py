@@ -69,8 +69,8 @@ def binutils_encode(assembly):
         objcopy("-O", "binary", "-j", ".text", obj_file.name, bin_file.name)
         os.remove(obj_file.name)
     except OSError:
-        print('binutils failed for %s, cannot test' % assembly)
-        return None
+        print(assembly)
+        raise
     bytecode = bytearray(open(bin_file.name, "rb").read())
     os.remove(bin_file.name)
     return "bytearray([%s])" % ", ".join(["0x%02X" % b for b in bytecode])
@@ -235,8 +235,6 @@ def main(package_root="."):
                                     gas_assembly = "%s %s" % (instruction_form.name, ", ".join(gas_operands))
                                     peachpy_assembly = "%s(%s)" % (instruction_form.name, ", ".join(peachpy_operands))
                                     reference_bytecode = binutils_encode(gas_assembly)
-                                    if not reference_bytecode:
-                                        code.line("self.skipTest('binutils failed')")
                                     code.line("self.assertEqual(%s, %s.encode())" %
                                               (reference_bytecode, peachpy_assembly))
                                     has_assertions = True

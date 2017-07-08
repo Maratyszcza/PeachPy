@@ -19,21 +19,15 @@ class BuildGenerateInstructions(build):
 
 class DevelopGenerateInstructions(develop):
     def run(self):
-        # run_command does not support passing options, use this hack from
-        # https://stackoverflow.com/a/24353921
-        obj = self.distribution.get_command_obj("generate")
-        obj.with_tests = True
         self.run_command("generate")
         develop.run(self)
 
 class GenerateInstructions(Command):
     description = "Generate PeachPy instructions from Opcodes DB"
-    user_options = [
-        ("with-tests", None, "build tests as well"),
-        ]
+    user_options = []
 
     def initialize_options(self):
-        self.with_tests = False
+        pass
 
     def finalize_options(self):
         pass
@@ -51,11 +45,6 @@ class GenerateInstructions(Command):
                       level=distutils.log.INFO)
         import codegen.x86_64
         codegen.x86_64.main(src_dir)
-        if self.with_tests:
-            self.announce("Generating x86-64 tests from opcodes %s" % opcodes.__version__,
-                          level=distutils.log.INFO)
-            import codegen.x86_64_test_encoding
-            codegen.x86_64_test_encoding.main(src_dir)
 
 
 setup(
