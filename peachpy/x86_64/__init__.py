@@ -36,6 +36,7 @@ from peachpy.x86_64.generic import \
     NOT, NEG, INC, DEC, \
     TEST, CMP, \
     MOV, MOVZX, MOVSX, MOVSXD, MOVBE, MOVNTI, \
+    XLATB, \
     BT, BTS, BTR, BTC, POPCNT, BSWAP, \
     BSF, BSR, LZCNT, TZCNT, \
     SHR, SAR, SHL, SAL, SHRX, SARX, SHLX, \
