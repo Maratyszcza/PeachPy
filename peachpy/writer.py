@@ -122,12 +122,14 @@ class ELFWriter(ImageWriter):
     def __init__(self, output_path, abi, input_path=None):
         super(ELFWriter, self).__init__(output_path)
         from peachpy.formats.elf.image import Image
-        from peachpy.formats.elf.section import TextSection
+        from peachpy.formats.elf.section import TextSection, ProgramBitsSection
 
         self.abi = abi
         self.image = Image(abi, input_path)
         self.text_section = TextSection()
         self.image.add_section(self.text_section)
+        self.gnu_stack_section = ProgramBitsSection(".note.GNU-stack", allocate=False)
+        self.image.add_section(self.gnu_stack_section)
         self.text_rela_section = None
         self.rodata_section = None
 
