@@ -6,7 +6,7 @@
 Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 ===========================================================================
 
-.. image:: https://img.shields.io/github/license/Maratyszcza/PeachPy.svg
+.. image:: https://img.shields.io/badge/License-BSD%202--Clause%20%22Simplified%22%20License-blue.svg
   :alt: PeachPy License: Simplified BSD
   :target: https://github.com/Maratyszcza/PeachPy/blob/master/LICENSE.rst
 
@@ -235,7 +235,15 @@ Users
 
 - `go-highway <https://github.com/dgryski/go-highway>`_ -- Go implementation of Google's Highway hash function.
 
+- `go-metro <https://github.com/dgryski/go-metro>`_ -- Go implementation of MetroHash function.
+
+- `go-stadtx <https://github.com/dgryski/go-stadtx>`_ -- Go implementation of Stadtx hash function.
+
 - `go-sip13 <https://github.com/dgryski/go-sip13>`_ -- Go implementation of SipHash 1-3 function.
+
+- `go-chaskey <https://github.com/dgryski/go-chaskey>`_ -- Go implementation of Chaskey MAC.
+
+- `go-speck <https://github.com/dgryski/go-speck>`_ -- Go implementation of SPECK cipher.
 
 - `go-bloomindex <https://github.com/dgryski/go-bloomindex>`_ - Go implementation of Bloom-filter based search index.
 
