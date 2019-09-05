@@ -88,7 +88,7 @@ setup(
         "Topic :: Software Development :: Libraries"
         ],
     setup_requires=["Opcodes>=0.3.13", "six"],
-    install_requires=["six", "enum34"],
+    install_requires=["six", 'enum34;python_version<"3.4"'],
     cmdclass={
         "build": BuildGenerateInstructions,
         "develop": DevelopGenerateInstructions,
