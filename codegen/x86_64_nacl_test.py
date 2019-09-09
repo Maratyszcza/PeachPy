@@ -1,11 +1,13 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+
 from __future__ import print_function
 from opcodes.x86_64 import *
 from codegen.code import CodeWriter, CodeBlock
 import operator
 import json
+import os
 
 
 instruction_set = read_instruction_set()
@@ -69,13 +71,13 @@ from peachpy.x86_64 import *\n\
 \n\
 instruction_list = []\n\
 ", file=out)
-    for group, instruction_names in instruction_groups.iteritems():
+    for group, instruction_names in instruction_groups.items():
         with CodeWriter() as code:
             code.line("# " + group)
             for name in instruction_names:
 
                 # Instructions with `name` name
-                name_instructions = filter(lambda i: i.name == name, instruction_set)
+                name_instructions = [i for i in instruction_set if i.name == name]
                 if not name_instructions:
                     print("No forms for instruction: " + name)
                     continue
@@ -84,8 +86,8 @@ instruction_list = []\n\
 
                 code.line()
                 for instruction_form in filter_instruction_forms(name_instruction.forms):
-                    operands = map(generate_operand, instruction_form.operands)
-                    if not any(map(lambda op: op is None, operands)):
+                    operands = list(map(generate_operand, instruction_form.operands))
+                    if not any([op is None for op in operands]):
                         instruction_text = "%s(%s)" % (instruction_form.name, ", ".join(operands))
                         if any(map(operator.attrgetter("is_memory"), instruction_form.operands)):
                             code.line("instruction_list.append((\"%s\", (MOV(esi, esi), %s)))" % (str(instruction_form), instruction_text))
