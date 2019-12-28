@@ -67,6 +67,7 @@ setup(
         "Operating System :: OS Independent",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
+        "Operating System :: POSIX :: FreeBSD",
         "Operating System :: MacOS :: MacOS X",
         "Programming Language :: Assembly",
         "Programming Language :: Python",
