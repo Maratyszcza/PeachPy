@@ -135,6 +135,8 @@ def detect(system_abi=False):
     pointer_size = struct.calcsize("P")
     if osname == "Darwin" and machine == "x86_64" and (system_abi or pointer_size == 8):
         return system_v_x86_64_abi
+    elif osname == "FreeBSD" and machine == "amd64" and (system_abi or pointer_size == 8):
+        return system_v_x86_64_abi
     elif osname == "Linux" and machine == "x86_64":
         if system_abi or pointer_size == 8:
             return system_v_x86_64_abi

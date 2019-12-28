@@ -29,7 +29,7 @@ PeachPy aims to simplify writing optimized assembly kernels while preserving all
 - Automatic adaption of function to different calling conventions and ABIs.
   
   * Functions for different platforms can be generated from the same assembly source
-  * Supports Microsoft x64 ABI, System V x86-64 ABI (Linux and OS X), Linux x32 ABI, Native Client x86-64 SFI ABI, Golang AMD64 ABI, Golang AMD64p32 ABI
+  * Supports Microsoft x64 ABI, System V x86-64 ABI (Linux, OS X, and FreeBSD), Linux x32 ABI, Native Client x86-64 SFI ABI, Golang AMD64 ABI, Golang AMD64p32 ABI
       
 - Automatic register allocation.
   
