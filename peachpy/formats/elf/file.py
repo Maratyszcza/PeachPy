@@ -86,6 +86,8 @@ class OSABI(IntEnum):
     none = 0
     # GNU Linux
     gnu = 3
+    # FreeBSD
+    freebsd = 9
     # ATI/AMD GPU ABI
     cal = 100
 
