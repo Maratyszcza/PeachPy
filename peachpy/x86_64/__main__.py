@@ -152,7 +152,7 @@ def detect_native_image_format():
     osname = platform.system()
     if osname == "Darwin":
         return "mach-o"
-    elif osname == "Linux" or osname == "NaCl":
+    elif osname in ["Linux", "NaCl", "FreeBSD"]:
         return "elf"
     elif osname == "Windows":
         return "ms-coff"
@@ -164,6 +164,8 @@ def add_module_files(module_files, module, roots):
         return
 
     module_file = module.__file__
+    if module_file is None:
+        return
 
     import os
     if not any(module_file.startswith(root + os.sep) for root in roots):
