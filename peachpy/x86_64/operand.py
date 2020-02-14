@@ -326,7 +326,7 @@ class MemoryOperand:
                     return "{displacement}({base},{index},{scale})".format(
                         displacement=self.address.displacement,
                         base="" if base is None else base.format(assembly_format),
-                        index=self.address.index,
+                        index=self.address.index.format(assembly_format),
                         scale=self.address.scale)
         else:
             return str(self)
