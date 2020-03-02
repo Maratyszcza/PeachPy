@@ -427,6 +427,12 @@ class RIPRelativeOffset:
     def __sub__(self, extra_offset):
         return RIPRelativeOffset(self.offset - extra_offset)
 
+    def format(self, assembly_format):
+        if self.offset > 0:
+            return "+%d" % self.offset
+        else:
+            return "%d" % self.offset
+
 
 def is_al(operand):
     from peachpy.x86_64.registers import GeneralPurposeRegister8, al
