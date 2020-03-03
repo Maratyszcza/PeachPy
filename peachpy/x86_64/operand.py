@@ -427,6 +427,9 @@ class RIPRelativeOffset:
     def __sub__(self, extra_offset):
         return RIPRelativeOffset(self.offset - extra_offset)
 
+    def __str__(self):
+        return self.format("nasm")
+
     def format(self, assembly_format):
         if assembly_format == "gas":
             return "%d(%%rip)" % self.offset
