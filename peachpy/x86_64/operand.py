@@ -427,6 +427,17 @@ class RIPRelativeOffset:
     def __sub__(self, extra_offset):
         return RIPRelativeOffset(self.offset - extra_offset)
 
+    def __str__(self):
+        return self.format("peachpy")
+
+    def format(self, assembly_format):
+        if assembly_format == "gas":
+            return "%d(%%rip)" % self.offset
+        elif assembly_format == "go":
+            return "%d(IP)" % self.offset
+        else:
+            return "rip%+d" % self.offset
+
 
 def is_al(operand):
     from peachpy.x86_64.registers import GeneralPurposeRegister8, al
