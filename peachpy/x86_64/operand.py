@@ -428,10 +428,12 @@ class RIPRelativeOffset:
         return RIPRelativeOffset(self.offset - extra_offset)
 
     def format(self, assembly_format):
-        if self.offset > 0:
-            return "+%d" % self.offset
+        if assembly_format == "gas":
+            return "%d(%%rip)" % self.offset
+        elif assembly_format == "go":
+            return "%d(IP)" % self.offset
         else:
-            return "%d" % self.offset
+            return "rip%+d" % self.offset
 
 
 def is_al(operand):
