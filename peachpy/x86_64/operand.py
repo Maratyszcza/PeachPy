@@ -428,7 +428,7 @@ class RIPRelativeOffset:
         return RIPRelativeOffset(self.offset - extra_offset)
 
     def __str__(self):
-        return self.format("nasm")
+        return self.format("peachpy")
 
     def format(self, assembly_format):
         if assembly_format == "gas":
