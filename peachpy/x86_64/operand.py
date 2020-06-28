@@ -248,7 +248,7 @@ class MemoryOperand:
             isinstance(address, MaskedRegister) and \
             isinstance(address.register, (XMMRegister, YMMRegister, ZMMRegister)) and \
             not address.mask.is_zeroing, \
-            "Only MemoryAddress, 64-bit general-purpose registers, RIP Relative Offsets, XMM/YMM/ZMM registers, " \
+            "Only MemoryAddress, 64-bit general-purpose registers, RIP-Relative addresses, XMM/YMM/ZMM registers, " \
             "and merge-masked XMM/YMM/ZMM registers may be specified as an address"
         from peachpy.util import is_int
         assert size is None or is_int(size) and int(size) in SizeSpecification._size_name_map, \
