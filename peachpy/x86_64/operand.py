@@ -317,7 +317,7 @@ class MemoryOperand:
             return text
         elif assembly_format == "gas":
             if isinstance(self.address, RIPRelativeOffset):
-                return str(self.address.offset) + "(%%rip)"
+                return str(self.address.offset) + "(%rip)"
             else:
                 base = self.address.base
                 if self.address.index is None:
@@ -434,7 +434,7 @@ class RIPRelativeOffset:
 
     def format(self, assembly_format):
         if assembly_format == "gas":
-            return "%d(%%rip)" % self.offset
+            return "%d(%rip)" % self.offset
         elif assembly_format == "go":
             return "%d(IP)" % self.offset
         else:
