@@ -102,19 +102,19 @@ haswell = Microarchitecture('Haswell', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.
                                         isa.avx2, isa.lzcnt, isa.prefetchw, isa.movbe, isa.bmi2),
                             alu_width=256, fpu_width=256, load_with=256, store_width=256)
 broadwell = Microarchitecture('Broadwell', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3, isa.avx2,
-                                            isa.lzcnt, isa.prefetchw, isa.movbe, isa.bmi2, isa.adx),
+                                            isa.lzcnt, isa.prefetchw, isa.movbe, isa.bmi2, isa.adx, isa.rdseed),
                               alu_width=256, fpu_width=256, load_with=256, store_width=256)
 skylake = Microarchitecture('Skylake', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3, isa.avx2,
-                                        isa.lzcnt, isa.prefetchw, isa.clflushopt, isa.movbe, isa.bmi2, isa.adx),
+                                        isa.lzcnt, isa.prefetchw, isa.clflushopt, isa.movbe, isa.bmi2, isa.adx, isa.rdseed),
                             alu_width=256, fpu_width=256, load_with=256, store_width=256)
 skylake_xeon = Microarchitecture('Skylake Xeon', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3,
                                                   isa.lzcnt, isa.prefetchw, isa.clflushopt, isa.movbe, isa.bmi2, isa.adx,
-                                                  isa.avx512bw, isa.avx512dq, isa.avx512vl, isa.avx512cd),
+                                                  isa.avx512bw, isa.avx512dq, isa.avx512vl, isa.avx512cd, isa.rdseed),
                                  alu_width=512, fpu_width=512, load_with=512, store_width=512)
 cannonlake = Microarchitecture('Cannonlake', (isa.cmov, isa.mmx_plus, isa.sse4_2, isa.popcnt, isa.f16c, isa.fma3,
                                               isa.lzcnt, isa.prefetchw, isa.clflushopt, isa.movbe, isa.bmi2, isa.adx,
                                               isa.avx512bw, isa.avx512dq, isa.avx512vl, isa.avx512cd,
-                                              isa.avx512ifma, isa.avx512vbmi),
+                                              isa.avx512ifma, isa.avx512vbmi, isa.rdseed),
                                # TODO: update EU width when CNL is out
                                alu_width=512, fpu_width=512, load_with=512, store_width=512)
 knights_landing = Microarchitecture('Knights Landing',
@@ -150,7 +150,7 @@ excavator = Microarchitecture('Excavator', (isa.cmov, isa.mmx_plus, isa.sse4a, i
 zen = Microarchitecture('Zen', (isa.cmov, isa.mmx_plus, isa.fma4, isa.fma3, isa.f16c, isa.avx2,
                                 isa.aes, isa.pclmulqdq, isa.rdseed, isa.sha,
                                 isa.prefetch, isa.prefetchw, isa.clflushopt, isa.clzero,
-                                isa.lzcnt, isa.popcnt, isa.bmi2, isa.adx),
+                                isa.lzcnt, isa.popcnt, isa.bmi2, isa.adx, isa.rdseed),
                         alu_width=256, fpu_width=256, load_with=256, store_width=256)
 bonnell = Microarchitecture('Bonnell', (isa.cmov, isa.movbe, isa.mmx_plus, isa.ssse3, isa.clflush),
                             alu_width=128, fpu_width=64, load_with=128, store_width=128)
