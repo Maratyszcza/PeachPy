@@ -723,10 +723,10 @@ class KMOVB(Instruction):
         """Supported forms:
 
             * KMOVB(k, k)      [AVX512DQ]
-            * KMOVB(k, r32)    [AVX512DQ]
             * KMOVB(k, m8)     [AVX512DQ]
-            * KMOVB(r32, k)    [AVX512DQ]
+            * KMOVB(k, r32)    [AVX512DQ]
             * KMOVB(m8, k)     [AVX512DQ]
+            * KMOVB(r32, k)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -772,10 +772,10 @@ class KMOVW(Instruction):
         """Supported forms:
 
             * KMOVW(k, k)      [AVX512F]
-            * KMOVW(k, r32)    [AVX512F]
             * KMOVW(k, m16)    [AVX512F]
-            * KMOVW(r32, k)    [AVX512F]
+            * KMOVW(k, r32)    [AVX512F]
             * KMOVW(m16, k)    [AVX512F]
+            * KMOVW(r32, k)    [AVX512F]
         """
 
         origin = kwargs.get("origin")

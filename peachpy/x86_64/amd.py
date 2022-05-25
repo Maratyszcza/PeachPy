@@ -942,8 +942,8 @@ class EXTRQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * EXTRQ(xmm, xmm)           [SSE4A]
             * EXTRQ(xmm, imm8, imm8)    [SSE4A]
+            * EXTRQ(xmm, xmm)           [SSE4A]
         """
 
         origin = kwargs.get("origin")

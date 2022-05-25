@@ -26,18 +26,18 @@ class ADD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * ADD(r8, r8/m8)
             * ADD(r16, r16/m16)
-            * ADD(r32, r32/m32)
-            * ADD(r64, r64/m64)
-            * ADD(r8/m8, imm8)
-            * ADD(r8/m8, r8)
             * ADD(r16/m16, imm16)
             * ADD(r16/m16, r16)
+            * ADD(r32, r32/m32)
             * ADD(r32/m32, imm32)
             * ADD(r32/m32, r32)
+            * ADD(r64, r64/m64)
             * ADD(r64/m64, imm32)
             * ADD(r64/m64, r64)
+            * ADD(r8, r8/m8)
+            * ADD(r8/m8, imm8)
+            * ADD(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -221,18 +221,18 @@ class SUB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SUB(r8, r8/m8)
             * SUB(r16, r16/m16)
-            * SUB(r32, r32/m32)
-            * SUB(r64, r64/m64)
-            * SUB(r8/m8, imm8)
-            * SUB(r8/m8, r8)
             * SUB(r16/m16, imm16)
             * SUB(r16/m16, r16)
+            * SUB(r32, r32/m32)
             * SUB(r32/m32, imm32)
             * SUB(r32/m32, r32)
+            * SUB(r64, r64/m64)
             * SUB(r64/m64, imm32)
             * SUB(r64/m64, r64)
+            * SUB(r8, r8/m8)
+            * SUB(r8/m8, imm8)
+            * SUB(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -420,18 +420,18 @@ class ADC(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * ADC(r8, r8/m8)
             * ADC(r16, r16/m16)
-            * ADC(r32, r32/m32)
-            * ADC(r64, r64/m64)
-            * ADC(r8/m8, imm8)
-            * ADC(r8/m8, r8)
             * ADC(r16/m16, imm16)
             * ADC(r16/m16, r16)
+            * ADC(r32, r32/m32)
             * ADC(r32/m32, imm32)
             * ADC(r32/m32, r32)
+            * ADC(r64, r64/m64)
             * ADC(r64/m64, imm32)
             * ADC(r64/m64, r64)
+            * ADC(r8, r8/m8)
+            * ADC(r8/m8, imm8)
+            * ADC(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -615,18 +615,18 @@ class SBB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SBB(r8, r8/m8)
             * SBB(r16, r16/m16)
-            * SBB(r32, r32/m32)
-            * SBB(r64, r64/m64)
-            * SBB(r8/m8, imm8)
-            * SBB(r8/m8, r8)
             * SBB(r16/m16, imm16)
             * SBB(r16/m16, r16)
+            * SBB(r32, r32/m32)
             * SBB(r32/m32, imm32)
             * SBB(r32/m32, r32)
+            * SBB(r64, r64/m64)
             * SBB(r64/m64, imm32)
             * SBB(r64/m64, r64)
+            * SBB(r8, r8/m8)
+            * SBB(r8/m8, imm8)
+            * SBB(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -894,18 +894,18 @@ class AND(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * AND(r8, r8/m8)
             * AND(r16, r16/m16)
-            * AND(r32, r32/m32)
-            * AND(r64, r64/m64)
-            * AND(r8/m8, imm8)
-            * AND(r8/m8, r8)
             * AND(r16/m16, imm16)
             * AND(r16/m16, r16)
+            * AND(r32, r32/m32)
             * AND(r32/m32, imm32)
             * AND(r32/m32, r32)
+            * AND(r64, r64/m64)
             * AND(r64/m64, imm32)
             * AND(r64/m64, r64)
+            * AND(r8, r8/m8)
+            * AND(r8/m8, imm8)
+            * AND(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -1089,18 +1089,18 @@ class OR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * OR(r8, r8/m8)
             * OR(r16, r16/m16)
-            * OR(r32, r32/m32)
-            * OR(r64, r64/m64)
-            * OR(r8/m8, imm8)
-            * OR(r8/m8, r8)
             * OR(r16/m16, imm16)
             * OR(r16/m16, r16)
+            * OR(r32, r32/m32)
             * OR(r32/m32, imm32)
             * OR(r32/m32, r32)
+            * OR(r64, r64/m64)
             * OR(r64/m64, imm32)
             * OR(r64/m64, r64)
+            * OR(r8, r8/m8)
+            * OR(r8/m8, imm8)
+            * OR(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -1284,18 +1284,18 @@ class XOR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * XOR(r8, r8/m8)
             * XOR(r16, r16/m16)
-            * XOR(r32, r32/m32)
-            * XOR(r64, r64/m64)
-            * XOR(r8/m8, imm8)
-            * XOR(r8/m8, r8)
             * XOR(r16/m16, imm16)
             * XOR(r16/m16, r16)
+            * XOR(r32, r32/m32)
             * XOR(r32/m32, imm32)
             * XOR(r32/m32, r32)
+            * XOR(r64, r64/m64)
             * XOR(r64/m64, imm32)
             * XOR(r64/m64, r64)
+            * XOR(r8, r8/m8)
+            * XOR(r8/m8, imm8)
+            * XOR(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -1525,10 +1525,10 @@ class NOT(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * NOT(r8/m8)
             * NOT(r16/m16)
             * NOT(r32/m32)
             * NOT(r64/m64)
+            * NOT(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -1593,10 +1593,10 @@ class NEG(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * NEG(r8/m8)
             * NEG(r16/m16)
             * NEG(r32/m32)
             * NEG(r64/m64)
+            * NEG(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -1661,10 +1661,10 @@ class INC(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * INC(r8/m8)
             * INC(r16/m16)
             * INC(r32/m32)
             * INC(r64/m64)
+            * INC(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -1729,10 +1729,10 @@ class DEC(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * DEC(r8/m8)
             * DEC(r16/m16)
             * DEC(r32/m32)
             * DEC(r64/m64)
+            * DEC(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -1797,14 +1797,14 @@ class TEST(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * TEST(r8/m8, imm8)
-            * TEST(r8/m8, r8)
             * TEST(r16/m16, imm16)
             * TEST(r16/m16, r16)
             * TEST(r32/m32, imm32)
             * TEST(r32/m32, r32)
             * TEST(r64/m64, imm32)
             * TEST(r64/m64, r64)
+            * TEST(r8/m8, imm8)
+            * TEST(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -1933,18 +1933,18 @@ class CMP(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * CMP(r8, r8/m8)
             * CMP(r16, r16/m16)
-            * CMP(r32, r32/m32)
-            * CMP(r64, r64/m64)
-            * CMP(r8/m8, imm8)
-            * CMP(r8/m8, r8)
             * CMP(r16/m16, imm16)
             * CMP(r16/m16, r16)
+            * CMP(r32, r32/m32)
             * CMP(r32/m32, imm32)
             * CMP(r32/m32, r32)
+            * CMP(r64, r64/m64)
             * CMP(r64/m64, imm32)
             * CMP(r64/m64, r64)
+            * CMP(r8, r8/m8)
+            * CMP(r8/m8, imm8)
+            * CMP(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -2113,19 +2113,19 @@ class MOV(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOV(r8, r8/m8)
+            * MOV(m64, imm32)
             * MOV(r16, r16/m16)
-            * MOV(r32, r32/m32)
-            * MOV(r64, imm64)
-            * MOV(r64, r64/m64)
-            * MOV(r8/m8, imm8)
-            * MOV(r8/m8, r8)
             * MOV(r16/m16, imm16)
             * MOV(r16/m16, r16)
+            * MOV(r32, r32/m32)
             * MOV(r32/m32, imm32)
             * MOV(r32/m32, r32)
-            * MOV(m64, imm32)
+            * MOV(r64, imm64)
+            * MOV(r64, r64/m64)
             * MOV(r64/m64, r64)
+            * MOV(r8, r8/m8)
+            * MOV(r8/m8, imm8)
+            * MOV(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -2295,10 +2295,10 @@ class MOVZX(Instruction):
         """Supported forms:
 
             * MOVZX(r16, r8/m8)
-            * MOVZX(r32, r8/m8)
             * MOVZX(r32, r16/m16)
-            * MOVZX(r64, r8/m8)
+            * MOVZX(r32, r8/m8)
             * MOVZX(r64, r16/m16)
+            * MOVZX(r64, r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -2365,10 +2365,10 @@ class MOVSX(Instruction):
         """Supported forms:
 
             * MOVSX(r16, r8/m8)
-            * MOVSX(r32, r8/m8)
             * MOVSX(r32, r16/m16)
-            * MOVSX(r64, r8/m8)
+            * MOVSX(r32, r8/m8)
             * MOVSX(r64, r16/m16)
+            * MOVSX(r64, r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -2466,12 +2466,12 @@ class MOVBE(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOVBE(r16, m16)    [MOVBE]
-            * MOVBE(r32, m32)    [MOVBE]
-            * MOVBE(r64, m64)    [MOVBE]
             * MOVBE(m16, r16)    [MOVBE]
             * MOVBE(m32, r32)    [MOVBE]
             * MOVBE(m64, r64)    [MOVBE]
+            * MOVBE(r16, m16)    [MOVBE]
+            * MOVBE(r32, m32)    [MOVBE]
+            * MOVBE(r64, m64)    [MOVBE]
         """
 
         origin = kwargs.get("origin")
@@ -3283,14 +3283,14 @@ class SHR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SHR(r8/m8, imm8)
-            * SHR(r8/m8, cl)
-            * SHR(r16/m16, imm8)
             * SHR(r16/m16, cl)
-            * SHR(r32/m32, imm8)
+            * SHR(r16/m16, imm8)
             * SHR(r32/m32, cl)
-            * SHR(r64/m64, imm8)
+            * SHR(r32/m32, imm8)
             * SHR(r64/m64, cl)
+            * SHR(r64/m64, imm8)
+            * SHR(r8/m8, cl)
+            * SHR(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -3442,14 +3442,14 @@ class SAR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SAR(r8/m8, imm8)
-            * SAR(r8/m8, cl)
-            * SAR(r16/m16, imm8)
             * SAR(r16/m16, cl)
-            * SAR(r32/m32, imm8)
+            * SAR(r16/m16, imm8)
             * SAR(r32/m32, cl)
-            * SAR(r64/m64, imm8)
+            * SAR(r32/m32, imm8)
             * SAR(r64/m64, cl)
+            * SAR(r64/m64, imm8)
+            * SAR(r8/m8, cl)
+            * SAR(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -3601,14 +3601,14 @@ class SHL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SHL(r8/m8, imm8)
-            * SHL(r8/m8, cl)
-            * SHL(r16/m16, imm8)
             * SHL(r16/m16, cl)
-            * SHL(r32/m32, imm8)
+            * SHL(r16/m16, imm8)
             * SHL(r32/m32, cl)
-            * SHL(r64/m64, imm8)
+            * SHL(r32/m32, imm8)
             * SHL(r64/m64, cl)
+            * SHL(r64/m64, imm8)
+            * SHL(r8/m8, cl)
+            * SHL(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -3760,14 +3760,14 @@ class SAL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SAL(r8/m8, imm8)
-            * SAL(r8/m8, cl)
-            * SAL(r16/m16, imm8)
             * SAL(r16/m16, cl)
-            * SAL(r32/m32, imm8)
+            * SAL(r16/m16, imm8)
             * SAL(r32/m32, cl)
-            * SAL(r64/m64, imm8)
+            * SAL(r32/m32, imm8)
             * SAL(r64/m64, cl)
+            * SAL(r64/m64, imm8)
+            * SAL(r8/m8, cl)
+            * SAL(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4039,12 +4039,12 @@ class SHRD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SHRD(r16/m16, r16, imm8)
             * SHRD(r16/m16, r16, cl)
-            * SHRD(r32/m32, r32, imm8)
+            * SHRD(r16/m16, r16, imm8)
             * SHRD(r32/m32, r32, cl)
-            * SHRD(r64/m64, r64, imm8)
+            * SHRD(r32/m32, r32, imm8)
             * SHRD(r64/m64, r64, cl)
+            * SHRD(r64/m64, r64, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4140,12 +4140,12 @@ class SHLD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * SHLD(r16/m16, r16, imm8)
             * SHLD(r16/m16, r16, cl)
-            * SHLD(r32/m32, r32, imm8)
+            * SHLD(r16/m16, r16, imm8)
             * SHLD(r32/m32, r32, cl)
-            * SHLD(r64/m64, r64, imm8)
+            * SHLD(r32/m32, r32, imm8)
             * SHLD(r64/m64, r64, cl)
+            * SHLD(r64/m64, r64, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4241,14 +4241,14 @@ class ROR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * ROR(r8/m8, imm8)
-            * ROR(r8/m8, cl)
-            * ROR(r16/m16, imm8)
             * ROR(r16/m16, cl)
-            * ROR(r32/m32, imm8)
+            * ROR(r16/m16, imm8)
             * ROR(r32/m32, cl)
-            * ROR(r64/m64, imm8)
+            * ROR(r32/m32, imm8)
             * ROR(r64/m64, cl)
+            * ROR(r64/m64, imm8)
+            * ROR(r8/m8, cl)
+            * ROR(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4400,14 +4400,14 @@ class ROL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * ROL(r8/m8, imm8)
-            * ROL(r8/m8, cl)
-            * ROL(r16/m16, imm8)
             * ROL(r16/m16, cl)
-            * ROL(r32/m32, imm8)
+            * ROL(r16/m16, imm8)
             * ROL(r32/m32, cl)
-            * ROL(r64/m64, imm8)
+            * ROL(r32/m32, imm8)
             * ROL(r64/m64, cl)
+            * ROL(r64/m64, imm8)
+            * ROL(r8/m8, cl)
+            * ROL(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4607,14 +4607,14 @@ class RCR(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * RCR(r8/m8, imm8)
-            * RCR(r8/m8, cl)
-            * RCR(r16/m16, imm8)
             * RCR(r16/m16, cl)
-            * RCR(r32/m32, imm8)
+            * RCR(r16/m16, imm8)
             * RCR(r32/m32, cl)
-            * RCR(r64/m64, imm8)
+            * RCR(r32/m32, imm8)
             * RCR(r64/m64, cl)
+            * RCR(r64/m64, imm8)
+            * RCR(r8/m8, cl)
+            * RCR(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4766,14 +4766,14 @@ class RCL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * RCL(r8/m8, imm8)
-            * RCL(r8/m8, cl)
-            * RCL(r16/m16, imm8)
             * RCL(r16/m16, cl)
-            * RCL(r32/m32, imm8)
+            * RCL(r16/m16, imm8)
             * RCL(r32/m32, cl)
-            * RCL(r64/m64, imm8)
+            * RCL(r32/m32, imm8)
             * RCL(r64/m64, cl)
+            * RCL(r64/m64, imm8)
+            * RCL(r8/m8, cl)
+            * RCL(r8/m8, imm8)
         """
 
         origin = kwargs.get("origin")
@@ -4925,16 +4925,16 @@ class IMUL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * IMUL(r8/m8)
-            * IMUL(r16/m16)
-            * IMUL(r32/m32)
-            * IMUL(r64/m64)
             * IMUL(r16, r16/m16)
-            * IMUL(r32, r32/m32)
-            * IMUL(r64, r64/m64)
             * IMUL(r16, r16/m16, imm16)
+            * IMUL(r16/m16)
+            * IMUL(r32, r32/m32)
             * IMUL(r32, r32/m32, imm32)
+            * IMUL(r32/m32)
+            * IMUL(r64, r64/m64)
             * IMUL(r64, r64/m64, imm32)
+            * IMUL(r64/m64)
+            * IMUL(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -5089,10 +5089,10 @@ class MUL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MUL(r8/m8)
             * MUL(r16/m16)
             * MUL(r32/m32)
             * MUL(r64/m64)
+            * MUL(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -5210,10 +5210,10 @@ class IDIV(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * IDIV(r8/m8)
             * IDIV(r16/m16)
             * IDIV(r32/m32)
             * IDIV(r64/m64)
+            * IDIV(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -5287,10 +5287,10 @@ class DIV(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * DIV(r8/m8)
             * DIV(r16/m16)
             * DIV(r32/m32)
             * DIV(r64/m64)
+            * DIV(r8/m8)
         """
 
         origin = kwargs.get("origin")
@@ -5655,8 +5655,8 @@ class BEXTR(Instruction):
         """Supported forms:
 
             * BEXTR(r32, r32/m32, imm32)    [TBM]
-            * BEXTR(r64, r64/m64, imm32)    [TBM]
             * BEXTR(r32, r32/m32, r32)      [BMI]
+            * BEXTR(r64, r64/m64, imm32)    [TBM]
             * BEXTR(r64, r64/m64, r64)      [BMI]
         """
 
@@ -6262,11 +6262,11 @@ class CRC32(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * CRC32(r32, r8/m8)      [SSE4.2]
             * CRC32(r32, r16/m16)    [SSE4.2]
             * CRC32(r32, r32/m32)    [SSE4.2]
-            * CRC32(r64, r8/m8)      [SSE4.2]
+            * CRC32(r32, r8/m8)      [SSE4.2]
             * CRC32(r64, r64/m64)    [SSE4.2]
+            * CRC32(r64, r8/m8)      [SSE4.2]
         """
 
         origin = kwargs.get("origin")
@@ -9719,8 +9719,8 @@ class JMP(BranchInstruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * JMP(rel32)
             * JMP(r64/m64)
+            * JMP(rel32)
         """
 
         origin = kwargs.get("origin")
@@ -9865,8 +9865,8 @@ class CALL(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * CALL(rel32)
             * CALL(r64/m64)
+            * CALL(rel32)
         """
 
         origin = kwargs.get("origin")
@@ -10245,10 +10245,10 @@ class XADD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * XADD(r8/m8, r8)
             * XADD(r16/m16, r16)
             * XADD(r32/m32, r32)
             * XADD(r64/m64, r64)
+            * XADD(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -10313,14 +10313,14 @@ class XCHG(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * XCHG(r8, r8/m8)
             * XCHG(r16, r16/m16)
-            * XCHG(r32, r32/m32)
-            * XCHG(r64, r64/m64)
-            * XCHG(r8/m8, r8)
             * XCHG(r16/m16, r16)
+            * XCHG(r32, r32/m32)
             * XCHG(r32/m32, r32)
+            * XCHG(r64, r64/m64)
             * XCHG(r64/m64, r64)
+            * XCHG(r8, r8/m8)
+            * XCHG(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")
@@ -10421,10 +10421,10 @@ class CMPXCHG(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * CMPXCHG(r8/m8, r8)
             * CMPXCHG(r16/m16, r16)
             * CMPXCHG(r32/m32, r32)
             * CMPXCHG(r64/m64, r64)
+            * CMPXCHG(r8/m8, r8)
         """
 
         origin = kwargs.get("origin")

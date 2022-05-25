@@ -26,10 +26,10 @@ class VMOVSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVSS(xmm, m32)               [AVX]
             * VMOVSS(m32, xmm)               [AVX]
-            * VMOVSS(xmm, xmm, xmm)          [AVX]
             * VMOVSS(m32{k}, xmm)            [AVX512F]
+            * VMOVSS(xmm, m32)               [AVX]
+            * VMOVSS(xmm, xmm, xmm)          [AVX]
             * VMOVSS(xmm{k}{z}, m32)         [AVX512F]
             * VMOVSS(xmm{k}{z}, xmm, xmm)    [AVX512F]
         """
@@ -92,8 +92,8 @@ class VEXTRACTPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTPS(r32/m32, xmm, imm8)    [AVX]
             * VEXTRACTPS(r32/m32, xmm, imm8)    [AVX512F]
+            * VEXTRACTPS(r32/m32, xmm, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -146,8 +146,8 @@ class VINSERTPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VINSERTPS(xmm, xmm, xmm/m32, imm8)    [AVX]
             * VINSERTPS(xmm, xmm, xmm/m32, imm8)    [AVX512F]
+            * VINSERTPS(xmm, xmm, xmm/m32, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -195,8 +195,8 @@ class VADDSS(Instruction):
         """Supported forms:
 
             * VADDSS(xmm, xmm, xmm/m32)            [AVX]
-            * VADDSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VADDSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VADDSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -247,8 +247,8 @@ class VSUBSS(Instruction):
         """Supported forms:
 
             * VSUBSS(xmm, xmm, xmm/m32)            [AVX]
-            * VSUBSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VSUBSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSUBSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -299,8 +299,8 @@ class VMULSS(Instruction):
         """Supported forms:
 
             * VMULSS(xmm, xmm, xmm/m32)            [AVX]
-            * VMULSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VMULSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VMULSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -351,8 +351,8 @@ class VDIVSS(Instruction):
         """Supported forms:
 
             * VDIVSS(xmm, xmm, xmm/m32)            [AVX]
-            * VDIVSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VDIVSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VDIVSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -403,8 +403,8 @@ class VSQRTSS(Instruction):
         """Supported forms:
 
             * VSQRTSS(xmm, xmm, xmm/m32)            [AVX]
-            * VSQRTSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VSQRTSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSQRTSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -490,8 +490,8 @@ class VRNDSCALESS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRNDSCALESS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
             * VRNDSCALESS(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VRNDSCALESS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -540,8 +540,8 @@ class VRANGESS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRANGESS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512DQ]
             * VRANGESS(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512DQ]
+            * VRANGESS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -591,8 +591,8 @@ class VMINSS(Instruction):
         """Supported forms:
 
             * VMINSS(xmm, xmm, xmm/m32)             [AVX]
-            * VMINSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
             * VMINSS(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VMINSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -643,8 +643,8 @@ class VMAXSS(Instruction):
         """Supported forms:
 
             * VMAXSS(xmm, xmm, xmm/m32)             [AVX]
-            * VMAXSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
             * VMAXSS(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VMAXSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -730,8 +730,8 @@ class VGETMANTSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETMANTSS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
             * VGETMANTSS(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VGETMANTSS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -780,8 +780,8 @@ class VGETEXPSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETEXPSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
             * VGETEXPSS(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VGETEXPSS(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -824,8 +824,8 @@ class VSCALEFSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCALEFSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VSCALEFSS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSCALEFSS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -868,8 +868,8 @@ class VFIXUPIMMSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFIXUPIMMSS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
             * VFIXUPIMMSS(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VFIXUPIMMSS(xmm{k}{z}, xmm, xmm/m32, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1082,8 +1082,8 @@ class VRCP28SS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRCP28SS(xmm{k}{z}, xmm, xmm/m32)       [AVX512ER]
             * VRCP28SS(xmm{k}{z}, xmm, xmm, {sae})    [AVX512ER]
+            * VRCP28SS(xmm{k}{z}, xmm, xmm/m32)       [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -1126,8 +1126,8 @@ class VRSQRT28SS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRSQRT28SS(xmm{k}{z}, xmm, xmm/m32)       [AVX512ER]
             * VRSQRT28SS(xmm{k}{z}, xmm, xmm, {sae})    [AVX512ER]
+            * VRSQRT28SS(xmm{k}{z}, xmm, xmm/m32)       [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -1170,9 +1170,9 @@ class VCMPSS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCMPSS(xmm, xmm, xmm/m32, imm8)        [AVX]
-            * VCMPSS(k{k}, xmm, xmm/m32, imm8)       [AVX512F]
             * VCMPSS(k{k}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VCMPSS(k{k}, xmm, xmm/m32, imm8)       [AVX512F]
+            * VCMPSS(xmm, xmm, xmm/m32, imm8)        [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -1232,9 +1232,9 @@ class VCOMISS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCOMISS(xmm, xmm/m32)       [AVX]
-            * VCOMISS(xmm, xmm/m32)       [AVX512F]
             * VCOMISS(xmm, xmm, {sae})    [AVX512F]
+            * VCOMISS(xmm, xmm/m32)       [AVX512F]
+            * VCOMISS(xmm, xmm/m32)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -1284,9 +1284,9 @@ class VUCOMISS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VUCOMISS(xmm, xmm/m32)       [AVX]
-            * VUCOMISS(xmm, xmm/m32)       [AVX512F]
             * VUCOMISS(xmm, xmm, {sae})    [AVX512F]
+            * VUCOMISS(xmm, xmm/m32)       [AVX512F]
+            * VUCOMISS(xmm, xmm/m32)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -1336,10 +1336,10 @@ class VMOVSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVSD(xmm, m64)               [AVX]
             * VMOVSD(m64, xmm)               [AVX]
-            * VMOVSD(xmm, xmm, xmm)          [AVX]
             * VMOVSD(m64{k}, xmm)            [AVX512F]
+            * VMOVSD(xmm, m64)               [AVX]
+            * VMOVSD(xmm, xmm, xmm)          [AVX]
             * VMOVSD(xmm{k}{z}, m64)         [AVX512F]
             * VMOVSD(xmm{k}{z}, xmm, xmm)    [AVX512F]
         """
@@ -1403,8 +1403,8 @@ class VADDSD(Instruction):
         """Supported forms:
 
             * VADDSD(xmm, xmm, xmm/m64)            [AVX]
-            * VADDSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VADDSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VADDSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1455,8 +1455,8 @@ class VSUBSD(Instruction):
         """Supported forms:
 
             * VSUBSD(xmm, xmm, xmm/m64)            [AVX]
-            * VSUBSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VSUBSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSUBSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1507,8 +1507,8 @@ class VMULSD(Instruction):
         """Supported forms:
 
             * VMULSD(xmm, xmm, xmm/m64)            [AVX]
-            * VMULSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VMULSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VMULSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1559,8 +1559,8 @@ class VDIVSD(Instruction):
         """Supported forms:
 
             * VDIVSD(xmm, xmm, xmm/m64)            [AVX]
-            * VDIVSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VDIVSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VDIVSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1611,8 +1611,8 @@ class VSQRTSD(Instruction):
         """Supported forms:
 
             * VSQRTSD(xmm, xmm, xmm/m64)            [AVX]
-            * VSQRTSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VSQRTSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSQRTSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1698,8 +1698,8 @@ class VRNDSCALESD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRNDSCALESD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
             * VRNDSCALESD(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VRNDSCALESD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1748,8 +1748,8 @@ class VRANGESD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRANGESD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512DQ]
             * VRANGESD(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512DQ]
+            * VRANGESD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -1799,8 +1799,8 @@ class VMINSD(Instruction):
         """Supported forms:
 
             * VMINSD(xmm, xmm, xmm/m64)             [AVX]
-            * VMINSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
             * VMINSD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VMINSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1851,8 +1851,8 @@ class VMAXSD(Instruction):
         """Supported forms:
 
             * VMAXSD(xmm, xmm, xmm/m64)             [AVX]
-            * VMAXSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
             * VMAXSD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VMAXSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1938,8 +1938,8 @@ class VGETMANTSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETMANTSD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
             * VGETMANTSD(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VGETMANTSD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1988,8 +1988,8 @@ class VGETEXPSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETEXPSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
             * VGETEXPSD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VGETEXPSD(xmm{k}{z}, xmm, xmm/m64)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2032,8 +2032,8 @@ class VSCALEFSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCALEFSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VSCALEFSD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VSCALEFSD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2076,8 +2076,8 @@ class VFIXUPIMMSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFIXUPIMMSD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
             * VFIXUPIMMSD(xmm{k}{z}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VFIXUPIMMSD(xmm{k}{z}, xmm, xmm/m64, imm8)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2226,8 +2226,8 @@ class VRCP28SD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRCP28SD(xmm{k}{z}, xmm, xmm/m64)       [AVX512ER]
             * VRCP28SD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512ER]
+            * VRCP28SD(xmm{k}{z}, xmm, xmm/m64)       [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -2270,8 +2270,8 @@ class VRSQRT28SD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRSQRT28SD(xmm{k}{z}, xmm, xmm/m64)       [AVX512ER]
             * VRSQRT28SD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512ER]
+            * VRSQRT28SD(xmm{k}{z}, xmm, xmm/m64)       [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -2314,9 +2314,9 @@ class VCMPSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCMPSD(xmm, xmm, xmm/m64, imm8)        [AVX]
-            * VCMPSD(k{k}, xmm, xmm/m64, imm8)       [AVX512F]
             * VCMPSD(k{k}, xmm, xmm, {sae}, imm8)    [AVX512F]
+            * VCMPSD(k{k}, xmm, xmm/m64, imm8)       [AVX512F]
+            * VCMPSD(xmm, xmm, xmm/m64, imm8)        [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2376,9 +2376,9 @@ class VCOMISD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCOMISD(xmm, xmm/m64)       [AVX]
-            * VCOMISD(xmm, xmm/m64)       [AVX512F]
             * VCOMISD(xmm, xmm, {sae})    [AVX512F]
+            * VCOMISD(xmm, xmm/m64)       [AVX512F]
+            * VCOMISD(xmm, xmm/m64)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2428,9 +2428,9 @@ class VUCOMISD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VUCOMISD(xmm, xmm/m64)       [AVX]
-            * VUCOMISD(xmm, xmm/m64)       [AVX512F]
             * VUCOMISD(xmm, xmm, {sae})    [AVX512F]
+            * VUCOMISD(xmm, xmm/m64)       [AVX512F]
+            * VUCOMISD(xmm, xmm/m64)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2480,16 +2480,16 @@ class VMOVAPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVAPS(xmm, xmm/m128)          [AVX]
-            * VMOVAPS(ymm, ymm/m256)          [AVX]
-            * VMOVAPS(xmm/m128, xmm)          [AVX]
-            * VMOVAPS(ymm/m256, ymm)          [AVX]
-            * VMOVAPS(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVAPS(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVAPS(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVAPS(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVAPS(m512{k}{z}, zmm)        [AVX512F]
+            * VMOVAPS(xmm, xmm/m128)          [AVX]
+            * VMOVAPS(xmm/m128, xmm)          [AVX]
             * VMOVAPS(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVAPS(ymm, ymm/m256)          [AVX]
+            * VMOVAPS(ymm/m256, ymm)          [AVX]
             * VMOVAPS(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVAPS(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2594,16 +2594,16 @@ class VMOVUPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVUPS(xmm, xmm/m128)          [AVX]
-            * VMOVUPS(ymm, ymm/m256)          [AVX]
-            * VMOVUPS(xmm/m128, xmm)          [AVX]
-            * VMOVUPS(ymm/m256, ymm)          [AVX]
-            * VMOVUPS(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVUPS(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVUPS(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVUPS(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVUPS(m512{k}{z}, zmm)        [AVX512F]
+            * VMOVUPS(xmm, xmm/m128)          [AVX]
+            * VMOVUPS(xmm/m128, xmm)          [AVX]
             * VMOVUPS(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVUPS(ymm, ymm/m256)          [AVX]
+            * VMOVUPS(ymm/m256, ymm)          [AVX]
             * VMOVUPS(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVUPS(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2708,10 +2708,10 @@ class VMOVLPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVLPS(m64, xmm)         [AVX]
-            * VMOVLPS(xmm, xmm, m64)    [AVX]
             * VMOVLPS(m64, xmm)         [AVX512F]
+            * VMOVLPS(m64, xmm)         [AVX]
             * VMOVLPS(xmm, xmm, m64)    [AVX512F]
+            * VMOVLPS(xmm, xmm, m64)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2758,10 +2758,10 @@ class VMOVHPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVHPS(m64, xmm)         [AVX]
-            * VMOVHPS(xmm, xmm, m64)    [AVX]
             * VMOVHPS(m64, xmm)         [AVX512F]
+            * VMOVHPS(m64, xmm)         [AVX]
             * VMOVHPS(xmm, xmm, m64)    [AVX512F]
+            * VMOVHPS(xmm, xmm, m64)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2808,10 +2808,10 @@ class VMASKMOVPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMASKMOVPS(xmm, xmm, m128)    [AVX]
-            * VMASKMOVPS(ymm, ymm, m256)    [AVX]
             * VMASKMOVPS(m128, xmm, xmm)    [AVX]
             * VMASKMOVPS(m256, ymm, ymm)    [AVX]
+            * VMASKMOVPS(xmm, xmm, m128)    [AVX]
+            * VMASKMOVPS(ymm, ymm, m256)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -2886,11 +2886,11 @@ class VMOVNTPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VMOVNTPS(m128, xmm)    [AVX512F and AVX512VL]
             * VMOVNTPS(m128, xmm)    [AVX]
+            * VMOVNTPS(m256, ymm)    [AVX512F and AVX512VL]
             * VMOVNTPS(m256, ymm)    [AVX]
             * VMOVNTPS(m512, zmm)    [AVX512F]
-            * VMOVNTPS(m128, xmm)    [AVX512F and AVX512VL]
-            * VMOVNTPS(m256, ymm)    [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -2933,11 +2933,11 @@ class VBROADCASTSS(Instruction):
         """Supported forms:
 
             * VBROADCASTSS(xmm, m32)              [AVX]
-            * VBROADCASTSS(ymm, m32)              [AVX]
             * VBROADCASTSS(xmm, xmm)              [AVX2]
+            * VBROADCASTSS(ymm, m32)              [AVX]
             * VBROADCASTSS(ymm, xmm)              [AVX2]
-            * VBROADCASTSS(zmm{k}{z}, xmm/m32)    [AVX512F]
             * VBROADCASTSS(ymm{k}{z}, xmm/m32)    [AVX512F and AVX512VL]
+            * VBROADCASTSS(zmm{k}{z}, xmm/m32)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2989,10 +2989,10 @@ class VMOVSLDUP(Instruction):
         """Supported forms:
 
             * VMOVSLDUP(xmm, xmm/m128)          [AVX]
-            * VMOVSLDUP(ymm, ymm/m256)          [AVX]
-            * VMOVSLDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVSLDUP(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVSLDUP(ymm, ymm/m256)          [AVX]
             * VMOVSLDUP(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVSLDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3050,10 +3050,10 @@ class VMOVSHDUP(Instruction):
         """Supported forms:
 
             * VMOVSHDUP(xmm, xmm/m128)          [AVX]
-            * VMOVSHDUP(ymm, ymm/m256)          [AVX]
-            * VMOVSHDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVSHDUP(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVSHDUP(ymm, ymm/m256)          [AVX]
             * VMOVSHDUP(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVSHDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3110,9 +3110,9 @@ class VEXPANDPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXPANDPS(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VEXPANDPS(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VEXPANDPS(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VEXPANDPS(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3157,12 +3157,12 @@ class VCOMPRESSPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCOMPRESSPS(zmm{k}{z}, zmm)     [AVX512F]
+            * VCOMPRESSPS(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VCOMPRESSPS(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VCOMPRESSPS(m512{k}{z}, zmm)    [AVX512F]
             * VCOMPRESSPS(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VCOMPRESSPS(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VCOMPRESSPS(ymm{k}{z}, ymm)     [AVX512F and AVX512VL]
-            * VCOMPRESSPS(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VCOMPRESSPS(zmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3218,10 +3218,10 @@ class VGATHERDPS(Instruction):
         """Supported forms:
 
             * VGATHERDPS(xmm, vm32x, xmm)    [AVX2]
-            * VGATHERDPS(ymm, vm32y, ymm)    [AVX2]
-            * VGATHERDPS(zmm{k}, vm32z)      [AVX512F]
             * VGATHERDPS(xmm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VGATHERDPS(ymm, vm32y, ymm)    [AVX2]
             * VGATHERDPS(ymm{k}, vm32y)      [AVX512F and AVX512VL]
+            * VGATHERDPS(zmm{k}, vm32z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3272,9 +3272,9 @@ class VGATHERQPS(Instruction):
 
             * VGATHERQPS(xmm, vm64x, xmm)    [AVX2]
             * VGATHERQPS(xmm, vm64y, xmm)    [AVX2]
-            * VGATHERQPS(ymm{k}, vm64z)      [AVX512F]
             * VGATHERQPS(xmm{k}, vm64x)      [AVX512F and AVX512VL]
             * VGATHERQPS(xmm{k}, vm64y)      [AVX512F and AVX512VL]
+            * VGATHERQPS(ymm{k}, vm64z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3443,9 +3443,9 @@ class VSCATTERDPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCATTERDPS(vm32z{k}, zmm)    [AVX512F]
             * VSCATTERDPS(vm32x{k}, xmm)    [AVX512F and AVX512VL]
             * VSCATTERDPS(vm32y{k}, ymm)    [AVX512F and AVX512VL]
+            * VSCATTERDPS(vm32z{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3481,9 +3481,9 @@ class VSCATTERQPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCATTERQPS(vm64z{k}, ymm)    [AVX512F]
             * VSCATTERQPS(vm64x{k}, xmm)    [AVX512F and AVX512VL]
             * VSCATTERQPS(vm64y{k}, xmm)    [AVX512F and AVX512VL]
+            * VSCATTERQPS(vm64z{k}, ymm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3639,16 +3639,16 @@ class VMOVAPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVAPD(xmm, xmm/m128)          [AVX]
-            * VMOVAPD(ymm, ymm/m256)          [AVX]
-            * VMOVAPD(xmm/m128, xmm)          [AVX]
-            * VMOVAPD(ymm/m256, ymm)          [AVX]
-            * VMOVAPD(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVAPD(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVAPD(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVAPD(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVAPD(m512{k}{z}, zmm)        [AVX512F]
+            * VMOVAPD(xmm, xmm/m128)          [AVX]
+            * VMOVAPD(xmm/m128, xmm)          [AVX]
             * VMOVAPD(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVAPD(ymm, ymm/m256)          [AVX]
+            * VMOVAPD(ymm/m256, ymm)          [AVX]
             * VMOVAPD(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVAPD(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3753,16 +3753,16 @@ class VMOVUPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVUPD(xmm, xmm/m128)          [AVX]
-            * VMOVUPD(ymm, ymm/m256)          [AVX]
-            * VMOVUPD(xmm/m128, xmm)          [AVX]
-            * VMOVUPD(ymm/m256, ymm)          [AVX]
-            * VMOVUPD(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVUPD(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVUPD(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVUPD(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVUPD(m512{k}{z}, zmm)        [AVX512F]
+            * VMOVUPD(xmm, xmm/m128)          [AVX]
+            * VMOVUPD(xmm/m128, xmm)          [AVX]
             * VMOVUPD(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VMOVUPD(ymm, ymm/m256)          [AVX]
+            * VMOVUPD(ymm/m256, ymm)          [AVX]
             * VMOVUPD(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVUPD(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3867,10 +3867,10 @@ class VMOVLPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVLPD(m64, xmm)         [AVX]
-            * VMOVLPD(xmm, xmm, m64)    [AVX]
             * VMOVLPD(m64, xmm)         [AVX512F]
+            * VMOVLPD(m64, xmm)         [AVX]
             * VMOVLPD(xmm, xmm, m64)    [AVX512F]
+            * VMOVLPD(xmm, xmm, m64)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -3917,10 +3917,10 @@ class VMOVHPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVHPD(m64, xmm)         [AVX]
-            * VMOVHPD(xmm, xmm, m64)    [AVX]
             * VMOVHPD(m64, xmm)         [AVX512F]
+            * VMOVHPD(m64, xmm)         [AVX]
             * VMOVHPD(xmm, xmm, m64)    [AVX512F]
+            * VMOVHPD(xmm, xmm, m64)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -3967,10 +3967,10 @@ class VMASKMOVPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMASKMOVPD(xmm, xmm, m128)    [AVX]
-            * VMASKMOVPD(ymm, ymm, m256)    [AVX]
             * VMASKMOVPD(m128, xmm, xmm)    [AVX]
             * VMASKMOVPD(m256, ymm, ymm)    [AVX]
+            * VMASKMOVPD(xmm, xmm, m128)    [AVX]
+            * VMASKMOVPD(ymm, ymm, m256)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -4045,11 +4045,11 @@ class VMOVNTPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VMOVNTPD(m128, xmm)    [AVX512F and AVX512VL]
             * VMOVNTPD(m128, xmm)    [AVX]
+            * VMOVNTPD(m256, ymm)    [AVX512F and AVX512VL]
             * VMOVNTPD(m256, ymm)    [AVX]
             * VMOVNTPD(m512, zmm)    [AVX512F]
-            * VMOVNTPD(m128, xmm)    [AVX512F and AVX512VL]
-            * VMOVNTPD(m256, ymm)    [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -4093,8 +4093,8 @@ class VBROADCASTSD(Instruction):
 
             * VBROADCASTSD(ymm, m64)              [AVX]
             * VBROADCASTSD(ymm, xmm)              [AVX2]
-            * VBROADCASTSD(zmm{k}{z}, xmm/m64)    [AVX512F]
             * VBROADCASTSD(ymm{k}{z}, xmm/m64)    [AVX512F and AVX512VL]
+            * VBROADCASTSD(zmm{k}{z}, xmm/m64)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4140,10 +4140,10 @@ class VMOVDDUP(Instruction):
         """Supported forms:
 
             * VMOVDDUP(xmm, xmm/m64)           [AVX]
-            * VMOVDDUP(ymm, ymm/m256)          [AVX]
-            * VMOVDDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVDDUP(xmm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VMOVDDUP(ymm, ymm/m256)          [AVX]
             * VMOVDDUP(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVDDUP(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4200,9 +4200,9 @@ class VEXPANDPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXPANDPD(zmm{k}{z}, zmm/m512)    [AVX512F]
-            * VEXPANDPD(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
             * VEXPANDPD(xmm{k}{z}, xmm/m128)    [AVX512VL]
+            * VEXPANDPD(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VEXPANDPD(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4247,12 +4247,12 @@ class VCOMPRESSPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCOMPRESSPD(zmm{k}{z}, zmm)     [AVX512F]
+            * VCOMPRESSPD(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VCOMPRESSPD(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VCOMPRESSPD(m512{k}{z}, zmm)    [AVX512F]
             * VCOMPRESSPD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VCOMPRESSPD(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VCOMPRESSPD(ymm{k}{z}, ymm)     [AVX512F and AVX512VL]
-            * VCOMPRESSPD(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VCOMPRESSPD(zmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4308,10 +4308,10 @@ class VGATHERDPD(Instruction):
         """Supported forms:
 
             * VGATHERDPD(xmm, vm32x, xmm)    [AVX2]
-            * VGATHERDPD(ymm, vm32x, ymm)    [AVX2]
-            * VGATHERDPD(zmm{k}, vm32y)      [AVX512F]
             * VGATHERDPD(xmm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VGATHERDPD(ymm, vm32x, ymm)    [AVX2]
             * VGATHERDPD(ymm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VGATHERDPD(zmm{k}, vm32y)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4361,10 +4361,10 @@ class VGATHERQPD(Instruction):
         """Supported forms:
 
             * VGATHERQPD(xmm, vm64x, xmm)    [AVX2]
-            * VGATHERQPD(ymm, vm64y, ymm)    [AVX2]
-            * VGATHERQPD(zmm{k}, vm64z)      [AVX512F]
             * VGATHERQPD(xmm{k}, vm64x)      [AVX512F and AVX512VL]
+            * VGATHERQPD(ymm, vm64y, ymm)    [AVX2]
             * VGATHERQPD(ymm{k}, vm64y)      [AVX512F and AVX512VL]
+            * VGATHERQPD(zmm{k}, vm64z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4533,9 +4533,9 @@ class VSCATTERDPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCATTERDPD(vm32y{k}, zmm)    [AVX512F]
             * VSCATTERDPD(vm32x{k}, xmm)    [AVX512F and AVX512VL]
             * VSCATTERDPD(vm32x{k}, ymm)    [AVX512F and AVX512VL]
+            * VSCATTERDPD(vm32y{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4571,9 +4571,9 @@ class VSCATTERQPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCATTERQPD(vm64z{k}, zmm)    [AVX512F]
             * VSCATTERQPD(vm64x{k}, xmm)    [AVX512F and AVX512VL]
             * VSCATTERQPD(vm64y{k}, ymm)    [AVX512F and AVX512VL]
+            * VSCATTERQPD(vm64z{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4730,14 +4730,14 @@ class VADDPS(Instruction):
         """Supported forms:
 
             * VADDPS(xmm, xmm, xmm/m128)              [AVX]
-            * VADDPS(ymm, ymm, ymm/m256)              [AVX]
-            * VADDPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VADDPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VADDPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VADDPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VADDPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VADDPS(ymm, ymm, ymm/m256)              [AVX]
             * VADDPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VADDPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VADDPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VADDPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VADDPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4843,14 +4843,14 @@ class VSUBPS(Instruction):
         """Supported forms:
 
             * VSUBPS(xmm, xmm, xmm/m128)              [AVX]
-            * VSUBPS(ymm, ymm, ymm/m256)              [AVX]
-            * VSUBPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VSUBPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VSUBPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VSUBPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VSUBPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VSUBPS(ymm, ymm, ymm/m256)              [AVX]
             * VSUBPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSUBPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VSUBPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VSUBPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VSUBPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4993,14 +4993,14 @@ class VMULPS(Instruction):
         """Supported forms:
 
             * VMULPS(xmm, xmm, xmm/m128)              [AVX]
-            * VMULPS(ymm, ymm, ymm/m256)              [AVX]
-            * VMULPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VMULPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VMULPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMULPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VMULPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMULPS(ymm, ymm, ymm/m256)              [AVX]
             * VMULPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VMULPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMULPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VMULPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMULPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5069,14 +5069,14 @@ class VDIVPS(Instruction):
         """Supported forms:
 
             * VDIVPS(xmm, xmm, xmm/m128)              [AVX]
-            * VDIVPS(ymm, ymm, ymm/m256)              [AVX]
-            * VDIVPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VDIVPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VDIVPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VDIVPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VDIVPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VDIVPS(ymm, ymm, ymm/m256)              [AVX]
             * VDIVPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VDIVPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VDIVPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VDIVPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VDIVPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5145,14 +5145,14 @@ class VSQRTPS(Instruction):
         """Supported forms:
 
             * VSQRTPS(xmm, xmm/m128)              [AVX]
-            * VSQRTPS(ymm, ymm/m256)              [AVX]
-            * VSQRTPS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VSQRTPS(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VSQRTPS(zmm{k}{z}, zmm)             [AVX512F]
             * VSQRTPS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VSQRTPS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSQRTPS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VSQRTPS(ymm, ymm/m256)              [AVX]
+            * VSQRTPS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSQRTPS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VSQRTPS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VSQRTPS(zmm{k}{z}, zmm)             [AVX512F]
+            * VSQRTPS(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5221,14 +5221,14 @@ class VADDPD(Instruction):
         """Supported forms:
 
             * VADDPD(xmm, xmm, xmm/m128)              [AVX]
-            * VADDPD(ymm, ymm, ymm/m256)              [AVX]
-            * VADDPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VADDPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VADDPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VADDPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VADDPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VADDPD(ymm, ymm, ymm/m256)              [AVX]
             * VADDPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VADDPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VADDPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VADDPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VADDPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5334,14 +5334,14 @@ class VSUBPD(Instruction):
         """Supported forms:
 
             * VSUBPD(xmm, xmm, xmm/m128)              [AVX]
-            * VSUBPD(ymm, ymm, ymm/m256)              [AVX]
-            * VSUBPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VSUBPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VSUBPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VSUBPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VSUBPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VSUBPD(ymm, ymm, ymm/m256)              [AVX]
             * VSUBPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VSUBPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VSUBPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VSUBPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VSUBPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5484,14 +5484,14 @@ class VMULPD(Instruction):
         """Supported forms:
 
             * VMULPD(xmm, xmm, xmm/m128)              [AVX]
-            * VMULPD(ymm, ymm, ymm/m256)              [AVX]
-            * VMULPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VMULPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VMULPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMULPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VMULPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMULPD(ymm, ymm, ymm/m256)              [AVX]
             * VMULPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VMULPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMULPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VMULPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMULPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5560,14 +5560,14 @@ class VDIVPD(Instruction):
         """Supported forms:
 
             * VDIVPD(xmm, xmm, xmm/m128)              [AVX]
-            * VDIVPD(ymm, ymm, ymm/m256)              [AVX]
-            * VDIVPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VDIVPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VDIVPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VDIVPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VDIVPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VDIVPD(ymm, ymm, ymm/m256)              [AVX]
             * VDIVPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VDIVPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VDIVPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VDIVPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VDIVPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5636,14 +5636,14 @@ class VSQRTPD(Instruction):
         """Supported forms:
 
             * VSQRTPD(xmm, xmm/m128)              [AVX]
-            * VSQRTPD(ymm, ymm/m256)              [AVX]
-            * VSQRTPD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VSQRTPD(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VSQRTPD(zmm{k}{z}, zmm)             [AVX512F]
             * VSQRTPD(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VSQRTPD(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSQRTPD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VSQRTPD(ymm, ymm/m256)              [AVX]
+            * VSQRTPD(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSQRTPD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VSQRTPD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VSQRTPD(zmm{k}{z}, zmm)             [AVX512F]
+            * VSQRTPD(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5756,13 +5756,13 @@ class VRNDSCALEPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRNDSCALEPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
-            * VRNDSCALEPS(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
-            * VRNDSCALEPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VRNDSCALEPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VRNDSCALEPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VRNDSCALEPS(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VRNDSCALEPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VRNDSCALEPS(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VRNDSCALEPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
+            * VRNDSCALEPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VRNDSCALEPS(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5832,13 +5832,13 @@ class VRANGEPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRANGEPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512DQ]
-            * VRANGEPS(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512DQ]
-            * VRANGEPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512DQ]
             * VRANGEPS(xmm{k}{z}, xmm, m128/m32bcst, imm8)    [AVX512DQ and AVX512VL]
             * VRANGEPS(xmm{k}{z}, xmm, xmm, imm8)             [AVX512DQ and AVX512VL]
             * VRANGEPS(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512DQ and AVX512VL]
             * VRANGEPS(ymm{k}{z}, ymm, ymm, imm8)             [AVX512DQ and AVX512VL]
+            * VRANGEPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512DQ]
+            * VRANGEPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512DQ]
+            * VRANGEPS(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -5909,14 +5909,14 @@ class VMINPS(Instruction):
         """Supported forms:
 
             * VMINPS(xmm, xmm, xmm/m128)              [AVX]
-            * VMINPS(ymm, ymm, ymm/m256)              [AVX]
-            * VMINPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VMINPS(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
-            * VMINPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMINPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VMINPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMINPS(ymm, ymm, ymm/m256)              [AVX]
             * VMINPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VMINPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMINPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VMINPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMINPS(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -5985,14 +5985,14 @@ class VMAXPS(Instruction):
         """Supported forms:
 
             * VMAXPS(xmm, xmm, xmm/m128)              [AVX]
-            * VMAXPS(ymm, ymm, ymm/m256)              [AVX]
-            * VMAXPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VMAXPS(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
-            * VMAXPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMAXPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VMAXPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMAXPS(ymm, ymm, ymm/m256)              [AVX]
             * VMAXPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VMAXPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMAXPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VMAXPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMAXPS(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -6060,12 +6060,12 @@ class VREDUCEPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VREDUCEPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VREDUCEPS(xmm{k}{z}, xmm, imm8)             [AVX512DQ and AVX512VL]
+            * VREDUCEPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VREDUCEPS(ymm{k}{z}, ymm, imm8)             [AVX512DQ and AVX512VL]
             * VREDUCEPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512DQ]
             * VREDUCEPS(zmm{k}{z}, zmm, imm8)             [AVX512DQ]
-            * VREDUCEPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512DQ and AVX512VL]
-            * VREDUCEPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512DQ and AVX512VL]
-            * VREDUCEPS(xmm{k}{z}, xmm, imm8)             [AVX512DQ and AVX512VL]
-            * VREDUCEPS(ymm{k}{z}, ymm, imm8)             [AVX512DQ and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -6167,13 +6167,13 @@ class VGETMANTPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETMANTPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
-            * VGETMANTPS(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
-            * VGETMANTPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VGETMANTPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VGETMANTPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VGETMANTPS(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VGETMANTPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VGETMANTPS(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VGETMANTPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
+            * VGETMANTPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VGETMANTPS(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -6243,13 +6243,13 @@ class VGETEXPPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETEXPPS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VGETEXPPS(zmm{k}{z}, zmm, {sae})      [AVX512F]
-            * VGETEXPPS(zmm{k}{z}, zmm)             [AVX512F]
             * VGETEXPPS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VGETEXPPS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VGETEXPPS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VGETEXPPS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VGETEXPPS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VGETEXPPS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VGETEXPPS(zmm{k}{z}, zmm)             [AVX512F]
+            * VGETEXPPS(zmm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -6305,13 +6305,13 @@ class VSCALEFPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCALEFPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VSCALEFPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VSCALEFPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VSCALEFPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VSCALEFPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VSCALEFPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VSCALEFPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VSCALEFPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VSCALEFPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VSCALEFPS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -6367,13 +6367,13 @@ class VFIXUPIMMPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFIXUPIMMPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VFIXUPIMMPS(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512F]
-            * VFIXUPIMMPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
-            * VFIXUPIMMPS(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VFIXUPIMMPS(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
             * VFIXUPIMMPS(xmm{k}{z}, xmm, m128/m32bcst, imm8)    [AVX512VL]
             * VFIXUPIMMPS(xmm{k}{z}, xmm, xmm, imm8)             [AVX512VL]
+            * VFIXUPIMMPS(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VFIXUPIMMPS(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VFIXUPIMMPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VFIXUPIMMPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
+            * VFIXUPIMMPS(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -6443,12 +6443,12 @@ class VFPCLASSPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFPCLASSPS(k{k}, m512/m32bcst, imm8)    [AVX512DQ]
-            * VFPCLASSPS(k{k}, zmm, imm8)             [AVX512DQ]
             * VFPCLASSPS(k{k}, m128/m32bcst, imm8)    [AVX512DQ and AVX512VL]
             * VFPCLASSPS(k{k}, m256/m32bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VFPCLASSPS(k{k}, m512/m32bcst, imm8)    [AVX512DQ]
             * VFPCLASSPS(k{k}, xmm, imm8)             [AVX512DQ and AVX512VL]
             * VFPCLASSPS(k{k}, ymm, imm8)             [AVX512DQ and AVX512VL]
+            * VFPCLASSPS(k{k}, zmm, imm8)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -6579,12 +6579,12 @@ class VRCP14PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VRCP14PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
+            * VRCP14PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VRCP14PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
+            * VRCP14PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VRCP14PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
             * VRCP14PS(zmm{k}{z}, zmm)             [AVX512F]
-            * VRCP14PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VRCP14PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
-            * VRCP14PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VRCP14PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -6629,12 +6629,12 @@ class VRSQRT14PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VRSQRT14PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
+            * VRSQRT14PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VRSQRT14PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
+            * VRSQRT14PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VRSQRT14PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
             * VRSQRT14PS(zmm{k}{z}, zmm)             [AVX512F]
-            * VRSQRT14PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VRSQRT14PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
-            * VRSQRT14PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VRSQRT14PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -6680,8 +6680,8 @@ class VRCP28PS(Instruction):
         """Supported forms:
 
             * VRCP28PS(zmm{k}{z}, m512/m32bcst)    [AVX512ER]
-            * VRCP28PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VRCP28PS(zmm{k}{z}, zmm)             [AVX512ER]
+            * VRCP28PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -6725,8 +6725,8 @@ class VRSQRT28PS(Instruction):
         """Supported forms:
 
             * VRSQRT28PS(zmm{k}{z}, m512/m32bcst)    [AVX512ER]
-            * VRSQRT28PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VRSQRT28PS(zmm{k}{z}, zmm)             [AVX512ER]
+            * VRSQRT28PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -6770,8 +6770,8 @@ class VEXP2PS(Instruction):
         """Supported forms:
 
             * VEXP2PS(zmm{k}{z}, m512/m32bcst)    [AVX512ER]
-            * VEXP2PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VEXP2PS(zmm{k}{z}, zmm)             [AVX512ER]
+            * VEXP2PS(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -6814,15 +6814,15 @@ class VCMPPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCMPPS(xmm, xmm, xmm/m128, imm8)         [AVX]
-            * VCMPPS(ymm, ymm, ymm/m256, imm8)         [AVX]
-            * VCMPPS(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VCMPPS(k{k}, zmm, zmm, {sae}, imm8)      [AVX512F]
-            * VCMPPS(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VCMPPS(k{k}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VCMPPS(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VCMPPS(k{k}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VCMPPS(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VCMPPS(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VCMPPS(k{k}, zmm, zmm, imm8)             [AVX512F]
+            * VCMPPS(k{k}, zmm, zmm, {sae}, imm8)      [AVX512F]
+            * VCMPPS(xmm, xmm, xmm/m128, imm8)         [AVX]
+            * VCMPPS(ymm, ymm, ymm/m256, imm8)         [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -6994,13 +6994,13 @@ class VRNDSCALEPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRNDSCALEPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
-            * VRNDSCALEPD(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
-            * VRNDSCALEPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VRNDSCALEPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VRNDSCALEPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VRNDSCALEPD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VRNDSCALEPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VRNDSCALEPD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VRNDSCALEPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
+            * VRNDSCALEPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VRNDSCALEPD(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7070,13 +7070,13 @@ class VRANGEPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VRANGEPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512DQ]
-            * VRANGEPD(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512DQ]
-            * VRANGEPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512DQ]
             * VRANGEPD(xmm{k}{z}, xmm, m128/m64bcst, imm8)    [AVX512DQ and AVX512VL]
             * VRANGEPD(xmm{k}{z}, xmm, xmm, imm8)             [AVX512DQ and AVX512VL]
             * VRANGEPD(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512DQ and AVX512VL]
             * VRANGEPD(ymm{k}{z}, ymm, ymm, imm8)             [AVX512DQ and AVX512VL]
+            * VRANGEPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512DQ]
+            * VRANGEPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512DQ]
+            * VRANGEPD(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -7147,14 +7147,14 @@ class VMINPD(Instruction):
         """Supported forms:
 
             * VMINPD(xmm, xmm, xmm/m128)              [AVX]
-            * VMINPD(ymm, ymm, ymm/m256)              [AVX]
-            * VMINPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VMINPD(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
-            * VMINPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMINPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VMINPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMINPD(ymm, ymm, ymm/m256)              [AVX]
             * VMINPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VMINPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMINPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VMINPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMINPD(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7223,14 +7223,14 @@ class VMAXPD(Instruction):
         """Supported forms:
 
             * VMAXPD(xmm, xmm, xmm/m128)              [AVX]
-            * VMAXPD(ymm, ymm, ymm/m256)              [AVX]
-            * VMAXPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VMAXPD(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
-            * VMAXPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VMAXPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VMAXPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VMAXPD(ymm, ymm, ymm/m256)              [AVX]
             * VMAXPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VMAXPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VMAXPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VMAXPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VMAXPD(zmm{k}{z}, zmm, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7298,12 +7298,12 @@ class VREDUCEPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VREDUCEPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VREDUCEPD(xmm{k}{z}, xmm, imm8)             [AVX512DQ and AVX512VL]
+            * VREDUCEPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VREDUCEPD(ymm{k}{z}, ymm, imm8)             [AVX512DQ and AVX512VL]
             * VREDUCEPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512DQ]
             * VREDUCEPD(zmm{k}{z}, zmm, imm8)             [AVX512DQ]
-            * VREDUCEPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512DQ and AVX512VL]
-            * VREDUCEPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512DQ and AVX512VL]
-            * VREDUCEPD(xmm{k}{z}, xmm, imm8)             [AVX512DQ and AVX512VL]
-            * VREDUCEPD(ymm{k}{z}, ymm, imm8)             [AVX512DQ and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -7396,13 +7396,13 @@ class VGETMANTPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETMANTPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
-            * VGETMANTPD(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
-            * VGETMANTPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VGETMANTPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VGETMANTPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VGETMANTPD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VGETMANTPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VGETMANTPD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VGETMANTPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
+            * VGETMANTPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VGETMANTPD(zmm{k}{z}, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7472,13 +7472,13 @@ class VGETEXPPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VGETEXPPD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VGETEXPPD(zmm{k}{z}, zmm, {sae})      [AVX512F]
-            * VGETEXPPD(zmm{k}{z}, zmm)             [AVX512F]
             * VGETEXPPD(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
-            * VGETEXPPD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VGETEXPPD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VGETEXPPD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VGETEXPPD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VGETEXPPD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VGETEXPPD(zmm{k}{z}, zmm)             [AVX512F]
+            * VGETEXPPD(zmm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7534,13 +7534,13 @@ class VSCALEFPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSCALEFPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VSCALEFPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VSCALEFPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VSCALEFPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VSCALEFPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VSCALEFPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VSCALEFPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VSCALEFPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VSCALEFPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VSCALEFPD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7596,13 +7596,13 @@ class VFIXUPIMMPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFIXUPIMMPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VFIXUPIMMPD(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512F]
-            * VFIXUPIMMPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VFIXUPIMMPD(xmm{k}{z}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VFIXUPIMMPD(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VFIXUPIMMPD(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VFIXUPIMMPD(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VFIXUPIMMPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VFIXUPIMMPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
+            * VFIXUPIMMPD(zmm{k}{z}, zmm, zmm, {sae}, imm8)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -7672,12 +7672,12 @@ class VFPCLASSPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VFPCLASSPD(k{k}, m512/m64bcst, imm8)    [AVX512DQ]
-            * VFPCLASSPD(k{k}, zmm, imm8)             [AVX512DQ]
             * VFPCLASSPD(k{k}, m128/m64bcst, imm8)    [AVX512DQ and AVX512VL]
             * VFPCLASSPD(k{k}, m256/m64bcst, imm8)    [AVX512DQ and AVX512VL]
+            * VFPCLASSPD(k{k}, m512/m64bcst, imm8)    [AVX512DQ]
             * VFPCLASSPD(k{k}, xmm, imm8)             [AVX512DQ and AVX512VL]
             * VFPCLASSPD(k{k}, ymm, imm8)             [AVX512DQ and AVX512VL]
+            * VFPCLASSPD(k{k}, zmm, imm8)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -7734,12 +7734,12 @@ class VRCP14PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VRCP14PD(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
+            * VRCP14PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VRCP14PD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
+            * VRCP14PD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VRCP14PD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
             * VRCP14PD(zmm{k}{z}, zmm)             [AVX512F]
-            * VRCP14PD(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
-            * VRCP14PD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
-            * VRCP14PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VRCP14PD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -7784,12 +7784,12 @@ class VRSQRT14PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VRSQRT14PD(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
+            * VRSQRT14PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VRSQRT14PD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
+            * VRSQRT14PD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VRSQRT14PD(zmm{k}{z}, m512/m64bcst)    [AVX512F]
             * VRSQRT14PD(zmm{k}{z}, zmm)             [AVX512F]
-            * VRSQRT14PD(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
-            * VRSQRT14PD(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
-            * VRSQRT14PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VRSQRT14PD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -7835,8 +7835,8 @@ class VRCP28PD(Instruction):
         """Supported forms:
 
             * VRCP28PD(zmm{k}{z}, m512/m64bcst)    [AVX512ER]
-            * VRCP28PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VRCP28PD(zmm{k}{z}, zmm)             [AVX512ER]
+            * VRCP28PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -7880,8 +7880,8 @@ class VRSQRT28PD(Instruction):
         """Supported forms:
 
             * VRSQRT28PD(zmm{k}{z}, m512/m64bcst)    [AVX512ER]
-            * VRSQRT28PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VRSQRT28PD(zmm{k}{z}, zmm)             [AVX512ER]
+            * VRSQRT28PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -7925,8 +7925,8 @@ class VEXP2PD(Instruction):
         """Supported forms:
 
             * VEXP2PD(zmm{k}{z}, m512/m64bcst)    [AVX512ER]
-            * VEXP2PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
             * VEXP2PD(zmm{k}{z}, zmm)             [AVX512ER]
+            * VEXP2PD(zmm{k}{z}, zmm, {sae})      [AVX512ER]
         """
 
         origin = kwargs.get("origin")
@@ -7969,15 +7969,15 @@ class VCMPPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCMPPD(xmm, xmm, xmm/m128, imm8)         [AVX]
-            * VCMPPD(ymm, ymm, ymm/m256, imm8)         [AVX]
-            * VCMPPD(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VCMPPD(k{k}, zmm, zmm, {sae}, imm8)      [AVX512F]
-            * VCMPPD(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VCMPPD(k{k}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VCMPPD(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VCMPPD(k{k}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VCMPPD(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VCMPPD(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VCMPPD(k{k}, zmm, zmm, imm8)             [AVX512F]
+            * VCMPPD(k{k}, zmm, zmm, {sae}, imm8)      [AVX512F]
+            * VCMPPD(xmm, xmm, xmm/m128, imm8)         [AVX]
+            * VCMPPD(ymm, ymm, ymm/m256, imm8)         [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -8105,13 +8105,13 @@ class VANDPS(Instruction):
         """Supported forms:
 
             * VANDPS(xmm, xmm, xmm/m128)              [AVX]
-            * VANDPS(ymm, ymm, ymm/m256)              [AVX]
-            * VANDPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
-            * VANDPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VANDPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VANDPS(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VANDPS(ymm, ymm, ymm/m256)              [AVX]
             * VANDPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512DQ and AVX512VL]
             * VANDPS(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VANDPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
+            * VANDPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8169,13 +8169,13 @@ class VANDNPS(Instruction):
         """Supported forms:
 
             * VANDNPS(xmm, xmm, xmm/m128)              [AVX]
-            * VANDNPS(ymm, ymm, ymm/m256)              [AVX]
-            * VANDNPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
-            * VANDNPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VANDNPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VANDNPS(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VANDNPS(ymm, ymm, ymm/m256)              [AVX]
             * VANDNPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512DQ and AVX512VL]
             * VANDNPS(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VANDNPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
+            * VANDNPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8238,13 +8238,13 @@ class VORPS(Instruction):
         """Supported forms:
 
             * VORPS(xmm, xmm, xmm/m128)              [AVX]
-            * VORPS(ymm, ymm, ymm/m256)              [AVX]
-            * VORPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
-            * VORPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VORPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VORPS(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VORPS(ymm, ymm, ymm/m256)              [AVX]
             * VORPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512DQ and AVX512VL]
             * VORPS(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VORPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
+            * VORPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8302,13 +8302,13 @@ class VXORPS(Instruction):
         """Supported forms:
 
             * VXORPS(xmm, xmm, xmm/m128)              [AVX]
-            * VXORPS(ymm, ymm, ymm/m256)              [AVX]
-            * VXORPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
-            * VXORPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VXORPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VXORPS(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VXORPS(ymm, ymm, ymm/m256)              [AVX]
             * VXORPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512DQ and AVX512VL]
             * VXORPS(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VXORPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512DQ]
+            * VXORPS(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8452,12 +8452,12 @@ class VBLENDMPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBLENDMPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VBLENDMPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VBLENDMPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VBLENDMPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VBLENDMPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VBLENDMPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VBLENDMPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VBLENDMPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -8503,13 +8503,13 @@ class VANDPD(Instruction):
         """Supported forms:
 
             * VANDPD(xmm, xmm, xmm/m128)              [AVX]
-            * VANDPD(ymm, ymm, ymm/m256)              [AVX]
-            * VANDPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
-            * VANDPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VANDPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VANDPD(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VANDPD(ymm, ymm, ymm/m256)              [AVX]
             * VANDPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VANDPD(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VANDPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
+            * VANDPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8567,13 +8567,13 @@ class VANDNPD(Instruction):
         """Supported forms:
 
             * VANDNPD(xmm, xmm, xmm/m128)              [AVX]
-            * VANDNPD(ymm, ymm, ymm/m256)              [AVX]
-            * VANDNPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
-            * VANDNPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VANDNPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VANDNPD(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VANDNPD(ymm, ymm, ymm/m256)              [AVX]
             * VANDNPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VANDNPD(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VANDNPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
+            * VANDNPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8636,13 +8636,13 @@ class VORPD(Instruction):
         """Supported forms:
 
             * VORPD(xmm, xmm, xmm/m128)              [AVX]
-            * VORPD(ymm, ymm, ymm/m256)              [AVX]
-            * VORPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
-            * VORPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VORPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VORPD(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VORPD(ymm, ymm, ymm/m256)              [AVX]
             * VORPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VORPD(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VORPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
+            * VORPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8700,13 +8700,13 @@ class VXORPD(Instruction):
         """Supported forms:
 
             * VXORPD(xmm, xmm, xmm/m128)              [AVX]
-            * VXORPD(ymm, ymm, ymm/m256)              [AVX]
-            * VXORPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
-            * VXORPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VXORPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VXORPD(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
+            * VXORPD(ymm, ymm, ymm/m256)              [AVX]
             * VXORPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VXORPD(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VXORPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
+            * VXORPD(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -8850,12 +8850,12 @@ class VBLENDMPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBLENDMPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VBLENDMPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VBLENDMPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VBLENDMPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VBLENDMPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VBLENDMPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VBLENDMPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VBLENDMPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -8901,13 +8901,13 @@ class VUNPCKLPS(Instruction):
         """Supported forms:
 
             * VUNPCKLPS(xmm, xmm, xmm/m128)              [AVX]
-            * VUNPCKLPS(ymm, ymm, ymm/m256)              [AVX]
-            * VUNPCKLPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VUNPCKLPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VUNPCKLPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VUNPCKLPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VUNPCKLPS(ymm, ymm, ymm/m256)              [AVX]
             * VUNPCKLPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VUNPCKLPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VUNPCKLPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VUNPCKLPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -8965,13 +8965,13 @@ class VUNPCKHPS(Instruction):
         """Supported forms:
 
             * VUNPCKHPS(xmm, xmm, xmm/m128)              [AVX]
-            * VUNPCKHPS(ymm, ymm, ymm/m256)              [AVX]
-            * VUNPCKHPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VUNPCKHPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VUNPCKHPS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VUNPCKHPS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VUNPCKHPS(ymm, ymm, ymm/m256)              [AVX]
             * VUNPCKHPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VUNPCKHPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VUNPCKHPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VUNPCKHPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9028,8 +9028,8 @@ class VMOVLHPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVLHPS(xmm, xmm, xmm)    [AVX]
             * VMOVLHPS(xmm, xmm, xmm)    [AVX512F]
+            * VMOVLHPS(xmm, xmm, xmm)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -9062,8 +9062,8 @@ class VMOVHLPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVHLPS(xmm, xmm, xmm)    [AVX]
             * VMOVHLPS(xmm, xmm, xmm)    [AVX512F]
+            * VMOVHLPS(xmm, xmm, xmm)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -9097,13 +9097,13 @@ class VSHUFPS(Instruction):
         """Supported forms:
 
             * VSHUFPS(xmm, xmm, xmm/m128, imm8)              [AVX]
-            * VSHUFPS(ymm, ymm, ymm/m256, imm8)              [AVX]
-            * VSHUFPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VSHUFPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFPS(xmm{k}{z}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFPS(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFPS(ymm, ymm, ymm/m256, imm8)              [AVX]
             * VSHUFPS(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFPS(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFPS(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VSHUFPS(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9181,13 +9181,13 @@ class VUNPCKLPD(Instruction):
         """Supported forms:
 
             * VUNPCKLPD(xmm, xmm, xmm/m128)              [AVX]
-            * VUNPCKLPD(ymm, ymm, ymm/m256)              [AVX]
-            * VUNPCKLPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VUNPCKLPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VUNPCKLPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VUNPCKLPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VUNPCKLPD(ymm, ymm, ymm/m256)              [AVX]
             * VUNPCKLPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VUNPCKLPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VUNPCKLPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VUNPCKLPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9245,13 +9245,13 @@ class VUNPCKHPD(Instruction):
         """Supported forms:
 
             * VUNPCKHPD(xmm, xmm, xmm/m128)              [AVX]
-            * VUNPCKHPD(ymm, ymm, ymm/m256)              [AVX]
-            * VUNPCKHPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VUNPCKHPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VUNPCKHPD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VUNPCKHPD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VUNPCKHPD(ymm, ymm, ymm/m256)              [AVX]
             * VUNPCKHPD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VUNPCKHPD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VUNPCKHPD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VUNPCKHPD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9309,13 +9309,13 @@ class VSHUFPD(Instruction):
         """Supported forms:
 
             * VSHUFPD(xmm, xmm, xmm/m128, imm8)              [AVX]
-            * VSHUFPD(ymm, ymm, ymm/m256, imm8)              [AVX]
-            * VSHUFPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VSHUFPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFPD(xmm{k}{z}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFPD(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFPD(ymm, ymm, ymm/m256, imm8)              [AVX]
             * VSHUFPD(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFPD(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFPD(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VSHUFPD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9393,10 +9393,10 @@ class VPERMPS(Instruction):
         """Supported forms:
 
             * VPERMPS(ymm, ymm, ymm/m256)              [AVX2]
-            * VPERMPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMPS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMPS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMPS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMPS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9443,20 +9443,20 @@ class VPERMILPS(Instruction):
 
             * VPERMILPS(xmm, xmm, xmm/m128)               [AVX]
             * VPERMILPS(xmm, xmm/m128, imm8)              [AVX]
+            * VPERMILPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPERMILPS(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPERMILPS(xmm{k}{z}, xmm, m128/m32bcst)     [AVX512F and AVX512VL]
+            * VPERMILPS(xmm{k}{z}, xmm, xmm)              [AVX512F and AVX512VL]
             * VPERMILPS(ymm, ymm, ymm/m256)               [AVX]
             * VPERMILPS(ymm, ymm/m256, imm8)              [AVX]
-            * VPERMILPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
-            * VPERMILPS(zmm{k}{z}, zmm, m512/m32bcst)     [AVX512F]
-            * VPERMILPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPERMILPS(zmm{k}{z}, zmm, zmm)              [AVX512F]
-            * VPERMILPS(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPERMILPS(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPERMILPS(xmm{k}{z}, xmm, m128/m32bcst)     [AVX512F and AVX512VL]
-            * VPERMILPS(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPERMILPS(xmm{k}{z}, xmm, xmm)              [AVX512F and AVX512VL]
-            * VPERMILPS(ymm{k}{z}, ymm, m256/m32bcst)     [AVX512F and AVX512VL]
             * VPERMILPS(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPERMILPS(ymm{k}{z}, ymm, m256/m32bcst)     [AVX512F and AVX512VL]
             * VPERMILPS(ymm{k}{z}, ymm, ymm)              [AVX512F and AVX512VL]
+            * VPERMILPS(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
+            * VPERMILPS(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VPERMILPS(zmm{k}{z}, zmm, m512/m32bcst)     [AVX512F]
+            * VPERMILPS(zmm{k}{z}, zmm, zmm)              [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9582,12 +9582,12 @@ class VPERMT2PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMT2PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMT2PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPERMT2PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMT2PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMT2PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMT2PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMT2PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9632,12 +9632,12 @@ class VPERMI2PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMI2PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMI2PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPERMI2PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMI2PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMI2PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMI2PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMI2PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9683,14 +9683,14 @@ class VPERMPD(Instruction):
         """Supported forms:
 
             * VPERMPD(ymm, ymm/m256, imm8)              [AVX2]
-            * VPERMPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
-            * VPERMPD(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
-            * VPERMPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPERMPD(zmm{k}{z}, zmm, zmm)              [AVX512F]
             * VPERMPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPERMPD(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMPD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPERMPD(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMPD(ymm{k}{z}, ymm, ymm)              [AVX512F and AVX512VL]
+            * VPERMPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
+            * VPERMPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VPERMPD(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
+            * VPERMPD(zmm{k}{z}, zmm, zmm)              [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9770,20 +9770,20 @@ class VPERMILPD(Instruction):
 
             * VPERMILPD(xmm, xmm, xmm/m128)               [AVX]
             * VPERMILPD(xmm, xmm/m128, imm8)              [AVX]
+            * VPERMILPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPERMILPD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPERMILPD(xmm{k}{z}, xmm, m128/m64bcst)     [AVX512F and AVX512VL]
+            * VPERMILPD(xmm{k}{z}, xmm, xmm)              [AVX512F and AVX512VL]
             * VPERMILPD(ymm, ymm, ymm/m256)               [AVX]
             * VPERMILPD(ymm, ymm/m256, imm8)              [AVX]
-            * VPERMILPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
-            * VPERMILPD(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
-            * VPERMILPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPERMILPD(zmm{k}{z}, zmm, zmm)              [AVX512F]
-            * VPERMILPD(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPERMILPD(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPERMILPD(xmm{k}{z}, xmm, m128/m64bcst)     [AVX512F and AVX512VL]
-            * VPERMILPD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPERMILPD(xmm{k}{z}, xmm, xmm)              [AVX512F and AVX512VL]
-            * VPERMILPD(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMILPD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPERMILPD(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMILPD(ymm{k}{z}, ymm, ymm)              [AVX512F and AVX512VL]
+            * VPERMILPD(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
+            * VPERMILPD(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VPERMILPD(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
+            * VPERMILPD(zmm{k}{z}, zmm, zmm)              [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9909,12 +9909,12 @@ class VPERMT2PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPERMT2PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMT2PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPERMT2PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMT2PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPERMT2PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMT2PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPERMT2PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -9959,12 +9959,12 @@ class VPERMI2PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPERMI2PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMI2PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPERMI2PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMI2PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPERMI2PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMI2PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPERMI2PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10009,10 +10009,10 @@ class VMOVD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVD(xmm, r32/m32)    [AVX]
+            * VMOVD(r32/m32, xmm)    [AVX512F]
             * VMOVD(r32/m32, xmm)    [AVX]
             * VMOVD(xmm, r32/m32)    [AVX512F]
-            * VMOVD(r32/m32, xmm)    [AVX512F]
+            * VMOVD(xmm, r32/m32)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -10077,12 +10077,12 @@ class VMOVQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVQ(xmm, xmm)        [AVX]
-            * VMOVQ(xmm, r64/m64)    [AVX]
-            * VMOVQ(r64/m64, xmm)    [AVX]
-            * VMOVQ(xmm, xmm)        [AVX512F]
-            * VMOVQ(xmm, r64/m64)    [AVX512F]
             * VMOVQ(r64/m64, xmm)    [AVX512F]
+            * VMOVQ(r64/m64, xmm)    [AVX]
+            * VMOVQ(xmm, r64/m64)    [AVX512F]
+            * VMOVQ(xmm, r64/m64)    [AVX]
+            * VMOVQ(xmm, xmm)        [AVX512F]
+            * VMOVQ(xmm, xmm)        [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -10164,8 +10164,8 @@ class VMOVDQA(Instruction):
         """Supported forms:
 
             * VMOVDQA(xmm, xmm/m128)    [AVX]
-            * VMOVDQA(ymm, ymm/m256)    [AVX]
             * VMOVDQA(xmm/m128, xmm)    [AVX]
+            * VMOVDQA(ymm, ymm/m256)    [AVX]
             * VMOVDQA(ymm/m256, ymm)    [AVX]
         """
 
@@ -10218,12 +10218,12 @@ class VMOVDQA32(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQA32(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVDQA32(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVDQA32(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVDQA32(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVDQA32(m512{k}{z}, zmm)        [AVX512F]
             * VMOVDQA32(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VMOVDQA32(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVDQA32(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10296,12 +10296,12 @@ class VMOVDQA64(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQA64(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVDQA64(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVDQA64(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVDQA64(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVDQA64(m512{k}{z}, zmm)        [AVX512F]
             * VMOVDQA64(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VMOVDQA64(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVDQA64(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10375,8 +10375,8 @@ class VMOVDQU(Instruction):
         """Supported forms:
 
             * VMOVDQU(xmm, xmm/m128)    [AVX]
-            * VMOVDQU(ymm, ymm/m256)    [AVX]
             * VMOVDQU(xmm/m128, xmm)    [AVX]
+            * VMOVDQU(ymm, ymm/m256)    [AVX]
             * VMOVDQU(ymm/m256, ymm)    [AVX]
         """
 
@@ -10429,12 +10429,12 @@ class VMOVDQU8(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQU8(m512{k}{z}, zmm)        [AVX512BW]
-            * VMOVDQU8(zmm{k}{z}, zmm/m512)    [AVX512BW]
             * VMOVDQU8(m128{k}{z}, xmm)        [AVX512BW and AVX512VL]
             * VMOVDQU8(m256{k}{z}, ymm)        [AVX512BW and AVX512VL]
+            * VMOVDQU8(m512{k}{z}, zmm)        [AVX512BW]
             * VMOVDQU8(xmm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
             * VMOVDQU8(ymm{k}{z}, ymm/m256)    [AVX512BW and AVX512VL]
+            * VMOVDQU8(zmm{k}{z}, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -10507,12 +10507,12 @@ class VMOVDQU16(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQU16(m512{k}{z}, zmm)        [AVX512BW]
-            * VMOVDQU16(zmm{k}{z}, zmm/m512)    [AVX512BW]
             * VMOVDQU16(m128{k}{z}, xmm)        [AVX512BW and AVX512VL]
             * VMOVDQU16(m256{k}{z}, ymm)        [AVX512BW and AVX512VL]
+            * VMOVDQU16(m512{k}{z}, zmm)        [AVX512BW]
             * VMOVDQU16(xmm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
             * VMOVDQU16(ymm{k}{z}, ymm/m256)    [AVX512BW and AVX512VL]
+            * VMOVDQU16(zmm{k}{z}, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -10585,12 +10585,12 @@ class VMOVDQU32(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQU32(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVDQU32(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVDQU32(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVDQU32(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVDQU32(m512{k}{z}, zmm)        [AVX512F]
             * VMOVDQU32(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VMOVDQU32(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVDQU32(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10663,12 +10663,12 @@ class VMOVDQU64(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VMOVDQU64(m512{k}{z}, zmm)        [AVX512F]
-            * VMOVDQU64(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VMOVDQU64(m128{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VMOVDQU64(m256{k}{z}, ymm)        [AVX512F and AVX512VL]
+            * VMOVDQU64(m512{k}{z}, zmm)        [AVX512F]
             * VMOVDQU64(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VMOVDQU64(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VMOVDQU64(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10775,13 +10775,13 @@ class VPBROADCASTB(Instruction):
         """Supported forms:
 
             * VPBROADCASTB(xmm, xmm/m8)          [AVX2]
+            * VPBROADCASTB(xmm{k}{z}, r32)       [AVX512BW and AVX512VL]
+            * VPBROADCASTB(xmm{k}{z}, xmm/m8)    [AVX512BW and AVX512VL]
             * VPBROADCASTB(ymm, xmm/m8)          [AVX2]
+            * VPBROADCASTB(ymm{k}{z}, r32)       [AVX512BW and AVX512VL]
+            * VPBROADCASTB(ymm{k}{z}, xmm/m8)    [AVX512BW and AVX512VL]
             * VPBROADCASTB(zmm{k}{z}, r32)       [AVX512BW]
             * VPBROADCASTB(zmm{k}{z}, xmm/m8)    [AVX512BW]
-            * VPBROADCASTB(xmm{k}{z}, r32)       [AVX512BW and AVX512VL]
-            * VPBROADCASTB(ymm{k}{z}, r32)       [AVX512BW and AVX512VL]
-            * VPBROADCASTB(xmm{k}{z}, xmm/m8)    [AVX512BW and AVX512VL]
-            * VPBROADCASTB(ymm{k}{z}, xmm/m8)    [AVX512BW and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -10848,13 +10848,13 @@ class VPBROADCASTW(Instruction):
         """Supported forms:
 
             * VPBROADCASTW(xmm, xmm/m16)          [AVX2]
+            * VPBROADCASTW(xmm{k}{z}, r32)        [AVX512BW and AVX512VL]
+            * VPBROADCASTW(xmm{k}{z}, xmm/m16)    [AVX512BW and AVX512VL]
             * VPBROADCASTW(ymm, xmm/m16)          [AVX2]
+            * VPBROADCASTW(ymm{k}{z}, r32)        [AVX512BW and AVX512VL]
+            * VPBROADCASTW(ymm{k}{z}, xmm/m16)    [AVX512BW and AVX512VL]
             * VPBROADCASTW(zmm{k}{z}, r32)        [AVX512BW]
             * VPBROADCASTW(zmm{k}{z}, xmm/m16)    [AVX512BW]
-            * VPBROADCASTW(xmm{k}{z}, r32)        [AVX512BW and AVX512VL]
-            * VPBROADCASTW(ymm{k}{z}, r32)        [AVX512BW and AVX512VL]
-            * VPBROADCASTW(xmm{k}{z}, xmm/m16)    [AVX512BW and AVX512VL]
-            * VPBROADCASTW(ymm{k}{z}, xmm/m16)    [AVX512BW and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -10921,13 +10921,13 @@ class VPBROADCASTD(Instruction):
         """Supported forms:
 
             * VPBROADCASTD(xmm, xmm/m32)          [AVX2]
-            * VPBROADCASTD(ymm, xmm/m32)          [AVX2]
-            * VPBROADCASTD(zmm{k}{z}, xmm)        [AVX512F]
-            * VPBROADCASTD(zmm{k}{z}, r32/m32)    [AVX512F]
-            * VPBROADCASTD(xmm{k}{z}, xmm)        [AVX512F and AVX512VL]
-            * VPBROADCASTD(ymm{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VPBROADCASTD(xmm{k}{z}, r32/m32)    [AVX512F and AVX512VL]
+            * VPBROADCASTD(xmm{k}{z}, xmm)        [AVX512F and AVX512VL]
+            * VPBROADCASTD(ymm, xmm/m32)          [AVX2]
             * VPBROADCASTD(ymm{k}{z}, r32/m32)    [AVX512F and AVX512VL]
+            * VPBROADCASTD(ymm{k}{z}, xmm)        [AVX512F and AVX512VL]
+            * VPBROADCASTD(zmm{k}{z}, r32/m32)    [AVX512F]
+            * VPBROADCASTD(zmm{k}{z}, xmm)        [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -10994,13 +10994,13 @@ class VPBROADCASTQ(Instruction):
         """Supported forms:
 
             * VPBROADCASTQ(xmm, xmm/m64)          [AVX2]
-            * VPBROADCASTQ(ymm, xmm/m64)          [AVX2]
-            * VPBROADCASTQ(zmm{k}{z}, xmm)        [AVX512F]
-            * VPBROADCASTQ(zmm{k}{z}, r64/m64)    [AVX512F]
-            * VPBROADCASTQ(xmm{k}{z}, xmm)        [AVX512F and AVX512VL]
-            * VPBROADCASTQ(ymm{k}{z}, xmm)        [AVX512F and AVX512VL]
             * VPBROADCASTQ(xmm{k}{z}, r64/m64)    [AVX512F and AVX512VL]
+            * VPBROADCASTQ(xmm{k}{z}, xmm)        [AVX512F and AVX512VL]
+            * VPBROADCASTQ(ymm, xmm/m64)          [AVX2]
             * VPBROADCASTQ(ymm{k}{z}, r64/m64)    [AVX512F and AVX512VL]
+            * VPBROADCASTQ(ymm{k}{z}, xmm)        [AVX512F and AVX512VL]
+            * VPBROADCASTQ(zmm{k}{z}, r64/m64)    [AVX512F]
+            * VPBROADCASTQ(zmm{k}{z}, xmm)        [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11066,9 +11066,9 @@ class VPEXPANDD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXPANDD(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VPEXPANDD(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VPEXPANDD(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VPEXPANDD(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11113,9 +11113,9 @@ class VPEXPANDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXPANDQ(zmm{k}{z}, zmm/m512)    [AVX512F]
             * VPEXPANDQ(xmm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
             * VPEXPANDQ(ymm{k}{z}, ymm/m256)    [AVX512F and AVX512VL]
+            * VPEXPANDQ(zmm{k}{z}, zmm/m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11160,12 +11160,12 @@ class VPCOMPRESSD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCOMPRESSD(zmm{k}{z}, zmm)     [AVX512F]
+            * VPCOMPRESSD(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VPCOMPRESSD(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VPCOMPRESSD(m512{k}{z}, zmm)    [AVX512F]
             * VPCOMPRESSD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPCOMPRESSD(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VPCOMPRESSD(ymm{k}{z}, ymm)     [AVX512F and AVX512VL]
-            * VPCOMPRESSD(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPCOMPRESSD(zmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11220,12 +11220,12 @@ class VPCOMPRESSQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCOMPRESSQ(zmm{k}{z}, zmm)     [AVX512F]
+            * VPCOMPRESSQ(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VPCOMPRESSQ(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VPCOMPRESSQ(m512{k}{z}, zmm)    [AVX512F]
             * VPCOMPRESSQ(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPCOMPRESSQ(m128{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VPCOMPRESSQ(ymm{k}{z}, ymm)     [AVX512F and AVX512VL]
-            * VPCOMPRESSQ(m256{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPCOMPRESSQ(zmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11280,10 +11280,10 @@ class VPMASKMOVD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMASKMOVD(xmm, xmm, m128)    [AVX2]
-            * VPMASKMOVD(ymm, ymm, m256)    [AVX2]
             * VPMASKMOVD(m128, xmm, xmm)    [AVX2]
             * VPMASKMOVD(m256, ymm, ymm)    [AVX2]
+            * VPMASKMOVD(xmm, xmm, m128)    [AVX2]
+            * VPMASKMOVD(ymm, ymm, m256)    [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -11325,10 +11325,10 @@ class VPMASKMOVQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMASKMOVQ(xmm, xmm, m128)    [AVX2]
-            * VPMASKMOVQ(ymm, ymm, m256)    [AVX2]
             * VPMASKMOVQ(m128, xmm, xmm)    [AVX2]
             * VPMASKMOVQ(m256, ymm, ymm)    [AVX2]
+            * VPMASKMOVQ(xmm, xmm, m128)    [AVX2]
+            * VPMASKMOVQ(ymm, ymm, m256)    [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -11401,11 +11401,11 @@ class VMOVNTDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VMOVNTDQ(m128, xmm)    [AVX512F and AVX512VL]
             * VMOVNTDQ(m128, xmm)    [AVX]
+            * VMOVNTDQ(m256, ymm)    [AVX512F and AVX512VL]
             * VMOVNTDQ(m256, ymm)    [AVX]
             * VMOVNTDQ(m512, zmm)    [AVX512F]
-            * VMOVNTDQ(m128, xmm)    [AVX512F and AVX512VL]
-            * VMOVNTDQ(m256, ymm)    [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -11447,11 +11447,11 @@ class VMOVNTDQA(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VMOVNTDQA(xmm, m128)    [AVX512F and AVX512VL]
             * VMOVNTDQA(xmm, m128)    [AVX]
             * VMOVNTDQA(ymm, m256)    [AVX2]
-            * VMOVNTDQA(zmm, m512)    [AVX512F]
-            * VMOVNTDQA(xmm, m128)    [AVX512F and AVX512VL]
             * VMOVNTDQA(ymm, m256)    [AVX512F and AVX512VL]
+            * VMOVNTDQA(zmm, m512)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11494,10 +11494,10 @@ class VPMOVSXBW(Instruction):
         """Supported forms:
 
             * VPMOVSXBW(xmm, xmm/m64)           [AVX]
-            * VPMOVSXBW(ymm, xmm/m128)          [AVX2]
-            * VPMOVSXBW(zmm{k}{z}, ymm/m256)    [AVX512BW]
             * VPMOVSXBW(xmm{k}{z}, xmm/m64)     [AVX512BW and AVX512VL]
+            * VPMOVSXBW(ymm, xmm/m128)          [AVX2]
             * VPMOVSXBW(ymm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMOVSXBW(zmm{k}{z}, ymm/m256)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -11555,10 +11555,10 @@ class VPMOVSXBD(Instruction):
         """Supported forms:
 
             * VPMOVSXBD(xmm, xmm/m32)           [AVX]
-            * VPMOVSXBD(ymm, xmm/m64)           [AVX2]
-            * VPMOVSXBD(zmm{k}{z}, xmm/m128)    [AVX512F]
             * VPMOVSXBD(xmm{k}{z}, xmm/m32)     [AVX512F and AVX512VL]
+            * VPMOVSXBD(ymm, xmm/m64)           [AVX2]
             * VPMOVSXBD(ymm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVSXBD(zmm{k}{z}, xmm/m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11616,10 +11616,10 @@ class VPMOVSXBQ(Instruction):
         """Supported forms:
 
             * VPMOVSXBQ(xmm, xmm/m16)          [AVX]
-            * VPMOVSXBQ(ymm, xmm/m32)          [AVX2]
-            * VPMOVSXBQ(zmm{k}{z}, xmm/m64)    [AVX512F]
             * VPMOVSXBQ(xmm{k}{z}, xmm/m16)    [AVX512F and AVX512VL]
+            * VPMOVSXBQ(ymm, xmm/m32)          [AVX2]
             * VPMOVSXBQ(ymm{k}{z}, xmm/m32)    [AVX512F and AVX512VL]
+            * VPMOVSXBQ(zmm{k}{z}, xmm/m64)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11677,10 +11677,10 @@ class VPMOVSXWD(Instruction):
         """Supported forms:
 
             * VPMOVSXWD(xmm, xmm/m64)           [AVX]
-            * VPMOVSXWD(ymm, xmm/m128)          [AVX2]
-            * VPMOVSXWD(zmm{k}{z}, ymm/m256)    [AVX512F]
             * VPMOVSXWD(xmm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVSXWD(ymm, xmm/m128)          [AVX2]
             * VPMOVSXWD(ymm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VPMOVSXWD(zmm{k}{z}, ymm/m256)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11738,10 +11738,10 @@ class VPMOVSXWQ(Instruction):
         """Supported forms:
 
             * VPMOVSXWQ(xmm, xmm/m32)           [AVX]
-            * VPMOVSXWQ(ymm, xmm/m64)           [AVX2]
-            * VPMOVSXWQ(zmm{k}{z}, xmm/m128)    [AVX512F]
             * VPMOVSXWQ(xmm{k}{z}, xmm/m32)     [AVX512F and AVX512VL]
+            * VPMOVSXWQ(ymm, xmm/m64)           [AVX2]
             * VPMOVSXWQ(ymm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVSXWQ(zmm{k}{z}, xmm/m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11799,10 +11799,10 @@ class VPMOVSXDQ(Instruction):
         """Supported forms:
 
             * VPMOVSXDQ(xmm, xmm/m64)           [AVX]
-            * VPMOVSXDQ(ymm, xmm/m128)          [AVX2]
-            * VPMOVSXDQ(zmm{k}{z}, ymm/m256)    [AVX512F]
             * VPMOVSXDQ(xmm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVSXDQ(ymm, xmm/m128)          [AVX2]
             * VPMOVSXDQ(ymm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VPMOVSXDQ(zmm{k}{z}, ymm/m256)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11860,10 +11860,10 @@ class VPMOVZXBW(Instruction):
         """Supported forms:
 
             * VPMOVZXBW(xmm, xmm/m64)           [AVX]
-            * VPMOVZXBW(ymm, xmm/m128)          [AVX2]
-            * VPMOVZXBW(zmm{k}{z}, ymm/m256)    [AVX512BW]
             * VPMOVZXBW(xmm{k}{z}, xmm/m64)     [AVX512BW and AVX512VL]
+            * VPMOVZXBW(ymm, xmm/m128)          [AVX2]
             * VPMOVZXBW(ymm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMOVZXBW(zmm{k}{z}, ymm/m256)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -11921,10 +11921,10 @@ class VPMOVZXBD(Instruction):
         """Supported forms:
 
             * VPMOVZXBD(xmm, xmm/m32)           [AVX]
-            * VPMOVZXBD(ymm, xmm/m64)           [AVX2]
-            * VPMOVZXBD(zmm{k}{z}, xmm/m128)    [AVX512F]
             * VPMOVZXBD(xmm{k}{z}, xmm/m32)     [AVX512F and AVX512VL]
+            * VPMOVZXBD(ymm, xmm/m64)           [AVX2]
             * VPMOVZXBD(ymm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVZXBD(zmm{k}{z}, xmm/m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -11982,10 +11982,10 @@ class VPMOVZXBQ(Instruction):
         """Supported forms:
 
             * VPMOVZXBQ(xmm, xmm/m16)          [AVX]
-            * VPMOVZXBQ(ymm, xmm/m32)          [AVX2]
-            * VPMOVZXBQ(zmm{k}{z}, xmm/m64)    [AVX512F]
             * VPMOVZXBQ(xmm{k}{z}, xmm/m16)    [AVX512F and AVX512VL]
+            * VPMOVZXBQ(ymm, xmm/m32)          [AVX2]
             * VPMOVZXBQ(ymm{k}{z}, xmm/m32)    [AVX512F and AVX512VL]
+            * VPMOVZXBQ(zmm{k}{z}, xmm/m64)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12043,10 +12043,10 @@ class VPMOVZXWD(Instruction):
         """Supported forms:
 
             * VPMOVZXWD(xmm, xmm/m64)           [AVX]
-            * VPMOVZXWD(ymm, xmm/m128)          [AVX2]
-            * VPMOVZXWD(zmm{k}{z}, ymm/m256)    [AVX512F]
             * VPMOVZXWD(xmm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVZXWD(ymm, xmm/m128)          [AVX2]
             * VPMOVZXWD(ymm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VPMOVZXWD(zmm{k}{z}, ymm/m256)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12104,10 +12104,10 @@ class VPMOVZXWQ(Instruction):
         """Supported forms:
 
             * VPMOVZXWQ(xmm, xmm/m32)           [AVX]
-            * VPMOVZXWQ(ymm, xmm/m64)           [AVX2]
-            * VPMOVZXWQ(zmm{k}{z}, xmm/m128)    [AVX512F]
             * VPMOVZXWQ(xmm{k}{z}, xmm/m32)     [AVX512F and AVX512VL]
+            * VPMOVZXWQ(ymm, xmm/m64)           [AVX2]
             * VPMOVZXWQ(ymm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVZXWQ(zmm{k}{z}, xmm/m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12165,10 +12165,10 @@ class VPMOVZXDQ(Instruction):
         """Supported forms:
 
             * VPMOVZXDQ(xmm, xmm/m64)           [AVX]
-            * VPMOVZXDQ(ymm, xmm/m128)          [AVX2]
-            * VPMOVZXDQ(zmm{k}{z}, ymm/m256)    [AVX512F]
             * VPMOVZXDQ(xmm{k}{z}, xmm/m64)     [AVX512F and AVX512VL]
+            * VPMOVZXDQ(ymm, xmm/m128)          [AVX2]
             * VPMOVZXDQ(ymm{k}{z}, xmm/m128)    [AVX512F and AVX512VL]
+            * VPMOVZXDQ(zmm{k}{z}, ymm/m256)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12225,12 +12225,12 @@ class VPMOVWB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVWB(ymm{k}{z}, zmm)     [AVX512BW]
-            * VPMOVWB(m256{k}{z}, zmm)    [AVX512BW]
-            * VPMOVWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
             * VPMOVWB(m128{k}{z}, ymm)    [AVX512BW and AVX512VL]
+            * VPMOVWB(m256{k}{z}, zmm)    [AVX512BW]
+            * VPMOVWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
+            * VPMOVWB(ymm{k}{z}, zmm)     [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -12285,12 +12285,12 @@ class VPMOVDB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVDB(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVDB(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVDB(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVDB(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVDB(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12345,12 +12345,12 @@ class VPMOVDW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVDW(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVDW(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVDW(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVDW(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVDW(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12405,12 +12405,12 @@ class VPMOVQB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVQB(xmm{k}{z}, zmm)    [AVX512F]
+            * VPMOVQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VPMOVQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VPMOVQB(m64{k}{z}, zmm)    [AVX512F]
             * VPMOVQB(xmm{k}{z}, xmm)    [AVX512F and AVX512VL]
-            * VPMOVQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VPMOVQB(xmm{k}{z}, ymm)    [AVX512F and AVX512VL]
-            * VPMOVQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVQB(xmm{k}{z}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12465,12 +12465,12 @@ class VPMOVQW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVQW(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVQW(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVQW(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVQW(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVQW(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12525,12 +12525,12 @@ class VPMOVQD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVQD(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVQD(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVQD(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVQD(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVQD(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12585,12 +12585,12 @@ class VPMOVSWB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSWB(ymm{k}{z}, zmm)     [AVX512BW]
-            * VPMOVSWB(m256{k}{z}, zmm)    [AVX512BW]
-            * VPMOVSWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVSWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVSWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
             * VPMOVSWB(m128{k}{z}, ymm)    [AVX512BW and AVX512VL]
+            * VPMOVSWB(m256{k}{z}, zmm)    [AVX512BW]
+            * VPMOVSWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVSWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVSWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
+            * VPMOVSWB(ymm{k}{z}, zmm)     [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -12645,12 +12645,12 @@ class VPMOVSDB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSDB(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVSDB(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVSDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVSDB(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVSDB(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSDB(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12705,12 +12705,12 @@ class VPMOVSDW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSDW(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVSDW(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVSDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVSDW(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVSDW(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVSDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSDW(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12765,12 +12765,12 @@ class VPMOVSQB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSQB(xmm{k}{z}, zmm)    [AVX512F]
+            * VPMOVSQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VPMOVSQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VPMOVSQB(m64{k}{z}, zmm)    [AVX512F]
             * VPMOVSQB(xmm{k}{z}, xmm)    [AVX512F and AVX512VL]
-            * VPMOVSQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VPMOVSQB(xmm{k}{z}, ymm)    [AVX512F and AVX512VL]
-            * VPMOVSQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVSQB(xmm{k}{z}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12825,12 +12825,12 @@ class VPMOVSQW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSQW(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVSQW(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVSQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVSQW(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVSQW(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSQW(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12885,12 +12885,12 @@ class VPMOVSQD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVSQD(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVSQD(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVSQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVSQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVSQD(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVSQD(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVSQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVSQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVSQD(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -12945,12 +12945,12 @@ class VPMOVUSWB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSWB(ymm{k}{z}, zmm)     [AVX512BW]
-            * VPMOVUSWB(m256{k}{z}, zmm)    [AVX512BW]
-            * VPMOVUSWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVUSWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
-            * VPMOVUSWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
             * VPMOVUSWB(m128{k}{z}, ymm)    [AVX512BW and AVX512VL]
+            * VPMOVUSWB(m256{k}{z}, zmm)    [AVX512BW]
+            * VPMOVUSWB(m64{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVUSWB(xmm{k}{z}, xmm)     [AVX512BW and AVX512VL]
+            * VPMOVUSWB(xmm{k}{z}, ymm)     [AVX512BW and AVX512VL]
+            * VPMOVUSWB(ymm{k}{z}, zmm)     [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -13005,12 +13005,12 @@ class VPMOVUSDB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSDB(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVUSDB(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVUSDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVUSDB(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVUSDB(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSDB(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSDB(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSDB(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13065,12 +13065,12 @@ class VPMOVUSDW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSDW(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVUSDW(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVUSDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVUSDW(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVUSDW(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVUSDW(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSDW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSDW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSDW(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13125,12 +13125,12 @@ class VPMOVUSQB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSQB(xmm{k}{z}, zmm)    [AVX512F]
+            * VPMOVUSQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
+            * VPMOVUSQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
             * VPMOVUSQB(m64{k}{z}, zmm)    [AVX512F]
             * VPMOVUSQB(xmm{k}{z}, xmm)    [AVX512F and AVX512VL]
-            * VPMOVUSQB(m16{k}{z}, xmm)    [AVX512F and AVX512VL]
             * VPMOVUSQB(xmm{k}{z}, ymm)    [AVX512F and AVX512VL]
-            * VPMOVUSQB(m32{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVUSQB(xmm{k}{z}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13185,12 +13185,12 @@ class VPMOVUSQW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSQW(xmm{k}{z}, zmm)     [AVX512F]
             * VPMOVUSQW(m128{k}{z}, zmm)    [AVX512F]
-            * VPMOVUSQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
             * VPMOVUSQW(m32{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVUSQW(m64{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSQW(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSQW(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSQW(xmm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13245,12 +13245,12 @@ class VPMOVUSQD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVUSQD(ymm{k}{z}, zmm)     [AVX512F]
-            * VPMOVUSQD(m256{k}{z}, zmm)    [AVX512F]
-            * VPMOVUSQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
-            * VPMOVUSQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
             * VPMOVUSQD(m128{k}{z}, ymm)    [AVX512F and AVX512VL]
+            * VPMOVUSQD(m256{k}{z}, zmm)    [AVX512F]
+            * VPMOVUSQD(m64{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSQD(xmm{k}{z}, xmm)     [AVX512F and AVX512VL]
+            * VPMOVUSQD(xmm{k}{z}, ymm)     [AVX512F and AVX512VL]
+            * VPMOVUSQD(ymm{k}{z}, zmm)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13305,10 +13305,10 @@ class VPEXTRB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXTRB(r32, xmm, imm8)    [AVX]
+            * VPEXTRB(m8, xmm, imm8)     [AVX512BW]
             * VPEXTRB(m8, xmm, imm8)     [AVX]
             * VPEXTRB(r32, xmm, imm8)    [AVX512BW]
-            * VPEXTRB(m8, xmm, imm8)     [AVX512BW]
+            * VPEXTRB(r32, xmm, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13361,10 +13361,10 @@ class VPEXTRW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXTRW(r32, xmm, imm8)    [AVX]
+            * VPEXTRW(m16, xmm, imm8)    [AVX512BW]
             * VPEXTRW(m16, xmm, imm8)    [AVX]
             * VPEXTRW(r32, xmm, imm8)    [AVX512BW]
-            * VPEXTRW(m16, xmm, imm8)    [AVX512BW]
+            * VPEXTRW(r32, xmm, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13419,8 +13419,8 @@ class VPEXTRD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXTRD(r32/m32, xmm, imm8)    [AVX]
             * VPEXTRD(r32/m32, xmm, imm8)    [AVX512DQ]
+            * VPEXTRD(r32/m32, xmm, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13473,8 +13473,8 @@ class VPEXTRQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPEXTRQ(r64/m64, xmm, imm8)    [AVX]
             * VPEXTRQ(r64/m64, xmm, imm8)    [AVX512DQ]
+            * VPEXTRQ(r64/m64, xmm, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13527,10 +13527,10 @@ class VPINSRB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPINSRB(xmm, xmm, r32, imm8)    [AVX]
+            * VPINSRB(xmm, xmm, m8, imm8)     [AVX512BW]
             * VPINSRB(xmm, xmm, m8, imm8)     [AVX]
             * VPINSRB(xmm, xmm, r32, imm8)    [AVX512BW]
-            * VPINSRB(xmm, xmm, m8, imm8)     [AVX512BW]
+            * VPINSRB(xmm, xmm, r32, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13577,10 +13577,10 @@ class VPINSRW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPINSRW(xmm, xmm, r32, imm8)    [AVX]
+            * VPINSRW(xmm, xmm, m16, imm8)    [AVX512BW]
             * VPINSRW(xmm, xmm, m16, imm8)    [AVX]
             * VPINSRW(xmm, xmm, r32, imm8)    [AVX512BW]
-            * VPINSRW(xmm, xmm, m16, imm8)    [AVX512BW]
+            * VPINSRW(xmm, xmm, r32, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13627,8 +13627,8 @@ class VPINSRD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPINSRD(xmm, xmm, r32/m32, imm8)    [AVX]
             * VPINSRD(xmm, xmm, r32/m32, imm8)    [AVX512DQ]
+            * VPINSRD(xmm, xmm, r32/m32, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13675,8 +13675,8 @@ class VPINSRQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPINSRQ(xmm, xmm, r64/m64, imm8)    [AVX]
             * VPINSRQ(xmm, xmm, r64/m64, imm8)    [AVX512DQ]
+            * VPINSRQ(xmm, xmm, r64/m64, imm8)    [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -13724,10 +13724,10 @@ class VPGATHERDD(Instruction):
         """Supported forms:
 
             * VPGATHERDD(xmm, vm32x, xmm)    [AVX2]
-            * VPGATHERDD(ymm, vm32y, ymm)    [AVX2]
-            * VPGATHERDD(zmm{k}, vm32z)      [AVX512F]
             * VPGATHERDD(xmm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VPGATHERDD(ymm, vm32y, ymm)    [AVX2]
             * VPGATHERDD(ymm{k}, vm32y)      [AVX512F and AVX512VL]
+            * VPGATHERDD(zmm{k}, vm32z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13777,10 +13777,10 @@ class VPGATHERDQ(Instruction):
         """Supported forms:
 
             * VPGATHERDQ(xmm, vm32x, xmm)    [AVX2]
-            * VPGATHERDQ(ymm, vm32x, ymm)    [AVX2]
-            * VPGATHERDQ(zmm{k}, vm32y)      [AVX512F]
             * VPGATHERDQ(xmm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VPGATHERDQ(ymm, vm32x, ymm)    [AVX2]
             * VPGATHERDQ(ymm{k}, vm32x)      [AVX512F and AVX512VL]
+            * VPGATHERDQ(zmm{k}, vm32y)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13831,9 +13831,9 @@ class VPGATHERQD(Instruction):
 
             * VPGATHERQD(xmm, vm64x, xmm)    [AVX2]
             * VPGATHERQD(xmm, vm64y, xmm)    [AVX2]
-            * VPGATHERQD(ymm{k}, vm64z)      [AVX512F]
             * VPGATHERQD(xmm{k}, vm64x)      [AVX512F and AVX512VL]
             * VPGATHERQD(xmm{k}, vm64y)      [AVX512F and AVX512VL]
+            * VPGATHERQD(ymm{k}, vm64z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13883,10 +13883,10 @@ class VPGATHERQQ(Instruction):
         """Supported forms:
 
             * VPGATHERQQ(xmm, vm64x, xmm)    [AVX2]
-            * VPGATHERQQ(ymm, vm64y, ymm)    [AVX2]
-            * VPGATHERQQ(zmm{k}, vm64z)      [AVX512F]
             * VPGATHERQQ(xmm{k}, vm64x)      [AVX512F and AVX512VL]
+            * VPGATHERQQ(ymm, vm64y, ymm)    [AVX2]
             * VPGATHERQQ(ymm{k}, vm64y)      [AVX512F and AVX512VL]
+            * VPGATHERQQ(zmm{k}, vm64z)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13935,9 +13935,9 @@ class VPSCATTERDD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSCATTERDD(vm32z{k}, zmm)    [AVX512F]
             * VPSCATTERDD(vm32x{k}, xmm)    [AVX512F and AVX512VL]
             * VPSCATTERDD(vm32y{k}, ymm)    [AVX512F and AVX512VL]
+            * VPSCATTERDD(vm32z{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -13973,9 +13973,9 @@ class VPSCATTERDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSCATTERDQ(vm32y{k}, zmm)    [AVX512F]
             * VPSCATTERDQ(vm32x{k}, xmm)    [AVX512F and AVX512VL]
             * VPSCATTERDQ(vm32x{k}, ymm)    [AVX512F and AVX512VL]
+            * VPSCATTERDQ(vm32y{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -14011,9 +14011,9 @@ class VPSCATTERQD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSCATTERQD(vm64z{k}, ymm)    [AVX512F]
             * VPSCATTERQD(vm64x{k}, xmm)    [AVX512F and AVX512VL]
             * VPSCATTERQD(vm64y{k}, xmm)    [AVX512F and AVX512VL]
+            * VPSCATTERQD(vm64z{k}, ymm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -14049,9 +14049,9 @@ class VPSCATTERQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSCATTERQQ(vm64z{k}, zmm)    [AVX512F]
             * VPSCATTERQQ(vm64x{k}, xmm)    [AVX512F and AVX512VL]
             * VPSCATTERQQ(vm64y{k}, ymm)    [AVX512F and AVX512VL]
+            * VPSCATTERQQ(vm64z{k}, zmm)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -14088,8 +14088,8 @@ class VPCONFLICTD(Instruction):
         """Supported forms:
 
             * VPCONFLICTD(xmm{k}{z}, m128/m32bcst)    [AVX512VL and AVX512CD]
-            * VPCONFLICTD(ymm{k}{z}, m256/m32bcst)    [AVX512VL and AVX512CD]
             * VPCONFLICTD(xmm{k}{z}, xmm)             [AVX512VL and AVX512CD]
+            * VPCONFLICTD(ymm{k}{z}, m256/m32bcst)    [AVX512VL and AVX512CD]
             * VPCONFLICTD(ymm{k}{z}, ymm)             [AVX512VL and AVX512CD]
             * VPCONFLICTD(zmm{k}{z}, m512/m32bcst)    [AVX512CD]
             * VPCONFLICTD(zmm{k}{z}, zmm)             [AVX512CD]
@@ -14138,8 +14138,8 @@ class VPCONFLICTQ(Instruction):
         """Supported forms:
 
             * VPCONFLICTQ(xmm{k}{z}, m128/m64bcst)    [AVX512VL and AVX512CD]
-            * VPCONFLICTQ(ymm{k}{z}, m256/m64bcst)    [AVX512VL and AVX512CD]
             * VPCONFLICTQ(xmm{k}{z}, xmm)             [AVX512VL and AVX512CD]
+            * VPCONFLICTQ(ymm{k}{z}, m256/m64bcst)    [AVX512VL and AVX512CD]
             * VPCONFLICTQ(ymm{k}{z}, ymm)             [AVX512VL and AVX512CD]
             * VPCONFLICTQ(zmm{k}{z}, m512/m64bcst)    [AVX512CD]
             * VPCONFLICTQ(zmm{k}{z}, zmm)             [AVX512CD]
@@ -14188,8 +14188,8 @@ class VPLZCNTD(Instruction):
         """Supported forms:
 
             * VPLZCNTD(xmm{k}{z}, m128/m32bcst)    [AVX512VL and AVX512CD]
-            * VPLZCNTD(ymm{k}{z}, m256/m32bcst)    [AVX512VL and AVX512CD]
             * VPLZCNTD(xmm{k}{z}, xmm)             [AVX512VL and AVX512CD]
+            * VPLZCNTD(ymm{k}{z}, m256/m32bcst)    [AVX512VL and AVX512CD]
             * VPLZCNTD(ymm{k}{z}, ymm)             [AVX512VL and AVX512CD]
             * VPLZCNTD(zmm{k}{z}, m512/m32bcst)    [AVX512CD]
             * VPLZCNTD(zmm{k}{z}, zmm)             [AVX512CD]
@@ -14238,8 +14238,8 @@ class VPLZCNTQ(Instruction):
         """Supported forms:
 
             * VPLZCNTQ(xmm{k}{z}, m128/m64bcst)    [AVX512VL and AVX512CD]
-            * VPLZCNTQ(ymm{k}{z}, m256/m64bcst)    [AVX512VL and AVX512CD]
             * VPLZCNTQ(xmm{k}{z}, xmm)             [AVX512VL and AVX512CD]
+            * VPLZCNTQ(ymm{k}{z}, m256/m64bcst)    [AVX512VL and AVX512CD]
             * VPLZCNTQ(ymm{k}{z}, ymm)             [AVX512VL and AVX512CD]
             * VPLZCNTQ(zmm{k}{z}, m512/m64bcst)    [AVX512CD]
             * VPLZCNTQ(zmm{k}{z}, zmm)             [AVX512CD]
@@ -14359,10 +14359,10 @@ class VPADDB(Instruction):
         """Supported forms:
 
             * VPADDB(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDB(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14420,10 +14420,10 @@ class VPADDW(Instruction):
         """Supported forms:
 
             * VPADDW(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDW(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14481,13 +14481,13 @@ class VPADDD(Instruction):
         """Supported forms:
 
             * VPADDD(xmm, xmm, xmm/m128)              [AVX]
-            * VPADDD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPADDD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPADDD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPADDD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPADDD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPADDD(ymm, ymm, ymm/m256)              [AVX2]
             * VPADDD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPADDD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPADDD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPADDD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -14545,13 +14545,13 @@ class VPADDQ(Instruction):
         """Supported forms:
 
             * VPADDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPADDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPADDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPADDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPADDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPADDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPADDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPADDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPADDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPADDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPADDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -14609,10 +14609,10 @@ class VPADDSB(Instruction):
         """Supported forms:
 
             * VPADDSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14670,10 +14670,10 @@ class VPADDSW(Instruction):
         """Supported forms:
 
             * VPADDSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14731,10 +14731,10 @@ class VPADDUSB(Instruction):
         """Supported forms:
 
             * VPADDUSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDUSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDUSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDUSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDUSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDUSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDUSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14792,10 +14792,10 @@ class VPADDUSW(Instruction):
         """Supported forms:
 
             * VPADDUSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPADDUSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPADDUSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPADDUSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPADDUSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPADDUSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPADDUSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -14973,10 +14973,10 @@ class VPSUBB(Instruction):
         """Supported forms:
 
             * VPSUBB(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBB(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15039,10 +15039,10 @@ class VPSUBW(Instruction):
         """Supported forms:
 
             * VPSUBW(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBW(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15105,13 +15105,13 @@ class VPSUBD(Instruction):
         """Supported forms:
 
             * VPSUBD(xmm, xmm, xmm/m128)              [AVX]
-            * VPSUBD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSUBD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPSUBD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSUBD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPSUBD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSUBD(ymm, ymm, ymm/m256)              [AVX2]
             * VPSUBD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPSUBD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSUBD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPSUBD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -15174,13 +15174,13 @@ class VPSUBQ(Instruction):
         """Supported forms:
 
             * VPSUBQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPSUBQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSUBQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPSUBQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSUBQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPSUBQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSUBQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPSUBQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPSUBQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSUBQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPSUBQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -15243,10 +15243,10 @@ class VPSUBSB(Instruction):
         """Supported forms:
 
             * VPSUBSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15309,10 +15309,10 @@ class VPSUBSW(Instruction):
         """Supported forms:
 
             * VPSUBSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15375,10 +15375,10 @@ class VPSUBUSB(Instruction):
         """Supported forms:
 
             * VPSUBUSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBUSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBUSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBUSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBUSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBUSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBUSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15441,10 +15441,10 @@ class VPSUBUSW(Instruction):
         """Supported forms:
 
             * VPSUBUSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPSUBUSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSUBUSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSUBUSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSUBUSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPSUBUSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSUBUSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15633,10 +15633,10 @@ class VPMAXSB(Instruction):
         """Supported forms:
 
             * VPMAXSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPMAXSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMAXSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMAXSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMAXSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPMAXSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMAXSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15694,10 +15694,10 @@ class VPMAXSW(Instruction):
         """Supported forms:
 
             * VPMAXSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMAXSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMAXSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMAXSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMAXSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMAXSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMAXSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15755,13 +15755,13 @@ class VPMAXSD(Instruction):
         """Supported forms:
 
             * VPMAXSD(xmm, xmm, xmm/m128)              [AVX]
-            * VPMAXSD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMAXSD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPMAXSD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMAXSD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPMAXSD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMAXSD(ymm, ymm, ymm/m256)              [AVX2]
             * VPMAXSD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPMAXSD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMAXSD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPMAXSD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -15818,12 +15818,12 @@ class VPMAXSQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMAXSQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMAXSQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMAXSQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMAXSQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPMAXSQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMAXSQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMAXSQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMAXSQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -15869,10 +15869,10 @@ class VPMAXUB(Instruction):
         """Supported forms:
 
             * VPMAXUB(xmm, xmm, xmm/m128)          [AVX]
-            * VPMAXUB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMAXUB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMAXUB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMAXUB(ymm, ymm, ymm/m256)          [AVX2]
             * VPMAXUB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMAXUB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15930,10 +15930,10 @@ class VPMAXUW(Instruction):
         """Supported forms:
 
             * VPMAXUW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMAXUW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMAXUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMAXUW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMAXUW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMAXUW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMAXUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -15991,13 +15991,13 @@ class VPMAXUD(Instruction):
         """Supported forms:
 
             * VPMAXUD(xmm, xmm, xmm/m128)              [AVX]
-            * VPMAXUD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMAXUD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPMAXUD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMAXUD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPMAXUD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMAXUD(ymm, ymm, ymm/m256)              [AVX2]
             * VPMAXUD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPMAXUD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMAXUD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPMAXUD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16054,12 +16054,12 @@ class VPMAXUQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMAXUQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMAXUQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMAXUQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMAXUQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPMAXUQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMAXUQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMAXUQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMAXUQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16105,10 +16105,10 @@ class VPMINSB(Instruction):
         """Supported forms:
 
             * VPMINSB(xmm, xmm, xmm/m128)          [AVX]
-            * VPMINSB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMINSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMINSB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMINSB(ymm, ymm, ymm/m256)          [AVX2]
             * VPMINSB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMINSB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -16166,10 +16166,10 @@ class VPMINSW(Instruction):
         """Supported forms:
 
             * VPMINSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMINSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMINSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMINSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMINSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMINSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMINSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -16227,13 +16227,13 @@ class VPMINSD(Instruction):
         """Supported forms:
 
             * VPMINSD(xmm, xmm, xmm/m128)              [AVX]
-            * VPMINSD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMINSD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPMINSD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMINSD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPMINSD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMINSD(ymm, ymm, ymm/m256)              [AVX2]
             * VPMINSD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPMINSD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMINSD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPMINSD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16290,12 +16290,12 @@ class VPMINSQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMINSQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMINSQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMINSQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMINSQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPMINSQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMINSQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMINSQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMINSQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16341,10 +16341,10 @@ class VPMINUB(Instruction):
         """Supported forms:
 
             * VPMINUB(xmm, xmm, xmm/m128)          [AVX]
-            * VPMINUB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMINUB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMINUB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMINUB(ymm, ymm, ymm/m256)          [AVX2]
             * VPMINUB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMINUB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -16402,10 +16402,10 @@ class VPMINUW(Instruction):
         """Supported forms:
 
             * VPMINUW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMINUW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMINUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMINUW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMINUW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMINUW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMINUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -16463,13 +16463,13 @@ class VPMINUD(Instruction):
         """Supported forms:
 
             * VPMINUD(xmm, xmm, xmm/m128)              [AVX]
-            * VPMINUD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMINUD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPMINUD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMINUD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPMINUD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMINUD(ymm, ymm, ymm/m256)              [AVX2]
             * VPMINUD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPMINUD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMINUD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPMINUD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16526,12 +16526,12 @@ class VPMINUQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMINUQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMINUQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMINUQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMINUQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPMINUQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMINUQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMINUQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMINUQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -16578,14 +16578,14 @@ class VPSLLW(Instruction):
 
             * VPSLLW(xmm, xmm, imm8)               [AVX]
             * VPSLLW(xmm, xmm, xmm/m128)           [AVX]
+            * VPSLLW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSLLW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPSLLW(ymm, ymm, imm8)               [AVX2]
             * VPSLLW(ymm, ymm, xmm/m128)           [AVX2]
+            * VPSLLW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSLLW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
             * VPSLLW(zmm{k}{z}, zmm, xmm/m128)     [AVX512BW]
             * VPSLLW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
-            * VPSLLW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSLLW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSLLW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
-            * VPSLLW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -16701,17 +16701,17 @@ class VPSLLD(Instruction):
 
             * VPSLLD(xmm, xmm, imm8)                   [AVX]
             * VPSLLD(xmm, xmm, xmm/m128)               [AVX]
+            * VPSLLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSLLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSLLD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSLLD(ymm, ymm, imm8)                   [AVX2]
             * VPSLLD(ymm, ymm, xmm/m128)               [AVX2]
+            * VPSLLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSLLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSLLD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSLLD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPSLLD(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSLLD(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSLLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSLLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSLLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSLLD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSLLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSLLD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -16827,17 +16827,17 @@ class VPSLLQ(Instruction):
 
             * VPSLLQ(xmm, xmm, imm8)                   [AVX]
             * VPSLLQ(xmm, xmm, xmm/m128)               [AVX]
+            * VPSLLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSLLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSLLQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSLLQ(ymm, ymm, imm8)                   [AVX2]
             * VPSLLQ(ymm, ymm, xmm/m128)               [AVX2]
+            * VPSLLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSLLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSLLQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSLLQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
             * VPSLLQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSLLQ(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSLLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSLLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSLLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSLLQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSLLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSLLQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -16953,14 +16953,14 @@ class VPSRLW(Instruction):
 
             * VPSRLW(xmm, xmm, imm8)               [AVX]
             * VPSRLW(xmm, xmm, xmm/m128)           [AVX]
+            * VPSRLW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSRLW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPSRLW(ymm, ymm, imm8)               [AVX2]
             * VPSRLW(ymm, ymm, xmm/m128)           [AVX2]
+            * VPSRLW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSRLW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
             * VPSRLW(zmm{k}{z}, zmm, xmm/m128)     [AVX512BW]
             * VPSRLW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
-            * VPSRLW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSRLW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSRLW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
-            * VPSRLW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17076,17 +17076,17 @@ class VPSRLD(Instruction):
 
             * VPSRLD(xmm, xmm, imm8)                   [AVX]
             * VPSRLD(xmm, xmm, xmm/m128)               [AVX]
+            * VPSRLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSRLD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRLD(ymm, ymm, imm8)                   [AVX2]
             * VPSRLD(ymm, ymm, xmm/m128)               [AVX2]
+            * VPSRLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSRLD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRLD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPSRLD(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSRLD(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSRLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSRLD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSRLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSRLD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17202,17 +17202,17 @@ class VPSRLQ(Instruction):
 
             * VPSRLQ(xmm, xmm, imm8)                   [AVX]
             * VPSRLQ(xmm, xmm, xmm/m128)               [AVX]
+            * VPSRLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSRLQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRLQ(ymm, ymm, imm8)                   [AVX2]
             * VPSRLQ(ymm, ymm, xmm/m128)               [AVX2]
+            * VPSRLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSRLQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRLQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
             * VPSRLQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSRLQ(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSRLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSRLQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSRLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSRLQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17328,14 +17328,14 @@ class VPSRAW(Instruction):
 
             * VPSRAW(xmm, xmm, imm8)               [AVX]
             * VPSRAW(xmm, xmm, xmm/m128)           [AVX]
+            * VPSRAW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSRAW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPSRAW(ymm, ymm, imm8)               [AVX2]
             * VPSRAW(ymm, ymm, xmm/m128)           [AVX2]
+            * VPSRAW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
+            * VPSRAW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
             * VPSRAW(zmm{k}{z}, zmm, xmm/m128)     [AVX512BW]
             * VPSRAW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
-            * VPSRAW(xmm{k}{z}, xmm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSRAW(ymm{k}{z}, ymm, xmm/m128)     [AVX512BW and AVX512VL]
-            * VPSRAW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
-            * VPSRAW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17451,17 +17451,17 @@ class VPSRAD(Instruction):
 
             * VPSRAD(xmm, xmm, imm8)                   [AVX]
             * VPSRAD(xmm, xmm, xmm/m128)               [AVX]
+            * VPSRAD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRAD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSRAD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRAD(ymm, ymm, imm8)                   [AVX2]
             * VPSRAD(ymm, ymm, xmm/m128)               [AVX2]
+            * VPSRAD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRAD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSRAD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRAD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPSRAD(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSRAD(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSRAD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRAD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRAD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSRAD(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSRAD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSRAD(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17575,15 +17575,15 @@ class VPSRAQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPSRAQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRAQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPSRAQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
+            * VPSRAQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSRAQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPSRAQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
             * VPSRAQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
             * VPSRAQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
             * VPSRAQ(zmm{k}{z}, zmm, xmm/m128)         [AVX512F]
-            * VPSRAQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRAQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSRAQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSRAQ(xmm{k}{z}, xmm, xmm/m128)         [AVX512F and AVX512VL]
-            * VPSRAQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
-            * VPSRAQ(ymm{k}{z}, ymm, xmm/m128)         [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17669,12 +17669,12 @@ class VPROLD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPROLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPROLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPROLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPROLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
             * VPROLD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPROLD(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPROLD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPROLD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPROLD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPROLD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17731,12 +17731,12 @@ class VPROLQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPROLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPROLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPROLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPROLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
             * VPROLQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
             * VPROLQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPROLQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPROLQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPROLQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPROLQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17793,12 +17793,12 @@ class VPRORD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPRORD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPRORD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPRORD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPRORD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
             * VPRORD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPRORD(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPRORD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPRORD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPRORD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPRORD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17855,12 +17855,12 @@ class VPRORQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPRORQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPRORQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
+            * VPRORQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
+            * VPRORQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
             * VPRORQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
             * VPRORQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPRORQ(xmm{k}{z}, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPRORQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPRORQ(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPRORQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -17917,9 +17917,9 @@ class VPSLLVW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSLLVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSLLVW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPSLLVW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSLLVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -17965,13 +17965,13 @@ class VPSLLVD(Instruction):
         """Supported forms:
 
             * VPSLLVD(xmm, xmm, xmm/m128)              [AVX2]
-            * VPSLLVD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSLLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPSLLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSLLVD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPSLLVD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSLLVD(ymm, ymm, ymm/m256)              [AVX2]
             * VPSLLVD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPSLLVD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSLLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPSLLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18029,13 +18029,13 @@ class VPSLLVQ(Instruction):
         """Supported forms:
 
             * VPSLLVQ(xmm, xmm, xmm/m128)              [AVX2]
-            * VPSLLVQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSLLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPSLLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSLLVQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPSLLVQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSLLVQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPSLLVQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPSLLVQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSLLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPSLLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18092,9 +18092,9 @@ class VPSRLVW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSRLVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSRLVW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPSRLVW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSRLVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -18140,13 +18140,13 @@ class VPSRLVD(Instruction):
         """Supported forms:
 
             * VPSRLVD(xmm, xmm, xmm/m128)              [AVX2]
-            * VPSRLVD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSRLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPSRLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSRLVD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPSRLVD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSRLVD(ymm, ymm, ymm/m256)              [AVX2]
             * VPSRLVD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPSRLVD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSRLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPSRLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18204,13 +18204,13 @@ class VPSRLVQ(Instruction):
         """Supported forms:
 
             * VPSRLVQ(xmm, xmm, xmm/m128)              [AVX2]
-            * VPSRLVQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSRLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPSRLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSRLVQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPSRLVQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSRLVQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPSRLVQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPSRLVQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSRLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPSRLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18267,9 +18267,9 @@ class VPSRAVW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSRAVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSRAVW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPSRAVW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSRAVW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -18315,13 +18315,13 @@ class VPSRAVD(Instruction):
         """Supported forms:
 
             * VPSRAVD(xmm, xmm, xmm/m128)              [AVX2]
-            * VPSRAVD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPSRAVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPSRAVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSRAVD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPSRAVD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPSRAVD(ymm, ymm, ymm/m256)              [AVX2]
             * VPSRAVD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPSRAVD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSRAVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPSRAVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18378,12 +18378,12 @@ class VPSRAVQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPSRAVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPSRAVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPSRAVQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPSRAVQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPSRAVQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPSRAVQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPSRAVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPSRAVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18428,12 +18428,12 @@ class VPROLVD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPROLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPROLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPROLVD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPROLVD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPROLVD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPROLVD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPROLVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPROLVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18478,12 +18478,12 @@ class VPROLVQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPROLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPROLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPROLVQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPROLVQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPROLVQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPROLVQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPROLVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPROLVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18528,12 +18528,12 @@ class VPRORVD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPRORVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPRORVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPRORVD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPRORVD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPRORVD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPRORVD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPRORVD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPRORVD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18578,12 +18578,12 @@ class VPRORVQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPRORVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPRORVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPRORVQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPRORVQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPRORVQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPRORVQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPRORVQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPRORVQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18629,10 +18629,10 @@ class VPMULLW(Instruction):
         """Supported forms:
 
             * VPMULLW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMULLW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMULLW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMULLW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMULLW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMULLW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMULLW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -18690,10 +18690,10 @@ class VPMULHW(Instruction):
         """Supported forms:
 
             * VPMULHW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMULHW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMULHW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMULHW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMULHW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMULHW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMULHW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -18751,10 +18751,10 @@ class VPMULHUW(Instruction):
         """Supported forms:
 
             * VPMULHUW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMULHUW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMULHUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMULHUW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMULHUW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMULHUW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMULHUW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -18812,13 +18812,13 @@ class VPMULLD(Instruction):
         """Supported forms:
 
             * VPMULLD(xmm, xmm, xmm/m128)              [AVX]
-            * VPMULLD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMULLD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPMULLD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMULLD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPMULLD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMULLD(ymm, ymm, ymm/m256)              [AVX2]
             * VPMULLD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPMULLD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMULLD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPMULLD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18875,12 +18875,12 @@ class VPMULLQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMULLQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
-            * VPMULLQ(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
             * VPMULLQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VPMULLQ(xmm{k}{z}, xmm, xmm)             [AVX512DQ and AVX512VL]
             * VPMULLQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VPMULLQ(ymm{k}{z}, ymm, ymm)             [AVX512DQ and AVX512VL]
+            * VPMULLQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512DQ]
+            * VPMULLQ(zmm{k}{z}, zmm, zmm)             [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -18926,13 +18926,13 @@ class VPMULDQ(Instruction):
         """Supported forms:
 
             * VPMULDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPMULDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMULDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMULDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMULDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMULDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMULDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPMULDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMULDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMULDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMULDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -18990,13 +18990,13 @@ class VPMULUDQ(Instruction):
         """Supported forms:
 
             * VPMULUDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPMULUDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPMULUDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPMULUDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPMULUDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPMULUDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPMULUDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPMULUDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPMULUDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPMULUDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPMULUDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -19054,10 +19054,10 @@ class VPMULHRSW(Instruction):
         """Supported forms:
 
             * VPMULHRSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMULHRSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMULHRSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMULHRSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMULHRSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMULHRSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMULHRSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19115,10 +19115,10 @@ class VPMADDWD(Instruction):
         """Supported forms:
 
             * VPMADDWD(xmm, xmm, xmm/m128)          [AVX]
-            * VPMADDWD(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMADDWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMADDWD(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMADDWD(ymm, ymm, ymm/m256)          [AVX2]
             * VPMADDWD(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMADDWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19176,10 +19176,10 @@ class VPMADDUBSW(Instruction):
         """Supported forms:
 
             * VPMADDUBSW(xmm, xmm, xmm/m128)          [AVX]
-            * VPMADDUBSW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPMADDUBSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPMADDUBSW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPMADDUBSW(ymm, ymm, ymm/m256)          [AVX2]
             * VPMADDUBSW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPMADDUBSW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19337,10 +19337,10 @@ class VPAVGB(Instruction):
         """Supported forms:
 
             * VPAVGB(xmm, xmm, xmm/m128)          [AVX]
-            * VPAVGB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPAVGB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPAVGB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPAVGB(ymm, ymm, ymm/m256)          [AVX2]
             * VPAVGB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPAVGB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19398,10 +19398,10 @@ class VPAVGW(Instruction):
         """Supported forms:
 
             * VPAVGW(xmm, xmm, xmm/m128)          [AVX]
-            * VPAVGW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPAVGW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPAVGW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPAVGW(ymm, ymm, ymm/m256)          [AVX2]
             * VPAVGW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPAVGW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19458,11 +19458,11 @@ class VPSADBW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPSADBW(xmm, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPSADBW(xmm, xmm, xmm/m128)    [AVX]
             * VPSADBW(ymm, ymm, ymm/m256)    [AVX2]
-            * VPSADBW(zmm, zmm, zmm/m512)    [AVX512BW]
-            * VPSADBW(xmm, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPSADBW(ymm, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSADBW(zmm, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19572,9 +19572,9 @@ class VDBPSADBW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VDBPSADBW(zmm{k}{z}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VDBPSADBW(xmm{k}{z}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VDBPSADBW(ymm{k}{z}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VDBPSADBW(zmm{k}{z}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -19663,11 +19663,11 @@ class VPCMPEQB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPEQB(xmm, xmm, xmm/m128)     [AVX]
-            * VPCMPEQB(ymm, ymm, ymm/m256)     [AVX2]
-            * VPCMPEQB(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPCMPEQB(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPCMPEQB(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPCMPEQB(k{k}, zmm, zmm/m512)    [AVX512BW]
+            * VPCMPEQB(xmm, xmm, xmm/m128)     [AVX]
+            * VPCMPEQB(ymm, ymm, ymm/m256)     [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -19729,11 +19729,11 @@ class VPCMPEQW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPEQW(xmm, xmm, xmm/m128)     [AVX]
-            * VPCMPEQW(ymm, ymm, ymm/m256)     [AVX2]
-            * VPCMPEQW(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPCMPEQW(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPCMPEQW(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPCMPEQW(k{k}, zmm, zmm/m512)    [AVX512BW]
+            * VPCMPEQW(xmm, xmm, xmm/m128)     [AVX]
+            * VPCMPEQW(ymm, ymm, ymm/m256)     [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -19795,14 +19795,14 @@ class VPCMPEQD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPEQD(xmm, xmm, xmm/m128)         [AVX]
-            * VPCMPEQD(ymm, ymm, ymm/m256)         [AVX2]
-            * VPCMPEQD(k{k}, zmm, m512/m32bcst)    [AVX512F]
-            * VPCMPEQD(k{k}, zmm, zmm)             [AVX512F]
             * VPCMPEQD(k{k}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPCMPEQD(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPCMPEQD(k{k}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPCMPEQD(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPCMPEQD(k{k}, zmm, m512/m32bcst)    [AVX512F]
+            * VPCMPEQD(k{k}, zmm, zmm)             [AVX512F]
+            * VPCMPEQD(xmm, xmm, xmm/m128)         [AVX]
+            * VPCMPEQD(ymm, ymm, ymm/m256)         [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -19864,14 +19864,14 @@ class VPCMPEQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPEQQ(xmm, xmm, xmm/m128)         [AVX]
-            * VPCMPEQQ(ymm, ymm, ymm/m256)         [AVX2]
-            * VPCMPEQQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
-            * VPCMPEQQ(k{k}, zmm, zmm)             [AVX512F]
             * VPCMPEQQ(k{k}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPCMPEQQ(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPCMPEQQ(k{k}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPCMPEQQ(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPCMPEQQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
+            * VPCMPEQQ(k{k}, zmm, zmm)             [AVX512F]
+            * VPCMPEQQ(xmm, xmm, xmm/m128)         [AVX]
+            * VPCMPEQQ(ymm, ymm, ymm/m256)         [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -19933,11 +19933,11 @@ class VPCMPGTB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPGTB(xmm, xmm, xmm/m128)     [AVX]
-            * VPCMPGTB(ymm, ymm, ymm/m256)     [AVX2]
-            * VPCMPGTB(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPCMPGTB(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPCMPGTB(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPCMPGTB(k{k}, zmm, zmm/m512)    [AVX512BW]
+            * VPCMPGTB(xmm, xmm, xmm/m128)     [AVX]
+            * VPCMPGTB(ymm, ymm, ymm/m256)     [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -19999,11 +19999,11 @@ class VPCMPGTW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPGTW(xmm, xmm, xmm/m128)     [AVX]
-            * VPCMPGTW(ymm, ymm, ymm/m256)     [AVX2]
-            * VPCMPGTW(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPCMPGTW(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPCMPGTW(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPCMPGTW(k{k}, zmm, zmm/m512)    [AVX512BW]
+            * VPCMPGTW(xmm, xmm, xmm/m128)     [AVX]
+            * VPCMPGTW(ymm, ymm, ymm/m256)     [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -20065,14 +20065,14 @@ class VPCMPGTD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPGTD(xmm, xmm, xmm/m128)         [AVX]
-            * VPCMPGTD(ymm, ymm, ymm/m256)         [AVX2]
-            * VPCMPGTD(k{k}, zmm, m512/m32bcst)    [AVX512F]
-            * VPCMPGTD(k{k}, zmm, zmm)             [AVX512F]
             * VPCMPGTD(k{k}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPCMPGTD(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPCMPGTD(k{k}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPCMPGTD(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPCMPGTD(k{k}, zmm, m512/m32bcst)    [AVX512F]
+            * VPCMPGTD(k{k}, zmm, zmm)             [AVX512F]
+            * VPCMPGTD(xmm, xmm, xmm/m128)         [AVX]
+            * VPCMPGTD(ymm, ymm, ymm/m256)         [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -20134,14 +20134,14 @@ class VPCMPGTQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPGTQ(xmm, xmm, xmm/m128)         [AVX]
-            * VPCMPGTQ(ymm, ymm, ymm/m256)         [AVX2]
-            * VPCMPGTQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
-            * VPCMPGTQ(k{k}, zmm, zmm)             [AVX512F]
             * VPCMPGTQ(k{k}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPCMPGTQ(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPCMPGTQ(k{k}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPCMPGTQ(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPCMPGTQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
+            * VPCMPGTQ(k{k}, zmm, zmm)             [AVX512F]
+            * VPCMPGTQ(xmm, xmm, xmm/m128)         [AVX]
+            * VPCMPGTQ(ymm, ymm, ymm/m256)         [AVX2]
         """
 
         origin = kwargs.get("origin")
@@ -20203,9 +20203,9 @@ class VPCMPB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPB(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VPCMPB(k{k}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPCMPB(k{k}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPCMPB(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20262,9 +20262,9 @@ class VPCMPW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPW(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VPCMPW(k{k}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPCMPW(k{k}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPCMPW(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20321,12 +20321,12 @@ class VPCMPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPD(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VPCMPD(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VPCMPD(k{k}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPD(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPCMPD(k{k}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPD(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPCMPD(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VPCMPD(k{k}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -20383,12 +20383,12 @@ class VPCMPQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPQ(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VPCMPQ(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VPCMPQ(k{k}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPQ(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPCMPQ(k{k}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPQ(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPCMPQ(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VPCMPQ(k{k}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -20445,9 +20445,9 @@ class VPCMPUB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPUB(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VPCMPUB(k{k}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPCMPUB(k{k}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPCMPUB(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20504,9 +20504,9 @@ class VPCMPUW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPUW(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VPCMPUW(k{k}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
             * VPCMPUW(k{k}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPCMPUW(k{k}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20563,12 +20563,12 @@ class VPCMPUD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPUD(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VPCMPUD(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VPCMPUD(k{k}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPUD(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPCMPUD(k{k}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPUD(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPCMPUD(k{k}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VPCMPUD(k{k}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -20625,12 +20625,12 @@ class VPCMPUQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPCMPUQ(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VPCMPUQ(k{k}, zmm, zmm, imm8)             [AVX512F]
             * VPCMPUQ(k{k}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPUQ(k{k}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPCMPUQ(k{k}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPCMPUQ(k{k}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPCMPUQ(k{k}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VPCMPUQ(k{k}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -20688,10 +20688,10 @@ class VPABSB(Instruction):
         """Supported forms:
 
             * VPABSB(xmm, xmm/m128)          [AVX]
-            * VPABSB(ymm, ymm/m256)          [AVX2]
-            * VPABSB(zmm{k}{z}, zmm/m512)    [AVX512BW]
             * VPABSB(xmm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPABSB(ymm, ymm/m256)          [AVX2]
             * VPABSB(ymm{k}{z}, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPABSB(zmm{k}{z}, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20749,10 +20749,10 @@ class VPABSW(Instruction):
         """Supported forms:
 
             * VPABSW(xmm, xmm/m128)          [AVX]
-            * VPABSW(ymm, ymm/m256)          [AVX2]
-            * VPABSW(zmm{k}{z}, zmm/m512)    [AVX512BW]
             * VPABSW(xmm{k}{z}, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPABSW(ymm, ymm/m256)          [AVX2]
             * VPABSW(ymm{k}{z}, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPABSW(zmm{k}{z}, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -20810,13 +20810,13 @@ class VPABSD(Instruction):
         """Supported forms:
 
             * VPABSD(xmm, xmm/m128)              [AVX]
+            * VPABSD(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
+            * VPABSD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VPABSD(ymm, ymm/m256)              [AVX2]
+            * VPABSD(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
+            * VPABSD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VPABSD(zmm{k}{z}, m512/m32bcst)    [AVX512F]
             * VPABSD(zmm{k}{z}, zmm)             [AVX512F]
-            * VPABSD(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VPABSD(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
-            * VPABSD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VPABSD(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -20873,12 +20873,12 @@ class VPABSQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VPABSQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
+            * VPABSQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VPABSQ(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
+            * VPABSQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
             * VPABSQ(zmm{k}{z}, m512/m64bcst)    [AVX512F]
             * VPABSQ(zmm{k}{z}, zmm)             [AVX512F]
-            * VPABSQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
-            * VPABSQ(ymm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
-            * VPABSQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VPABSQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -21083,12 +21083,12 @@ class VPANDD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPANDD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPANDD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPANDD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPANDD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPANDD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPANDD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPANDD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPANDD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21133,12 +21133,12 @@ class VPANDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPANDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPANDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPANDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPANDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPANDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPANDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPANDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPANDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21225,12 +21225,12 @@ class VPANDND(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPANDND(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPANDND(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPANDND(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPANDND(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPANDND(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPANDND(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPANDND(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPANDND(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21275,12 +21275,12 @@ class VPANDNQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPANDNQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPANDNQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPANDNQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPANDNQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPANDNQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPANDNQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPANDNQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPANDNQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21365,12 +21365,12 @@ class VPORD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPORD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPORD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPORD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPORD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPORD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPORD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPORD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPORD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21415,12 +21415,12 @@ class VPORQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPORQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPORQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPORQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPORQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPORQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPORQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPORQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPORQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21507,12 +21507,12 @@ class VPXORD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPXORD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPXORD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPXORD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPXORD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPXORD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPXORD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPXORD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPXORD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21557,12 +21557,12 @@ class VPXORQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPXORQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPXORQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPXORQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPXORQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPXORQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPXORQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPXORQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPXORQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21607,12 +21607,12 @@ class VPTERNLOGD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTERNLOGD(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VPTERNLOGD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VPTERNLOGD(xmm{k}{z}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPTERNLOGD(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPTERNLOGD(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VPTERNLOGD(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPTERNLOGD(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VPTERNLOGD(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21669,12 +21669,12 @@ class VPTERNLOGQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTERNLOGQ(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VPTERNLOGQ(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VPTERNLOGQ(xmm{k}{z}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPTERNLOGQ(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VPTERNLOGQ(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VPTERNLOGQ(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPTERNLOGQ(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VPTERNLOGQ(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -21864,9 +21864,9 @@ class VPBLENDMB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPBLENDMB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPBLENDMB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPBLENDMB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPBLENDMB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -21911,9 +21911,9 @@ class VPBLENDMW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPBLENDMW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPBLENDMW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPBLENDMW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPBLENDMW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -21958,12 +21958,12 @@ class VPBLENDMD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPBLENDMD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPBLENDMD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPBLENDMD(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPBLENDMD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPBLENDMD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPBLENDMD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPBLENDMD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPBLENDMD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22008,12 +22008,12 @@ class VPBLENDMQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPBLENDMQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPBLENDMQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPBLENDMQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPBLENDMQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPBLENDMQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPBLENDMQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPBLENDMQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPBLENDMQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22059,10 +22059,10 @@ class VPUNPCKLBW(Instruction):
         """Supported forms:
 
             * VPUNPCKLBW(xmm, xmm, xmm/m128)          [AVX]
-            * VPUNPCKLBW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPUNPCKLBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPUNPCKLBW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPUNPCKLBW(ymm, ymm, ymm/m256)          [AVX2]
             * VPUNPCKLBW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPUNPCKLBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22120,10 +22120,10 @@ class VPUNPCKLWD(Instruction):
         """Supported forms:
 
             * VPUNPCKLWD(xmm, xmm, xmm/m128)          [AVX]
-            * VPUNPCKLWD(ymm, ymm, ymm/m256)          [AVX2]
-            * VPUNPCKLWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPUNPCKLWD(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPUNPCKLWD(ymm, ymm, ymm/m256)          [AVX2]
             * VPUNPCKLWD(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPUNPCKLWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22181,13 +22181,13 @@ class VPUNPCKLDQ(Instruction):
         """Supported forms:
 
             * VPUNPCKLDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPUNPCKLDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPUNPCKLDQ(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPUNPCKLDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPUNPCKLDQ(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPUNPCKLDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPUNPCKLDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPUNPCKLDQ(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPUNPCKLDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPUNPCKLDQ(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPUNPCKLDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22245,13 +22245,13 @@ class VPUNPCKLQDQ(Instruction):
         """Supported forms:
 
             * VPUNPCKLQDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPUNPCKLQDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPUNPCKLQDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPUNPCKLQDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPUNPCKLQDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPUNPCKLQDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPUNPCKLQDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPUNPCKLQDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPUNPCKLQDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPUNPCKLQDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPUNPCKLQDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22309,10 +22309,10 @@ class VPUNPCKHBW(Instruction):
         """Supported forms:
 
             * VPUNPCKHBW(xmm, xmm, xmm/m128)          [AVX]
-            * VPUNPCKHBW(ymm, ymm, ymm/m256)          [AVX2]
-            * VPUNPCKHBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPUNPCKHBW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPUNPCKHBW(ymm, ymm, ymm/m256)          [AVX2]
             * VPUNPCKHBW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPUNPCKHBW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22370,10 +22370,10 @@ class VPUNPCKHWD(Instruction):
         """Supported forms:
 
             * VPUNPCKHWD(xmm, xmm, xmm/m128)          [AVX]
-            * VPUNPCKHWD(ymm, ymm, ymm/m256)          [AVX2]
-            * VPUNPCKHWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPUNPCKHWD(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPUNPCKHWD(ymm, ymm, ymm/m256)          [AVX2]
             * VPUNPCKHWD(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPUNPCKHWD(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22431,13 +22431,13 @@ class VPUNPCKHDQ(Instruction):
         """Supported forms:
 
             * VPUNPCKHDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPUNPCKHDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPUNPCKHDQ(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPUNPCKHDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPUNPCKHDQ(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPUNPCKHDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPUNPCKHDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPUNPCKHDQ(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPUNPCKHDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPUNPCKHDQ(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPUNPCKHDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22495,13 +22495,13 @@ class VPUNPCKHQDQ(Instruction):
         """Supported forms:
 
             * VPUNPCKHQDQ(xmm, xmm, xmm/m128)              [AVX]
-            * VPUNPCKHQDQ(ymm, ymm, ymm/m256)              [AVX2]
-            * VPUNPCKHQDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPUNPCKHQDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPUNPCKHQDQ(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPUNPCKHQDQ(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VPUNPCKHQDQ(ymm, ymm, ymm/m256)              [AVX2]
             * VPUNPCKHQDQ(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPUNPCKHQDQ(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPUNPCKHQDQ(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPUNPCKHQDQ(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -22559,10 +22559,10 @@ class VPACKSSWB(Instruction):
         """Supported forms:
 
             * VPACKSSWB(xmm, xmm, xmm/m128)          [AVX]
-            * VPACKSSWB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPACKSSWB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPACKSSWB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPACKSSWB(ymm, ymm, ymm/m256)          [AVX2]
             * VPACKSSWB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPACKSSWB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22620,13 +22620,13 @@ class VPACKSSDW(Instruction):
         """Supported forms:
 
             * VPACKSSDW(xmm, xmm, xmm/m128)              [AVX]
-            * VPACKSSDW(ymm, ymm, ymm/m256)              [AVX2]
-            * VPACKSSDW(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512BW]
-            * VPACKSSDW(zmm{k}{z}, zmm, zmm)             [AVX512BW]
             * VPACKSSDW(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512BW and AVX512VL]
             * VPACKSSDW(xmm{k}{z}, xmm, xmm)             [AVX512BW and AVX512VL]
+            * VPACKSSDW(ymm, ymm, ymm/m256)              [AVX2]
             * VPACKSSDW(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512BW and AVX512VL]
             * VPACKSSDW(ymm{k}{z}, ymm, ymm)             [AVX512BW and AVX512VL]
+            * VPACKSSDW(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512BW]
+            * VPACKSSDW(zmm{k}{z}, zmm, zmm)             [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22684,10 +22684,10 @@ class VPACKUSWB(Instruction):
         """Supported forms:
 
             * VPACKUSWB(xmm, xmm, xmm/m128)          [AVX]
-            * VPACKUSWB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPACKUSWB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPACKUSWB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPACKUSWB(ymm, ymm, ymm/m256)          [AVX2]
             * VPACKUSWB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPACKUSWB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22745,13 +22745,13 @@ class VPACKUSDW(Instruction):
         """Supported forms:
 
             * VPACKUSDW(xmm, xmm, xmm/m128)              [AVX]
-            * VPACKUSDW(ymm, ymm, ymm/m256)              [AVX2]
-            * VPACKUSDW(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512BW]
-            * VPACKUSDW(zmm{k}{z}, zmm, zmm)             [AVX512BW]
             * VPACKUSDW(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512BW and AVX512VL]
             * VPACKUSDW(xmm{k}{z}, xmm, xmm)             [AVX512BW and AVX512VL]
+            * VPACKUSDW(ymm, ymm, ymm/m256)              [AVX2]
             * VPACKUSDW(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512BW and AVX512VL]
             * VPACKUSDW(ymm{k}{z}, ymm, ymm)             [AVX512BW and AVX512VL]
+            * VPACKUSDW(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512BW]
+            * VPACKUSDW(zmm{k}{z}, zmm, zmm)             [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22809,10 +22809,10 @@ class VPSHUFB(Instruction):
         """Supported forms:
 
             * VPSHUFB(xmm, xmm, xmm/m128)          [AVX]
-            * VPSHUFB(ymm, ymm, ymm/m256)          [AVX2]
-            * VPSHUFB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPSHUFB(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
+            * VPSHUFB(ymm, ymm, ymm/m256)          [AVX2]
             * VPSHUFB(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPSHUFB(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22870,10 +22870,10 @@ class VPSHUFLW(Instruction):
         """Supported forms:
 
             * VPSHUFLW(xmm, xmm/m128, imm8)          [AVX]
-            * VPSHUFLW(ymm, ymm/m256, imm8)          [AVX2]
-            * VPSHUFLW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
             * VPSHUFLW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
+            * VPSHUFLW(ymm, ymm/m256, imm8)          [AVX2]
             * VPSHUFLW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPSHUFLW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -22951,10 +22951,10 @@ class VPSHUFHW(Instruction):
         """Supported forms:
 
             * VPSHUFHW(xmm, xmm/m128, imm8)          [AVX]
-            * VPSHUFHW(ymm, ymm/m256, imm8)          [AVX2]
-            * VPSHUFHW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
             * VPSHUFHW(xmm{k}{z}, xmm/m128, imm8)    [AVX512BW and AVX512VL]
+            * VPSHUFHW(ymm, ymm/m256, imm8)          [AVX2]
             * VPSHUFHW(ymm{k}{z}, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPSHUFHW(zmm{k}{z}, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23032,13 +23032,13 @@ class VPSHUFD(Instruction):
         """Supported forms:
 
             * VPSHUFD(xmm, xmm/m128, imm8)              [AVX]
+            * VPSHUFD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSHUFD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
             * VPSHUFD(ymm, ymm/m256, imm8)              [AVX2]
+            * VPSHUFD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
+            * VPSHUFD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
             * VPSHUFD(zmm{k}{z}, m512/m32bcst, imm8)    [AVX512F]
             * VPSHUFD(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPSHUFD(xmm{k}{z}, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSHUFD(ymm{k}{z}, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
-            * VPSHUFD(xmm{k}{z}, xmm, imm8)             [AVX512F and AVX512VL]
-            * VPSHUFD(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -23115,9 +23115,9 @@ class VPERMB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMB(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
             * VPERMB(xmm{k}{z}, xmm, xmm/m128)    [AVX512VL and AVX512VBMI]
             * VPERMB(ymm{k}{z}, ymm, ymm/m256)    [AVX512VL and AVX512VBMI]
+            * VPERMB(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
         """
 
         origin = kwargs.get("origin")
@@ -23162,9 +23162,9 @@ class VPERMW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPERMW(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPERMW(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPERMW(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23210,10 +23210,10 @@ class VPERMD(Instruction):
         """Supported forms:
 
             * VPERMD(ymm, ymm, ymm/m256)              [AVX2]
-            * VPERMD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMD(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMD(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMD(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23259,14 +23259,14 @@ class VPERMQ(Instruction):
         """Supported forms:
 
             * VPERMQ(ymm, ymm/m256, imm8)              [AVX2]
-            * VPERMQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
-            * VPERMQ(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
-            * VPERMQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
-            * VPERMQ(zmm{k}{z}, zmm, zmm)              [AVX512F]
             * VPERMQ(ymm{k}{z}, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
-            * VPERMQ(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMQ(ymm{k}{z}, ymm, imm8)             [AVX512F and AVX512VL]
+            * VPERMQ(ymm{k}{z}, ymm, m256/m64bcst)     [AVX512F and AVX512VL]
             * VPERMQ(ymm{k}{z}, ymm, ymm)              [AVX512F and AVX512VL]
+            * VPERMQ(zmm{k}{z}, m512/m64bcst, imm8)    [AVX512F]
+            * VPERMQ(zmm{k}{z}, zmm, imm8)             [AVX512F]
+            * VPERMQ(zmm{k}{z}, zmm, m512/m64bcst)     [AVX512F]
+            * VPERMQ(zmm{k}{z}, zmm, zmm)              [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23344,9 +23344,9 @@ class VPERMT2B(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2B(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
             * VPERMT2B(xmm{k}{z}, xmm, xmm/m128)    [AVX512VL and AVX512VBMI]
             * VPERMT2B(ymm{k}{z}, ymm, ymm/m256)    [AVX512VL and AVX512VBMI]
+            * VPERMT2B(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
         """
 
         origin = kwargs.get("origin")
@@ -23391,9 +23391,9 @@ class VPERMT2W(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2W(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPERMT2W(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPERMT2W(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPERMT2W(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23438,12 +23438,12 @@ class VPERMT2D(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2D(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMT2D(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMT2D(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPERMT2D(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMT2D(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMT2D(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMT2D(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMT2D(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23488,12 +23488,12 @@ class VPERMT2Q(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMT2Q(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPERMT2Q(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMT2Q(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPERMT2Q(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMT2Q(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPERMT2Q(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMT2Q(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPERMT2Q(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23538,9 +23538,9 @@ class VPERMI2B(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2B(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
             * VPERMI2B(xmm{k}{z}, xmm, xmm/m128)    [AVX512VL and AVX512VBMI]
             * VPERMI2B(ymm{k}{z}, ymm, ymm/m256)    [AVX512VL and AVX512VBMI]
+            * VPERMI2B(zmm{k}{z}, zmm, zmm/m512)    [AVX512VBMI]
         """
 
         origin = kwargs.get("origin")
@@ -23585,9 +23585,9 @@ class VPERMI2W(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2W(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
             * VPERMI2W(xmm{k}{z}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPERMI2W(ymm{k}{z}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPERMI2W(zmm{k}{z}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23632,12 +23632,12 @@ class VPERMI2D(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2D(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VPERMI2D(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMI2D(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPERMI2D(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMI2D(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPERMI2D(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMI2D(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VPERMI2D(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23682,12 +23682,12 @@ class VPERMI2Q(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPERMI2Q(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VPERMI2Q(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VPERMI2Q(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPERMI2Q(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPERMI2Q(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPERMI2Q(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPERMI2Q(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VPERMI2Q(zmm{k}{z}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -23733,10 +23733,10 @@ class VPSLLDQ(Instruction):
         """Supported forms:
 
             * VPSLLDQ(xmm, xmm, imm8)         [AVX]
-            * VPSLLDQ(ymm, ymm, imm8)         [AVX2]
-            * VPSLLDQ(zmm, zmm/m512, imm8)    [AVX512BW]
             * VPSLLDQ(xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
+            * VPSLLDQ(ymm, ymm, imm8)         [AVX2]
             * VPSLLDQ(ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPSLLDQ(zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23804,10 +23804,10 @@ class VPSRLDQ(Instruction):
         """Supported forms:
 
             * VPSRLDQ(xmm, xmm, imm8)         [AVX]
-            * VPSRLDQ(ymm, ymm, imm8)         [AVX2]
-            * VPSRLDQ(zmm, zmm/m512, imm8)    [AVX512BW]
             * VPSRLDQ(xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
+            * VPSRLDQ(ymm, ymm, imm8)         [AVX2]
             * VPSRLDQ(ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPSRLDQ(zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23875,10 +23875,10 @@ class VPALIGNR(Instruction):
         """Supported forms:
 
             * VPALIGNR(xmm, xmm, xmm/m128, imm8)          [AVX]
-            * VPALIGNR(ymm, ymm, ymm/m256, imm8)          [AVX2]
-            * VPALIGNR(zmm{k}{z}, zmm, zmm/m512, imm8)    [AVX512BW]
             * VPALIGNR(xmm{k}{z}, xmm, xmm/m128, imm8)    [AVX512BW and AVX512VL]
+            * VPALIGNR(ymm, ymm, ymm/m256, imm8)          [AVX2]
             * VPALIGNR(ymm{k}{z}, ymm, ymm/m256, imm8)    [AVX512BW and AVX512VL]
+            * VPALIGNR(zmm{k}{z}, zmm, zmm/m512, imm8)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -23955,12 +23955,12 @@ class VALIGND(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VALIGND(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VALIGND(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VALIGND(xmm{k}{z}, xmm, m128/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VALIGND(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VALIGND(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VALIGND(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VALIGND(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VALIGND(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24017,12 +24017,12 @@ class VALIGNQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VALIGNQ(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VALIGNQ(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VALIGNQ(xmm{k}{z}, xmm, m128/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VALIGNQ(xmm{k}{z}, xmm, xmm, imm8)             [AVX512F and AVX512VL]
             * VALIGNQ(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VALIGNQ(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VALIGNQ(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VALIGNQ(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24079,12 +24079,12 @@ class VPMULTISHIFTQB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMULTISHIFTQB(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512VBMI]
-            * VPMULTISHIFTQB(zmm{k}{z}, zmm, zmm)             [AVX512VBMI]
             * VPMULTISHIFTQB(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512VL and AVX512VBMI]
             * VPMULTISHIFTQB(xmm{k}{z}, xmm, xmm)             [AVX512VL and AVX512VBMI]
             * VPMULTISHIFTQB(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512VL and AVX512VBMI]
             * VPMULTISHIFTQB(ymm{k}{z}, ymm, ymm)             [AVX512VL and AVX512VBMI]
+            * VPMULTISHIFTQB(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512VBMI]
+            * VPMULTISHIFTQB(zmm{k}{z}, zmm, zmm)             [AVX512VBMI]
         """
 
         origin = kwargs.get("origin")
@@ -24351,12 +24351,12 @@ class VCVTSS2SI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSS2SI(r32, xmm/m32)      [AVX]
-            * VCVTSS2SI(r64, xmm/m32)      [AVX]
-            * VCVTSS2SI(r32, xmm/m32)      [AVX512F]
-            * VCVTSS2SI(r64, xmm/m32)      [AVX512F]
             * VCVTSS2SI(r32, xmm, {er})    [AVX512F]
+            * VCVTSS2SI(r32, xmm/m32)      [AVX512F]
+            * VCVTSS2SI(r32, xmm/m32)      [AVX]
             * VCVTSS2SI(r64, xmm, {er})    [AVX512F]
+            * VCVTSS2SI(r64, xmm/m32)      [AVX512F]
+            * VCVTSS2SI(r64, xmm/m32)      [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -24420,10 +24420,10 @@ class VCVTSS2USI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSS2USI(r32, xmm/m32)      [AVX512F]
-            * VCVTSS2USI(r64, xmm/m32)      [AVX512F]
             * VCVTSS2USI(r32, xmm, {er})    [AVX512F]
+            * VCVTSS2USI(r32, xmm/m32)      [AVX512F]
             * VCVTSS2USI(r64, xmm, {er})    [AVX512F]
+            * VCVTSS2USI(r64, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24472,12 +24472,12 @@ class VCVTTSS2SI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTSS2SI(r32, xmm/m32)       [AVX]
-            * VCVTTSS2SI(r64, xmm/m32)       [AVX]
-            * VCVTTSS2SI(r32, xmm/m32)       [AVX512F]
-            * VCVTTSS2SI(r64, xmm/m32)       [AVX512F]
             * VCVTTSS2SI(r32, xmm, {sae})    [AVX512F]
+            * VCVTTSS2SI(r32, xmm/m32)       [AVX512F]
+            * VCVTTSS2SI(r32, xmm/m32)       [AVX]
             * VCVTTSS2SI(r64, xmm, {sae})    [AVX512F]
+            * VCVTTSS2SI(r64, xmm/m32)       [AVX512F]
+            * VCVTTSS2SI(r64, xmm/m32)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -24541,10 +24541,10 @@ class VCVTTSS2USI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTSS2USI(r32, xmm/m32)       [AVX512F]
-            * VCVTTSS2USI(r64, xmm/m32)       [AVX512F]
             * VCVTTSS2USI(r32, xmm, {sae})    [AVX512F]
+            * VCVTTSS2USI(r32, xmm/m32)       [AVX512F]
             * VCVTTSS2USI(r64, xmm, {sae})    [AVX512F]
+            * VCVTTSS2USI(r64, xmm/m32)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24593,12 +24593,12 @@ class VCVTSI2SS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSI2SS(xmm, xmm, r32/m32)      [AVX]
-            * VCVTSI2SS(xmm, xmm, r64/m64)      [AVX]
-            * VCVTSI2SS(xmm, xmm, r32/m32)      [AVX512F]
-            * VCVTSI2SS(xmm, xmm, r64/m64)      [AVX512F]
             * VCVTSI2SS(xmm, xmm, r32, {er})    [AVX512F]
+            * VCVTSI2SS(xmm, xmm, r32/m32)      [AVX512F]
+            * VCVTSI2SS(xmm, xmm, r32/m32)      [AVX]
             * VCVTSI2SS(xmm, xmm, r64, {er})    [AVX512F]
+            * VCVTSI2SS(xmm, xmm, r64/m64)      [AVX512F]
+            * VCVTSI2SS(xmm, xmm, r64/m64)      [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -24662,10 +24662,10 @@ class VCVTUSI2SS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTUSI2SS(xmm, xmm, r32/m32)      [AVX512F]
-            * VCVTUSI2SS(xmm, xmm, r64/m64)      [AVX512F]
             * VCVTUSI2SS(xmm, xmm, r32, {er})    [AVX512F]
+            * VCVTUSI2SS(xmm, xmm, r32/m32)      [AVX512F]
             * VCVTUSI2SS(xmm, xmm, r64, {er})    [AVX512F]
+            * VCVTUSI2SS(xmm, xmm, r64/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24714,12 +24714,12 @@ class VCVTSD2SI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSD2SI(r32, xmm/m64)      [AVX]
-            * VCVTSD2SI(r64, xmm/m64)      [AVX]
-            * VCVTSD2SI(r32, xmm/m64)      [AVX512F]
-            * VCVTSD2SI(r64, xmm/m64)      [AVX512F]
             * VCVTSD2SI(r32, xmm, {er})    [AVX512F]
+            * VCVTSD2SI(r32, xmm/m64)      [AVX512F]
+            * VCVTSD2SI(r32, xmm/m64)      [AVX]
             * VCVTSD2SI(r64, xmm, {er})    [AVX512F]
+            * VCVTSD2SI(r64, xmm/m64)      [AVX512F]
+            * VCVTSD2SI(r64, xmm/m64)      [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -24783,10 +24783,10 @@ class VCVTSD2USI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSD2USI(r32, xmm/m64)      [AVX512F]
-            * VCVTSD2USI(r64, xmm/m64)      [AVX512F]
             * VCVTSD2USI(r32, xmm, {er})    [AVX512F]
+            * VCVTSD2USI(r32, xmm/m64)      [AVX512F]
             * VCVTSD2USI(r64, xmm, {er})    [AVX512F]
+            * VCVTSD2USI(r64, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24835,12 +24835,12 @@ class VCVTTSD2SI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTSD2SI(r32, xmm/m64)       [AVX]
-            * VCVTTSD2SI(r64, xmm/m64)       [AVX]
-            * VCVTTSD2SI(r32, xmm/m64)       [AVX512F]
-            * VCVTTSD2SI(r64, xmm/m64)       [AVX512F]
             * VCVTTSD2SI(r32, xmm, {sae})    [AVX512F]
+            * VCVTTSD2SI(r32, xmm/m64)       [AVX512F]
+            * VCVTTSD2SI(r32, xmm/m64)       [AVX]
             * VCVTTSD2SI(r64, xmm, {sae})    [AVX512F]
+            * VCVTTSD2SI(r64, xmm/m64)       [AVX512F]
+            * VCVTTSD2SI(r64, xmm/m64)       [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -24904,10 +24904,10 @@ class VCVTTSD2USI(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTSD2USI(r32, xmm/m64)       [AVX512F]
-            * VCVTTSD2USI(r64, xmm/m64)       [AVX512F]
             * VCVTTSD2USI(r32, xmm, {sae})    [AVX512F]
+            * VCVTTSD2USI(r32, xmm/m64)       [AVX512F]
             * VCVTTSD2USI(r64, xmm, {sae})    [AVX512F]
+            * VCVTTSD2USI(r64, xmm/m64)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -24956,11 +24956,11 @@ class VCVTSI2SD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTSI2SD(xmm, xmm, r32/m32)      [AVX]
-            * VCVTSI2SD(xmm, xmm, r64/m64)      [AVX]
             * VCVTSI2SD(xmm, xmm, r32/m32)      [AVX512F]
-            * VCVTSI2SD(xmm, xmm, r64/m64)      [AVX512F]
+            * VCVTSI2SD(xmm, xmm, r32/m32)      [AVX]
             * VCVTSI2SD(xmm, xmm, r64, {er})    [AVX512F]
+            * VCVTSI2SD(xmm, xmm, r64/m64)      [AVX512F]
+            * VCVTSI2SD(xmm, xmm, r64/m64)      [AVX]
         """
 
         origin = kwargs.get("origin")
@@ -25023,8 +25023,8 @@ class VCVTUSI2SD(Instruction):
         """Supported forms:
 
             * VCVTUSI2SD(xmm, xmm, r32/m32)      [AVX512F]
-            * VCVTUSI2SD(xmm, xmm, r64/m64)      [AVX512F]
             * VCVTUSI2SD(xmm, xmm, r64, {er})    [AVX512F]
+            * VCVTUSI2SD(xmm, xmm, r64/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25072,14 +25072,14 @@ class VCVTPS2DQ(Instruction):
         """Supported forms:
 
             * VCVTPS2DQ(xmm, xmm/m128)              [AVX]
-            * VCVTPS2DQ(ymm, ymm/m256)              [AVX]
-            * VCVTPS2DQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTPS2DQ(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTPS2DQ(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTPS2DQ(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTPS2DQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTPS2DQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTPS2DQ(ymm, ymm/m256)              [AVX]
+            * VCVTPS2DQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTPS2DQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTPS2DQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTPS2DQ(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTPS2DQ(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25147,13 +25147,13 @@ class VCVTPS2UDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPS2UDQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTPS2UDQ(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTPS2UDQ(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTPS2UDQ(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTPS2UDQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTPS2UDQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTPS2UDQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTPS2UDQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTPS2UDQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTPS2UDQ(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTPS2UDQ(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25210,14 +25210,14 @@ class VCVTTPS2DQ(Instruction):
         """Supported forms:
 
             * VCVTTPS2DQ(xmm, xmm/m128)              [AVX]
-            * VCVTTPS2DQ(ymm, ymm/m256)              [AVX]
-            * VCVTTPS2DQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTTPS2DQ(zmm{k}{z}, zmm, {sae})      [AVX512F]
-            * VCVTTPS2DQ(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTTPS2DQ(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTTPS2DQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTTPS2DQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTTPS2DQ(ymm, ymm/m256)              [AVX]
+            * VCVTTPS2DQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTTPS2DQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTTPS2DQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTTPS2DQ(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTTPS2DQ(zmm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25285,13 +25285,13 @@ class VCVTTPS2UDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPS2UDQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTTPS2UDQ(zmm{k}{z}, zmm, {sae})      [AVX512F]
-            * VCVTTPS2UDQ(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTTPS2UDQ(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTTPS2UDQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTTPS2UDQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTTPS2UDQ(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTTPS2UDQ(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTTPS2UDQ(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTTPS2UDQ(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTTPS2UDQ(zmm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25348,14 +25348,14 @@ class VCVTDQ2PS(Instruction):
         """Supported forms:
 
             * VCVTDQ2PS(xmm, xmm/m128)              [AVX]
-            * VCVTDQ2PS(ymm, ymm/m256)              [AVX]
-            * VCVTDQ2PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTDQ2PS(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTDQ2PS(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTDQ2PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTDQ2PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTDQ2PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTDQ2PS(ymm, ymm/m256)              [AVX]
+            * VCVTDQ2PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTDQ2PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTDQ2PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTDQ2PS(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTDQ2PS(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25423,13 +25423,13 @@ class VCVTUDQ2PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTUDQ2PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
-            * VCVTUDQ2PS(zmm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTUDQ2PS(zmm{k}{z}, zmm)             [AVX512F]
             * VCVTUDQ2PS(xmm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTUDQ2PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTUDQ2PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTUDQ2PS(ymm{k}{z}, m256/m32bcst)    [AVX512F and AVX512VL]
             * VCVTUDQ2PS(ymm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTUDQ2PS(zmm{k}{z}, m512/m32bcst)    [AVX512F]
+            * VCVTUDQ2PS(zmm{k}{z}, zmm)             [AVX512F]
+            * VCVTUDQ2PS(zmm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25485,13 +25485,13 @@ class VCVTPS2QQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPS2QQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
-            * VCVTPS2QQ(zmm{k}{z}, ymm, {er})       [AVX512DQ]
-            * VCVTPS2QQ(zmm{k}{z}, ymm)             [AVX512DQ]
             * VCVTPS2QQ(xmm{k}{z}, m64/m32bcst)     [AVX512DQ and AVX512VL]
-            * VCVTPS2QQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTPS2QQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPS2QQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTPS2QQ(ymm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPS2QQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
+            * VCVTPS2QQ(zmm{k}{z}, ymm)             [AVX512DQ]
+            * VCVTPS2QQ(zmm{k}{z}, ymm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25547,13 +25547,13 @@ class VCVTPS2UQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPS2UQQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
-            * VCVTPS2UQQ(zmm{k}{z}, ymm, {er})       [AVX512DQ]
-            * VCVTPS2UQQ(zmm{k}{z}, ymm)             [AVX512DQ]
             * VCVTPS2UQQ(xmm{k}{z}, m64/m32bcst)     [AVX512DQ and AVX512VL]
-            * VCVTPS2UQQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTPS2UQQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPS2UQQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTPS2UQQ(ymm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPS2UQQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
+            * VCVTPS2UQQ(zmm{k}{z}, ymm)             [AVX512DQ]
+            * VCVTPS2UQQ(zmm{k}{z}, ymm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25609,13 +25609,13 @@ class VCVTTPS2QQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPS2QQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
-            * VCVTTPS2QQ(zmm{k}{z}, ymm, {sae})      [AVX512DQ]
-            * VCVTTPS2QQ(zmm{k}{z}, ymm)             [AVX512DQ]
             * VCVTTPS2QQ(xmm{k}{z}, m64/m32bcst)     [AVX512DQ and AVX512VL]
-            * VCVTTPS2QQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPS2QQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPS2QQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPS2QQ(ymm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPS2QQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
+            * VCVTTPS2QQ(zmm{k}{z}, ymm)             [AVX512DQ]
+            * VCVTTPS2QQ(zmm{k}{z}, ymm, {sae})      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25671,13 +25671,13 @@ class VCVTTPS2UQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPS2UQQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
-            * VCVTTPS2UQQ(zmm{k}{z}, ymm, {sae})      [AVX512DQ]
-            * VCVTTPS2UQQ(zmm{k}{z}, ymm)             [AVX512DQ]
             * VCVTTPS2UQQ(xmm{k}{z}, m64/m32bcst)     [AVX512DQ and AVX512VL]
-            * VCVTTPS2UQQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPS2UQQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPS2UQQ(ymm{k}{z}, m128/m32bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPS2UQQ(ymm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPS2UQQ(zmm{k}{z}, m256/m32bcst)    [AVX512DQ]
+            * VCVTTPS2UQQ(zmm{k}{z}, ymm)             [AVX512DQ]
+            * VCVTTPS2UQQ(zmm{k}{z}, ymm, {sae})      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25733,13 +25733,13 @@ class VCVTQQ2PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTQQ2PS(ymm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTQQ2PS(ymm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTQQ2PS(ymm{k}{z}, zmm)             [AVX512DQ]
             * VCVTQQ2PS(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTQQ2PS(xmm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTQQ2PS(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
             * VCVTQQ2PS(xmm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTQQ2PS(ymm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTQQ2PS(ymm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTQQ2PS(ymm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25795,13 +25795,13 @@ class VCVTUQQ2PS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTUQQ2PS(ymm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTUQQ2PS(ymm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTUQQ2PS(ymm{k}{z}, zmm)             [AVX512DQ]
             * VCVTUQQ2PS(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTUQQ2PS(xmm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTUQQ2PS(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
             * VCVTUQQ2PS(xmm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTUQQ2PS(ymm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTUQQ2PS(ymm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTUQQ2PS(ymm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -25859,13 +25859,13 @@ class VCVTPD2DQ(Instruction):
 
             * VCVTPD2DQ(xmm, xmm/m128)              [AVX]
             * VCVTPD2DQ(xmm, ymm/m256)              [AVX]
-            * VCVTPD2DQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VCVTPD2DQ(ymm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTPD2DQ(ymm{k}{z}, zmm)             [AVX512F]
             * VCVTPD2DQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2DQ(xmm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2DQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTPD2DQ(xmm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTPD2DQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VCVTPD2DQ(ymm{k}{z}, zmm)             [AVX512F]
+            * VCVTPD2DQ(ymm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25933,13 +25933,13 @@ class VCVTPD2UDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPD2UDQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VCVTPD2UDQ(ymm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTPD2UDQ(ymm{k}{z}, zmm)             [AVX512F]
             * VCVTPD2UDQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2UDQ(xmm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2UDQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTPD2UDQ(xmm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTPD2UDQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VCVTPD2UDQ(ymm{k}{z}, zmm)             [AVX512F]
+            * VCVTPD2UDQ(ymm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -25997,13 +25997,13 @@ class VCVTTPD2DQ(Instruction):
 
             * VCVTTPD2DQ(xmm, xmm/m128)              [AVX]
             * VCVTTPD2DQ(xmm, ymm/m256)              [AVX]
-            * VCVTTPD2DQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VCVTTPD2DQ(ymm{k}{z}, zmm, {sae})      [AVX512F]
-            * VCVTTPD2DQ(ymm{k}{z}, zmm)             [AVX512F]
             * VCVTTPD2DQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
             * VCVTTPD2DQ(xmm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VCVTTPD2DQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTTPD2DQ(xmm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTTPD2DQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VCVTTPD2DQ(ymm{k}{z}, zmm)             [AVX512F]
+            * VCVTTPD2DQ(ymm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26071,13 +26071,13 @@ class VCVTTPD2UDQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPD2UDQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VCVTTPD2UDQ(ymm{k}{z}, zmm, {sae})      [AVX512F]
-            * VCVTTPD2UDQ(ymm{k}{z}, zmm)             [AVX512F]
             * VCVTTPD2UDQ(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
             * VCVTTPD2UDQ(xmm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VCVTTPD2UDQ(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTTPD2UDQ(xmm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTTPD2UDQ(ymm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VCVTTPD2UDQ(ymm{k}{z}, zmm)             [AVX512F]
+            * VCVTTPD2UDQ(ymm{k}{z}, zmm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26134,13 +26134,13 @@ class VCVTDQ2PD(Instruction):
         """Supported forms:
 
             * VCVTDQ2PD(xmm, xmm/m64)               [AVX]
+            * VCVTDQ2PD(xmm{k}{z}, m64/m32bcst)     [AVX512F and AVX512VL]
+            * VCVTDQ2PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTDQ2PD(ymm, xmm/m128)              [AVX]
+            * VCVTDQ2PD(ymm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
+            * VCVTDQ2PD(ymm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTDQ2PD(zmm{k}{z}, m256/m32bcst)    [AVX512F]
             * VCVTDQ2PD(zmm{k}{z}, ymm)             [AVX512F]
-            * VCVTDQ2PD(xmm{k}{z}, m64/m32bcst)     [AVX512F and AVX512VL]
-            * VCVTDQ2PD(ymm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTDQ2PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VCVTDQ2PD(ymm{k}{z}, xmm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -26197,12 +26197,12 @@ class VCVTUDQ2PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * VCVTUDQ2PD(xmm{k}{z}, m64/m32bcst)     [AVX512F and AVX512VL]
+            * VCVTUDQ2PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTUDQ2PD(ymm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
+            * VCVTUDQ2PD(ymm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTUDQ2PD(zmm{k}{z}, m256/m32bcst)    [AVX512F]
             * VCVTUDQ2PD(zmm{k}{z}, ymm)             [AVX512F]
-            * VCVTUDQ2PD(xmm{k}{z}, m64/m32bcst)     [AVX512F and AVX512VL]
-            * VCVTUDQ2PD(ymm{k}{z}, m128/m32bcst)    [AVX512F and AVX512VL]
-            * VCVTUDQ2PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
-            * VCVTUDQ2PD(ymm{k}{z}, xmm)             [AVX512F and AVX512VL]
         """
 
         origin = kwargs.get("origin")
@@ -26247,13 +26247,13 @@ class VCVTPD2QQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPD2QQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTPD2QQ(zmm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTPD2QQ(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTPD2QQ(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTPD2QQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTPD2QQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPD2QQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTPD2QQ(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTPD2QQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTPD2QQ(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTPD2QQ(zmm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26309,13 +26309,13 @@ class VCVTPD2UQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPD2UQQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTPD2UQQ(zmm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTPD2UQQ(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTPD2UQQ(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTPD2UQQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTPD2UQQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTPD2UQQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTPD2UQQ(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTPD2UQQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTPD2UQQ(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTPD2UQQ(zmm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26371,13 +26371,13 @@ class VCVTTPD2QQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPD2QQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTTPD2QQ(zmm{k}{z}, zmm, {sae})      [AVX512DQ]
-            * VCVTTPD2QQ(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTTPD2QQ(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTTPD2QQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPD2QQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPD2QQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPD2QQ(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTTPD2QQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTTPD2QQ(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTTPD2QQ(zmm{k}{z}, zmm, {sae})      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26433,13 +26433,13 @@ class VCVTTPD2UQQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTTPD2UQQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTTPD2UQQ(zmm{k}{z}, zmm, {sae})      [AVX512DQ]
-            * VCVTTPD2UQQ(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTTPD2UQQ(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTTPD2UQQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPD2UQQ(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTTPD2UQQ(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTTPD2UQQ(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTTPD2UQQ(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTTPD2UQQ(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTTPD2UQQ(zmm{k}{z}, zmm, {sae})      [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26495,13 +26495,13 @@ class VCVTQQ2PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTQQ2PD(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTQQ2PD(zmm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTQQ2PD(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTQQ2PD(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTQQ2PD(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTQQ2PD(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTQQ2PD(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTQQ2PD(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTQQ2PD(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTQQ2PD(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTQQ2PD(zmm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26557,13 +26557,13 @@ class VCVTUQQ2PD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTUQQ2PD(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
-            * VCVTUQQ2PD(zmm{k}{z}, zmm, {er})       [AVX512DQ]
-            * VCVTUQQ2PD(zmm{k}{z}, zmm)             [AVX512DQ]
             * VCVTUQQ2PD(xmm{k}{z}, m128/m64bcst)    [AVX512DQ and AVX512VL]
-            * VCVTUQQ2PD(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTUQQ2PD(xmm{k}{z}, xmm)             [AVX512DQ and AVX512VL]
+            * VCVTUQQ2PD(ymm{k}{z}, m256/m64bcst)    [AVX512DQ and AVX512VL]
             * VCVTUQQ2PD(ymm{k}{z}, ymm)             [AVX512DQ and AVX512VL]
+            * VCVTUQQ2PD(zmm{k}{z}, m512/m64bcst)    [AVX512DQ]
+            * VCVTUQQ2PD(zmm{k}{z}, zmm)             [AVX512DQ]
+            * VCVTUQQ2PD(zmm{k}{z}, zmm, {er})       [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -26620,8 +26620,8 @@ class VCVTSD2SS(Instruction):
         """Supported forms:
 
             * VCVTSD2SS(xmm, xmm, xmm/m64)            [AVX]
-            * VCVTSD2SS(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VCVTSD2SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VCVTSD2SS(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26672,8 +26672,8 @@ class VCVTSS2SD(Instruction):
         """Supported forms:
 
             * VCVTSS2SD(xmm, xmm, xmm/m32)             [AVX]
-            * VCVTSS2SD(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
             * VCVTSS2SD(xmm{k}{z}, xmm, xmm, {sae})    [AVX512F]
+            * VCVTSS2SD(xmm{k}{z}, xmm, xmm/m32)       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26725,13 +26725,13 @@ class VCVTPD2PS(Instruction):
 
             * VCVTPD2PS(xmm, xmm/m128)              [AVX]
             * VCVTPD2PS(xmm, ymm/m256)              [AVX]
-            * VCVTPD2PS(ymm{k}{z}, m512/m64bcst)    [AVX512F]
-            * VCVTPD2PS(ymm{k}{z}, zmm, {er})       [AVX512F]
-            * VCVTPD2PS(ymm{k}{z}, zmm)             [AVX512F]
             * VCVTPD2PS(xmm{k}{z}, m128/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2PS(xmm{k}{z}, m256/m64bcst)    [AVX512F and AVX512VL]
             * VCVTPD2PS(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
             * VCVTPD2PS(xmm{k}{z}, ymm)             [AVX512F and AVX512VL]
+            * VCVTPD2PS(ymm{k}{z}, m512/m64bcst)    [AVX512F]
+            * VCVTPD2PS(ymm{k}{z}, zmm)             [AVX512F]
+            * VCVTPD2PS(ymm{k}{z}, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26800,14 +26800,14 @@ class VCVTPS2PD(Instruction):
         """Supported forms:
 
             * VCVTPS2PD(xmm, xmm/m64)               [AVX]
-            * VCVTPS2PD(ymm, xmm/m128)              [AVX]
-            * VCVTPS2PD(zmm{k}{z}, m256/m32bcst)    [AVX512F]
-            * VCVTPS2PD(zmm{k}{z}, ymm, {sae})      [AVX512F]
-            * VCVTPS2PD(zmm{k}{z}, ymm)             [AVX512F]
-            * VCVTPS2PD(ymm{k}{z}, m128/m32bcst)    [AVX512VL]
-            * VCVTPS2PD(ymm{k}{z}, xmm)             [AVX512VL]
             * VCVTPS2PD(xmm{k}{z}, m64/m32bcst)     [AVX512F and AVX512VL]
             * VCVTPS2PD(xmm{k}{z}, xmm)             [AVX512F and AVX512VL]
+            * VCVTPS2PD(ymm, xmm/m128)              [AVX]
+            * VCVTPS2PD(ymm{k}{z}, m128/m32bcst)    [AVX512VL]
+            * VCVTPS2PD(ymm{k}{z}, xmm)             [AVX512VL]
+            * VCVTPS2PD(zmm{k}{z}, m256/m32bcst)    [AVX512F]
+            * VCVTPS2PD(zmm{k}{z}, ymm)             [AVX512F]
+            * VCVTPS2PD(zmm{k}{z}, ymm, {sae})      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26875,15 +26875,15 @@ class VCVTPS2PH(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VCVTPS2PH(xmm/m64, xmm, imm8)             [F16C]
-            * VCVTPS2PH(xmm/m128, ymm, imm8)            [F16C]
-            * VCVTPS2PH(m256{k}{z}, zmm, imm8)          [AVX512F]
-            * VCVTPS2PH(ymm{k}{z}, zmm, {sae}, imm8)    [AVX512F]
-            * VCVTPS2PH(ymm{k}{z}, zmm, imm8)           [AVX512F]
-            * VCVTPS2PH(xmm{k}{z}, xmm, imm8)           [AVX512F and AVX512VL]
-            * VCVTPS2PH(m64{k}{z}, xmm, imm8)           [AVX512F and AVX512VL]
-            * VCVTPS2PH(xmm{k}{z}, ymm, imm8)           [AVX512F and AVX512VL]
             * VCVTPS2PH(m128{k}{z}, ymm, imm8)          [AVX512F and AVX512VL]
+            * VCVTPS2PH(m256{k}{z}, zmm, imm8)          [AVX512F]
+            * VCVTPS2PH(m64{k}{z}, xmm, imm8)           [AVX512F and AVX512VL]
+            * VCVTPS2PH(xmm/m128, ymm, imm8)            [F16C]
+            * VCVTPS2PH(xmm/m64, xmm, imm8)             [F16C]
+            * VCVTPS2PH(xmm{k}{z}, xmm, imm8)           [AVX512F and AVX512VL]
+            * VCVTPS2PH(xmm{k}{z}, ymm, imm8)           [AVX512F and AVX512VL]
+            * VCVTPS2PH(ymm{k}{z}, zmm, imm8)           [AVX512F]
+            * VCVTPS2PH(ymm{k}{z}, zmm, {sae}, imm8)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -26992,11 +26992,11 @@ class VCVTPH2PS(Instruction):
         """Supported forms:
 
             * VCVTPH2PS(xmm, xmm/m64)             [F16C]
-            * VCVTPH2PS(ymm, xmm/m128)            [F16C]
-            * VCVTPH2PS(zmm{k}{z}, ymm/m256)      [AVX512F]
-            * VCVTPH2PS(zmm{k}{z}, ymm, {sae})    [AVX512F]
             * VCVTPH2PS(xmm{k}{z}, xmm/m64)       [AVX512F and AVX512VL]
+            * VCVTPH2PS(ymm, xmm/m128)            [F16C]
             * VCVTPH2PS(ymm{k}{z}, xmm/m128)      [AVX512F and AVX512VL]
+            * VCVTPH2PS(zmm{k}{z}, ymm, {sae})    [AVX512F]
+            * VCVTPH2PS(zmm{k}{z}, ymm/m256)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27124,8 +27124,8 @@ class VBROADCASTF32X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTF32X2(zmm{k}{z}, xmm/m64)    [AVX512DQ]
             * VBROADCASTF32X2(ymm{k}{z}, xmm/m64)    [AVX512DQ and AVX512VL]
+            * VBROADCASTF32X2(zmm{k}{z}, xmm/m64)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27164,9 +27164,9 @@ class VBROADCASTI32X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTI32X2(zmm{k}{z}, xmm/m64)    [AVX512DQ]
             * VBROADCASTI32X2(xmm{k}{z}, xmm/m64)    [AVX512DQ and AVX512VL]
             * VBROADCASTI32X2(ymm{k}{z}, xmm/m64)    [AVX512DQ and AVX512VL]
+            * VBROADCASTI32X2(zmm{k}{z}, xmm/m64)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27211,8 +27211,8 @@ class VBROADCASTF32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTF32X4(zmm{k}{z}, m128)    [AVX512F]
             * VBROADCASTF32X4(ymm{k}{z}, m128)    [AVX512F and AVX512VL]
+            * VBROADCASTF32X4(zmm{k}{z}, m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27245,8 +27245,8 @@ class VBROADCASTI32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTI32X4(zmm{k}{z}, m128)    [AVX512F]
             * VBROADCASTI32X4(ymm{k}{z}, m128)    [AVX512F and AVX512VL]
+            * VBROADCASTI32X4(zmm{k}{z}, m128)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27339,8 +27339,8 @@ class VBROADCASTF64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTF64X2(zmm{k}{z}, m128)    [AVX512DQ]
             * VBROADCASTF64X2(ymm{k}{z}, m128)    [AVX512DQ and AVX512VL]
+            * VBROADCASTF64X2(zmm{k}{z}, m128)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27373,8 +27373,8 @@ class VBROADCASTI64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VBROADCASTI64X2(zmm{k}{z}, m128)    [AVX512DQ]
             * VBROADCASTI64X2(ymm{k}{z}, m128)    [AVX512DQ and AVX512VL]
+            * VBROADCASTI64X2(zmm{k}{z}, m128)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27543,10 +27543,10 @@ class VEXTRACTF32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTF32X4(xmm{k}{z}, zmm, imm8)     [AVX512F]
+            * VEXTRACTF32X4(m128{k}{z}, ymm, imm8)    [AVX512F and AVX512VL]
             * VEXTRACTF32X4(m128{k}{z}, zmm, imm8)    [AVX512F]
             * VEXTRACTF32X4(xmm{k}{z}, ymm, imm8)     [AVX512F and AVX512VL]
-            * VEXTRACTF32X4(m128{k}{z}, ymm, imm8)    [AVX512F and AVX512VL]
+            * VEXTRACTF32X4(xmm{k}{z}, zmm, imm8)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27599,10 +27599,10 @@ class VEXTRACTI32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTI32X4(xmm{k}{z}, zmm, imm8)     [AVX512F]
+            * VEXTRACTI32X4(m128{k}{z}, ymm, imm8)    [AVX512F and AVX512VL]
             * VEXTRACTI32X4(m128{k}{z}, zmm, imm8)    [AVX512F]
             * VEXTRACTI32X4(xmm{k}{z}, ymm, imm8)     [AVX512F and AVX512VL]
-            * VEXTRACTI32X4(m128{k}{z}, ymm, imm8)    [AVX512F and AVX512VL]
+            * VEXTRACTI32X4(xmm{k}{z}, zmm, imm8)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27655,8 +27655,8 @@ class VEXTRACTF32X8(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTF32X8(ymm{k}{z}, zmm, imm8)     [AVX512DQ]
             * VEXTRACTF32X8(m256{k}{z}, zmm, imm8)    [AVX512DQ]
+            * VEXTRACTF32X8(ymm{k}{z}, zmm, imm8)     [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27694,8 +27694,8 @@ class VEXTRACTI32X8(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTI32X8(ymm{k}{z}, zmm, imm8)     [AVX512DQ]
             * VEXTRACTI32X8(m256{k}{z}, zmm, imm8)    [AVX512DQ]
+            * VEXTRACTI32X8(ymm{k}{z}, zmm, imm8)     [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27733,10 +27733,10 @@ class VEXTRACTF64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTF64X2(xmm{k}{z}, zmm, imm8)     [AVX512DQ]
+            * VEXTRACTF64X2(m128{k}{z}, ymm, imm8)    [AVX512DQ and AVX512VL]
             * VEXTRACTF64X2(m128{k}{z}, zmm, imm8)    [AVX512DQ]
             * VEXTRACTF64X2(xmm{k}{z}, ymm, imm8)     [AVX512DQ and AVX512VL]
-            * VEXTRACTF64X2(m128{k}{z}, ymm, imm8)    [AVX512DQ and AVX512VL]
+            * VEXTRACTF64X2(xmm{k}{z}, zmm, imm8)     [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27789,10 +27789,10 @@ class VEXTRACTI64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTI64X2(xmm{k}{z}, zmm, imm8)     [AVX512DQ]
+            * VEXTRACTI64X2(m128{k}{z}, ymm, imm8)    [AVX512DQ and AVX512VL]
             * VEXTRACTI64X2(m128{k}{z}, zmm, imm8)    [AVX512DQ]
             * VEXTRACTI64X2(xmm{k}{z}, ymm, imm8)     [AVX512DQ and AVX512VL]
-            * VEXTRACTI64X2(m128{k}{z}, ymm, imm8)    [AVX512DQ and AVX512VL]
+            * VEXTRACTI64X2(xmm{k}{z}, zmm, imm8)     [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -27845,8 +27845,8 @@ class VEXTRACTF64X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTF64X4(ymm{k}{z}, zmm, imm8)     [AVX512F]
             * VEXTRACTF64X4(m256{k}{z}, zmm, imm8)    [AVX512F]
+            * VEXTRACTF64X4(ymm{k}{z}, zmm, imm8)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27884,8 +27884,8 @@ class VEXTRACTI64X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VEXTRACTI64X4(ymm{k}{z}, zmm, imm8)     [AVX512F]
             * VEXTRACTI64X4(m256{k}{z}, zmm, imm8)    [AVX512F]
+            * VEXTRACTI64X4(ymm{k}{z}, zmm, imm8)     [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -27995,8 +27995,8 @@ class VINSERTF32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VINSERTF32X4(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512F]
             * VINSERTF32X4(ymm{k}{z}, ymm, xmm/m128, imm8)    [AVX512F and AVX512VL]
+            * VINSERTF32X4(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28043,8 +28043,8 @@ class VINSERTI32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VINSERTI32X4(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512F]
             * VINSERTI32X4(ymm{k}{z}, ymm, xmm/m128, imm8)    [AVX512F and AVX512VL]
+            * VINSERTI32X4(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28163,8 +28163,8 @@ class VINSERTF64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VINSERTF64X2(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512DQ]
             * VINSERTF64X2(ymm{k}{z}, ymm, xmm/m128, imm8)    [AVX512DQ and AVX512VL]
+            * VINSERTF64X2(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28211,8 +28211,8 @@ class VINSERTI64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VINSERTI64X2(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512DQ]
             * VINSERTI64X2(ymm{k}{z}, ymm, xmm/m128, imm8)    [AVX512DQ and AVX512VL]
+            * VINSERTI64X2(zmm{k}{z}, zmm, xmm/m128, imm8)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28403,10 +28403,10 @@ class VSHUFF32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSHUFF32X4(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VSHUFF32X4(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFF32X4(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFF32X4(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFF32X4(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VSHUFF32X4(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28453,10 +28453,10 @@ class VSHUFI32X4(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSHUFI32X4(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
-            * VSHUFI32X4(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFI32X4(ymm{k}{z}, ymm, m256/m32bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFI32X4(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFI32X4(zmm{k}{z}, zmm, m512/m32bcst, imm8)    [AVX512F]
+            * VSHUFI32X4(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28503,10 +28503,10 @@ class VSHUFF64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSHUFF64X2(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VSHUFF64X2(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFF64X2(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFF64X2(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFF64X2(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VSHUFF64X2(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28553,10 +28553,10 @@ class VSHUFI64X2(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VSHUFI64X2(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
-            * VSHUFI64X2(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
             * VSHUFI64X2(ymm{k}{z}, ymm, m256/m64bcst, imm8)    [AVX512F and AVX512VL]
             * VSHUFI64X2(ymm{k}{z}, ymm, ymm, imm8)             [AVX512F and AVX512VL]
+            * VSHUFI64X2(zmm{k}{z}, zmm, m512/m64bcst, imm8)    [AVX512F]
+            * VSHUFI64X2(zmm{k}{z}, zmm, zmm, imm8)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -28603,9 +28603,9 @@ class VPMOVB2M(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVB2M(k, zmm)    [AVX512BW]
             * VPMOVB2M(k, xmm)    [AVX512BW and AVX512VL]
             * VPMOVB2M(k, ymm)    [AVX512BW and AVX512VL]
+            * VPMOVB2M(k, zmm)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -28641,9 +28641,9 @@ class VPMOVW2M(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVW2M(k, zmm)    [AVX512BW]
             * VPMOVW2M(k, xmm)    [AVX512BW and AVX512VL]
             * VPMOVW2M(k, ymm)    [AVX512BW and AVX512VL]
+            * VPMOVW2M(k, zmm)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -28679,9 +28679,9 @@ class VPMOVD2M(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVD2M(k, zmm)    [AVX512DQ]
             * VPMOVD2M(k, xmm)    [AVX512DQ and AVX512VL]
             * VPMOVD2M(k, ymm)    [AVX512DQ and AVX512VL]
+            * VPMOVD2M(k, zmm)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28717,9 +28717,9 @@ class VPMOVQ2M(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVQ2M(k, zmm)    [AVX512DQ]
             * VPMOVQ2M(k, xmm)    [AVX512DQ and AVX512VL]
             * VPMOVQ2M(k, ymm)    [AVX512DQ and AVX512VL]
+            * VPMOVQ2M(k, zmm)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28755,9 +28755,9 @@ class VPMOVM2B(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVM2B(zmm, k)    [AVX512BW]
             * VPMOVM2B(xmm, k)    [AVX512BW and AVX512VL]
             * VPMOVM2B(ymm, k)    [AVX512BW and AVX512VL]
+            * VPMOVM2B(zmm, k)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -28793,9 +28793,9 @@ class VPMOVM2W(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVM2W(zmm, k)    [AVX512BW]
             * VPMOVM2W(xmm, k)    [AVX512BW and AVX512VL]
             * VPMOVM2W(ymm, k)    [AVX512BW and AVX512VL]
+            * VPMOVM2W(zmm, k)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -28831,9 +28831,9 @@ class VPMOVM2D(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVM2D(zmm, k)    [AVX512DQ]
             * VPMOVM2D(xmm, k)    [AVX512DQ and AVX512VL]
             * VPMOVM2D(ymm, k)    [AVX512DQ and AVX512VL]
+            * VPMOVM2D(zmm, k)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28869,9 +28869,9 @@ class VPMOVM2Q(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPMOVM2Q(zmm, k)    [AVX512DQ]
             * VPMOVM2Q(xmm, k)    [AVX512DQ and AVX512VL]
             * VPMOVM2Q(ymm, k)    [AVX512DQ and AVX512VL]
+            * VPMOVM2Q(zmm, k)    [AVX512DQ]
         """
 
         origin = kwargs.get("origin")
@@ -28983,9 +28983,9 @@ class VPTESTMB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTMB(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPTESTMB(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPTESTMB(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPTESTMB(k{k}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -29030,9 +29030,9 @@ class VPTESTMW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTMW(k{k}, zmm, zmm/m512)    [AVX512BW]
             * VPTESTMW(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPTESTMW(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPTESTMW(k{k}, zmm, zmm/m512)    [AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -29077,12 +29077,12 @@ class VPTESTMD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTMD(k{k}, zmm, m512/m32bcst)    [AVX512F]
-            * VPTESTMD(k{k}, zmm, zmm)             [AVX512F]
             * VPTESTMD(k{k}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPTESTMD(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPTESTMD(k{k}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPTESTMD(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPTESTMD(k{k}, zmm, m512/m32bcst)    [AVX512F]
+            * VPTESTMD(k{k}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -29127,12 +29127,12 @@ class VPTESTMQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTMQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
-            * VPTESTMQ(k{k}, zmm, zmm)             [AVX512F]
             * VPTESTMQ(k{k}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPTESTMQ(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPTESTMQ(k{k}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPTESTMQ(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPTESTMQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
+            * VPTESTMQ(k{k}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -29177,9 +29177,9 @@ class VPTESTNMB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTNMB(k{k}, zmm, zmm/m512)    [AVX512F and AVX512BW]
             * VPTESTNMB(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPTESTNMB(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPTESTNMB(k{k}, zmm, zmm/m512)    [AVX512F and AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -29224,9 +29224,9 @@ class VPTESTNMW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTNMW(k{k}, zmm, zmm/m512)    [AVX512F and AVX512BW]
             * VPTESTNMW(k{k}, xmm, xmm/m128)    [AVX512BW and AVX512VL]
             * VPTESTNMW(k{k}, ymm, ymm/m256)    [AVX512BW and AVX512VL]
+            * VPTESTNMW(k{k}, zmm, zmm/m512)    [AVX512F and AVX512BW]
         """
 
         origin = kwargs.get("origin")
@@ -29271,12 +29271,12 @@ class VPTESTNMD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTNMD(k{k}, zmm, m512/m32bcst)    [AVX512F]
-            * VPTESTNMD(k{k}, zmm, zmm)             [AVX512F]
             * VPTESTNMD(k{k}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VPTESTNMD(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPTESTNMD(k{k}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VPTESTNMD(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPTESTNMD(k{k}, zmm, m512/m32bcst)    [AVX512F]
+            * VPTESTNMD(k{k}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -29321,12 +29321,12 @@ class VPTESTNMQ(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * VPTESTNMQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
-            * VPTESTNMQ(k{k}, zmm, zmm)             [AVX512F]
             * VPTESTNMQ(k{k}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VPTESTNMQ(k{k}, xmm, xmm)             [AVX512F and AVX512VL]
             * VPTESTNMQ(k{k}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VPTESTNMQ(k{k}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VPTESTNMQ(k{k}, zmm, m512/m64bcst)    [AVX512F]
+            * VPTESTNMQ(k{k}, zmm, zmm)             [AVX512F]
         """
 
         origin = kwargs.get("origin")
