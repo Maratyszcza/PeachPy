@@ -1070,8 +1070,8 @@ class MOVLPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOVLPS(xmm, m64)    [SSE]
             * MOVLPS(m64, xmm)    [SSE]
+            * MOVLPS(xmm, m64)    [SSE]
         """
 
         origin = kwargs.get("origin")
@@ -1136,8 +1136,8 @@ class MOVHPS(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOVHPS(xmm, m64)    [SSE]
             * MOVHPS(m64, xmm)    [SSE]
+            * MOVHPS(xmm, m64)    [SSE]
         """
 
         origin = kwargs.get("origin")
@@ -1317,8 +1317,8 @@ class MOVLPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOVLPD(xmm, m64)    [SSE2]
             * MOVLPD(m64, xmm)    [SSE2]
+            * MOVLPD(xmm, m64)    [SSE2]
         """
 
         origin = kwargs.get("origin")
@@ -1383,8 +1383,8 @@ class MOVHPD(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * MOVHPD(xmm, m64)    [SSE2]
             * MOVHPD(m64, xmm)    [SSE2]
+            * MOVHPD(xmm, m64)    [SSE2]
         """
 
         origin = kwargs.get("origin")
@@ -3124,8 +3124,8 @@ class MOVD(Instruction):
 
             * MOVD(mm, r32/m32)     [MMX]
             * MOVD(r32/m32, mm)     [MMX]
-            * MOVD(xmm, r32/m32)    [SSE2]
             * MOVD(r32/m32, xmm)    [SSE2]
+            * MOVD(xmm, r32/m32)    [SSE2]
         """
 
         origin = kwargs.get("origin")
@@ -3200,9 +3200,9 @@ class MOVQ(Instruction):
             * MOVQ(mm, mm)          [MMX]
             * MOVQ(mm, r64/m64)     [MMX]
             * MOVQ(r64/m64, mm)     [MMX]
-            * MOVQ(xmm, xmm)        [SSE2]
-            * MOVQ(xmm, r64/m64)    [SSE2]
             * MOVQ(r64/m64, xmm)    [SSE2]
+            * MOVQ(xmm, r64/m64)    [SSE2]
+            * MOVQ(xmm, xmm)        [SSE2]
         """
 
         origin = kwargs.get("origin")
@@ -4006,8 +4006,8 @@ class PEXTRB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * PEXTRB(r32, xmm, imm8)    [SSE4.1]
             * PEXTRB(m8, xmm, imm8)     [SSE4.1]
+            * PEXTRB(r32, xmm, imm8)    [SSE4.1]
         """
 
         origin = kwargs.get("origin")
@@ -4045,9 +4045,9 @@ class PEXTRW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
+            * PEXTRW(m16, xmm, imm8)    [SSE4.1]
             * PEXTRW(r32, mm, imm8)     [MMX+]
             * PEXTRW(r32, xmm, imm8)    [SSE4.1]
-            * PEXTRW(m16, xmm, imm8)    [SSE4.1]
         """
 
         origin = kwargs.get("origin")
@@ -4173,8 +4173,8 @@ class PINSRB(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * PINSRB(xmm, r32, imm8)    [SSE4.1]
             * PINSRB(xmm, m8, imm8)     [SSE4.1]
+            * PINSRB(xmm, r32, imm8)    [SSE4.1]
         """
 
         origin = kwargs.get("origin")
@@ -4210,10 +4210,10 @@ class PINSRW(Instruction):
     def __init__(self, *args, **kwargs):
         """Supported forms:
 
-            * PINSRW(mm, r32, imm8)     [MMX+]
             * PINSRW(mm, m16, imm8)     [MMX+]
-            * PINSRW(xmm, r32, imm8)    [SSE2]
+            * PINSRW(mm, r32, imm8)     [MMX+]
             * PINSRW(xmm, m16, imm8)    [SSE2]
+            * PINSRW(xmm, r32, imm8)    [SSE2]
         """
 
         origin = kwargs.get("origin")

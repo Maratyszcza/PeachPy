@@ -27,8 +27,8 @@ class VFMADD132SS(Instruction):
         """Supported forms:
 
             * VFMADD132SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMADD132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMADD132SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -79,8 +79,8 @@ class VFMADD213SS(Instruction):
         """Supported forms:
 
             * VFMADD213SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMADD213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMADD213SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -131,8 +131,8 @@ class VFMADD231SS(Instruction):
         """Supported forms:
 
             * VFMADD231SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMADD231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMADD231SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -219,8 +219,8 @@ class VFMSUB132SS(Instruction):
         """Supported forms:
 
             * VFMSUB132SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMSUB132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMSUB132SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -271,8 +271,8 @@ class VFMSUB213SS(Instruction):
         """Supported forms:
 
             * VFMSUB213SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMSUB213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMSUB213SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -323,8 +323,8 @@ class VFMSUB231SS(Instruction):
         """Supported forms:
 
             * VFMSUB231SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFMSUB231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFMSUB231SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -411,8 +411,8 @@ class VFNMADD132SS(Instruction):
         """Supported forms:
 
             * VFNMADD132SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMADD132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMADD132SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -463,8 +463,8 @@ class VFNMADD213SS(Instruction):
         """Supported forms:
 
             * VFNMADD213SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMADD213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMADD213SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -515,8 +515,8 @@ class VFNMADD231SS(Instruction):
         """Supported forms:
 
             * VFNMADD231SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMADD231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMADD231SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -603,8 +603,8 @@ class VFNMSUB132SS(Instruction):
         """Supported forms:
 
             * VFNMSUB132SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMSUB132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMSUB132SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB132SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -655,8 +655,8 @@ class VFNMSUB213SS(Instruction):
         """Supported forms:
 
             * VFNMSUB213SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMSUB213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMSUB213SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB213SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -707,8 +707,8 @@ class VFNMSUB231SS(Instruction):
         """Supported forms:
 
             * VFNMSUB231SS(xmm, xmm, xmm/m32)            [FMA3]
-            * VFNMSUB231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
             * VFNMSUB231SS(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB231SS(xmm{k}{z}, xmm, xmm/m32)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -795,8 +795,8 @@ class VFMADD132SD(Instruction):
         """Supported forms:
 
             * VFMADD132SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMADD132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMADD132SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -847,8 +847,8 @@ class VFMADD213SD(Instruction):
         """Supported forms:
 
             * VFMADD213SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMADD213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMADD213SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -899,8 +899,8 @@ class VFMADD231SD(Instruction):
         """Supported forms:
 
             * VFMADD231SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMADD231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMADD231SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMADD231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -987,8 +987,8 @@ class VFMSUB132SD(Instruction):
         """Supported forms:
 
             * VFMSUB132SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMSUB132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMSUB132SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1039,8 +1039,8 @@ class VFMSUB213SD(Instruction):
         """Supported forms:
 
             * VFMSUB213SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMSUB213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMSUB213SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1091,8 +1091,8 @@ class VFMSUB231SD(Instruction):
         """Supported forms:
 
             * VFMSUB231SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFMSUB231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFMSUB231SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFMSUB231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1179,8 +1179,8 @@ class VFNMADD132SD(Instruction):
         """Supported forms:
 
             * VFNMADD132SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMADD132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMADD132SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1231,8 +1231,8 @@ class VFNMADD213SD(Instruction):
         """Supported forms:
 
             * VFNMADD213SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMADD213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMADD213SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1283,8 +1283,8 @@ class VFNMADD231SD(Instruction):
         """Supported forms:
 
             * VFNMADD231SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMADD231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMADD231SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMADD231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1371,8 +1371,8 @@ class VFNMSUB132SD(Instruction):
         """Supported forms:
 
             * VFNMSUB132SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMSUB132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMSUB132SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB132SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1423,8 +1423,8 @@ class VFNMSUB213SD(Instruction):
         """Supported forms:
 
             * VFNMSUB213SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMSUB213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMSUB213SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB213SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1475,8 +1475,8 @@ class VFNMSUB231SD(Instruction):
         """Supported forms:
 
             * VFNMSUB231SD(xmm, xmm, xmm/m64)            [FMA3]
-            * VFNMSUB231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
             * VFNMSUB231SD(xmm{k}{z}, xmm, xmm, {er})    [AVX512F]
+            * VFNMSUB231SD(xmm{k}{z}, xmm, xmm/m64)      [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1563,14 +1563,14 @@ class VFMADD132PS(Instruction):
         """Supported forms:
 
             * VFMADD132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1639,14 +1639,14 @@ class VFMADD213PS(Instruction):
         """Supported forms:
 
             * VFMADD213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1715,14 +1715,14 @@ class VFMADD231PS(Instruction):
         """Supported forms:
 
             * VFMADD231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADD231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1836,14 +1836,14 @@ class VFMSUB132PS(Instruction):
         """Supported forms:
 
             * VFMSUB132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1912,14 +1912,14 @@ class VFMSUB213PS(Instruction):
         """Supported forms:
 
             * VFMSUB213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -1988,14 +1988,14 @@ class VFMSUB231PS(Instruction):
         """Supported forms:
 
             * VFMSUB231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUB231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2109,14 +2109,14 @@ class VFNMADD132PS(Instruction):
         """Supported forms:
 
             * VFNMADD132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2185,14 +2185,14 @@ class VFNMADD213PS(Instruction):
         """Supported forms:
 
             * VFNMADD213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2261,14 +2261,14 @@ class VFNMADD231PS(Instruction):
         """Supported forms:
 
             * VFNMADD231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMADD231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2382,14 +2382,14 @@ class VFNMSUB132PS(Instruction):
         """Supported forms:
 
             * VFNMSUB132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2458,14 +2458,14 @@ class VFNMSUB213PS(Instruction):
         """Supported forms:
 
             * VFNMSUB213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2534,14 +2534,14 @@ class VFNMSUB231PS(Instruction):
         """Supported forms:
 
             * VFNMSUB231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFNMSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFNMSUB231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFNMSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2655,14 +2655,14 @@ class VFMADD132PD(Instruction):
         """Supported forms:
 
             * VFMADD132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2731,14 +2731,14 @@ class VFMADD213PD(Instruction):
         """Supported forms:
 
             * VFMADD213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2807,14 +2807,14 @@ class VFMADD231PD(Instruction):
         """Supported forms:
 
             * VFMADD231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADD231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADD231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADD231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADD231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADD231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -2928,14 +2928,14 @@ class VFMSUB132PD(Instruction):
         """Supported forms:
 
             * VFMSUB132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3004,14 +3004,14 @@ class VFMSUB213PD(Instruction):
         """Supported forms:
 
             * VFMSUB213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3080,14 +3080,14 @@ class VFMSUB231PD(Instruction):
         """Supported forms:
 
             * VFMSUB231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUB231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUB231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUB231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3201,14 +3201,14 @@ class VFNMADD132PD(Instruction):
         """Supported forms:
 
             * VFNMADD132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3277,14 +3277,14 @@ class VFNMADD213PD(Instruction):
         """Supported forms:
 
             * VFNMADD213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3353,14 +3353,14 @@ class VFNMADD231PD(Instruction):
         """Supported forms:
 
             * VFNMADD231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMADD231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMADD231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMADD231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMADD231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMADD231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3474,14 +3474,14 @@ class VFNMSUB132PD(Instruction):
         """Supported forms:
 
             * VFNMSUB132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3550,14 +3550,14 @@ class VFNMSUB213PD(Instruction):
         """Supported forms:
 
             * VFNMSUB213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3626,14 +3626,14 @@ class VFNMSUB231PD(Instruction):
         """Supported forms:
 
             * VFNMSUB231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFNMSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFNMSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFNMSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFNMSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFNMSUB231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFNMSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFNMSUB231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFNMSUB231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFNMSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFNMSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFNMSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3747,14 +3747,14 @@ class VFMADDSUB132PS(Instruction):
         """Supported forms:
 
             * VFMADDSUB132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADDSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADDSUB132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3823,14 +3823,14 @@ class VFMADDSUB213PS(Instruction):
         """Supported forms:
 
             * VFMADDSUB213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADDSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADDSUB213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -3899,14 +3899,14 @@ class VFMADDSUB231PS(Instruction):
         """Supported forms:
 
             * VFMADDSUB231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMADDSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMADDSUB231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4020,14 +4020,14 @@ class VFMSUBADD132PS(Instruction):
         """Supported forms:
 
             * VFMSUBADD132PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD132PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUBADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD132PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD132PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD132PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD132PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD132PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD132PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUBADD132PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD132PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4096,14 +4096,14 @@ class VFMSUBADD213PS(Instruction):
         """Supported forms:
 
             * VFMSUBADD213PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD213PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUBADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD213PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD213PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD213PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD213PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD213PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD213PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUBADD213PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD213PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4172,14 +4172,14 @@ class VFMSUBADD231PS(Instruction):
         """Supported forms:
 
             * VFMSUBADD231PS(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD231PS(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
-            * VFMSUBADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD231PS(xmm{k}{z}, xmm, m128/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD231PS(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD231PS(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD231PS(ymm{k}{z}, ymm, m256/m32bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD231PS(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD231PS(zmm{k}{z}, zmm, m512/m32bcst)    [AVX512F]
+            * VFMSUBADD231PS(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD231PS(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4293,14 +4293,14 @@ class VFMADDSUB132PD(Instruction):
         """Supported forms:
 
             * VFMADDSUB132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADDSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADDSUB132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4369,14 +4369,14 @@ class VFMADDSUB213PD(Instruction):
         """Supported forms:
 
             * VFMADDSUB213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADDSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADDSUB213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4445,14 +4445,14 @@ class VFMADDSUB231PD(Instruction):
         """Supported forms:
 
             * VFMADDSUB231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMADDSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMADDSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMADDSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMADDSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMADDSUB231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMADDSUB231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMADDSUB231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMADDSUB231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMADDSUB231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMADDSUB231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMADDSUB231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4566,14 +4566,14 @@ class VFMSUBADD132PD(Instruction):
         """Supported forms:
 
             * VFMSUBADD132PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD132PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUBADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD132PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD132PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD132PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD132PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD132PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD132PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUBADD132PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD132PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4642,14 +4642,14 @@ class VFMSUBADD213PD(Instruction):
         """Supported forms:
 
             * VFMSUBADD213PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD213PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUBADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD213PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD213PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD213PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD213PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD213PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD213PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUBADD213PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD213PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
@@ -4718,14 +4718,14 @@ class VFMSUBADD231PD(Instruction):
         """Supported forms:
 
             * VFMSUBADD231PD(xmm, xmm, xmm/m128)              [FMA3]
-            * VFMSUBADD231PD(ymm, ymm, ymm/m256)              [FMA3]
-            * VFMSUBADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
-            * VFMSUBADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
-            * VFMSUBADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
             * VFMSUBADD231PD(xmm{k}{z}, xmm, m128/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD231PD(xmm{k}{z}, xmm, xmm)             [AVX512F and AVX512VL]
+            * VFMSUBADD231PD(ymm, ymm, ymm/m256)              [FMA3]
             * VFMSUBADD231PD(ymm{k}{z}, ymm, m256/m64bcst)    [AVX512F and AVX512VL]
             * VFMSUBADD231PD(ymm{k}{z}, ymm, ymm)             [AVX512F and AVX512VL]
+            * VFMSUBADD231PD(zmm{k}{z}, zmm, m512/m64bcst)    [AVX512F]
+            * VFMSUBADD231PD(zmm{k}{z}, zmm, zmm)             [AVX512F]
+            * VFMSUBADD231PD(zmm{k}{z}, zmm, zmm, {er})       [AVX512F]
         """
 
         origin = kwargs.get("origin")
