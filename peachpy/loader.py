@@ -26,11 +26,13 @@ class Loader:
         self._release_memory = None
 
         osname = sys.platform.lower()
-        if osname == "darwin" or osname.startswith("linux"):
+        if osname == "darwin" or osname.startswith("linux") or osname.startswith("freebsd"):
             import ctypes
 
             if osname == "darwin":
                 libc = ctypes.cdll.LoadLibrary("libc.dylib")
+            elif osname.startswith("freebsd"):
+                libc = ctypes.cdll.LoadLibrary("libc.so.7")
             else:
                 libc = ctypes.cdll.LoadLibrary("libc.so.6")
 

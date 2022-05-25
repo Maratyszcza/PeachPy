@@ -383,7 +383,7 @@ class Function:
         basic_block_ends = [i + int(not isinstance(instruction, LABEL)) for (i, instruction)
                             in enumerate(self._instructions) if
                             isinstance(instruction, (BranchInstruction, RETURN, RET, LABEL))]
-        # TODO: check that the last block with an uncoditional branch/return instruction
+        # TODO: check that the last block with an unconditional branch/return instruction
         basic_block_bounds = [(start, basic_block_ends[bisect.bisect_right(basic_block_ends, start)])
                               for start in basic_block_starts]
 

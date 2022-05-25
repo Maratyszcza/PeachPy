@@ -36,7 +36,7 @@ class Segment:
         assert isinstance(encoder, peachpy.encoder.Encoder)
 
         offset = section_offset_map[self.sections[0]]
-        memory_size = sum(section.content_size for section in self.sections)
+        memory_size = section_address_map[self.sections[-1]] + self.sections[-1].content_size
         file_size = sum(section.content_size for section in self.sections)
 
         address = 0

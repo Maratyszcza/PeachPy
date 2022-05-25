@@ -661,9 +661,9 @@ def implicit_regs_init(code, instruction_form):
         implicit_out_regs[out_reg_id] = \
             implicit_out_regs.get(out_reg_id, 0) | out_reg_mask
     if implicit_in_regs:
-        code.line("self._implicit_in_regs = " + str(implicit_in_regs))
+        code.line("self._implicit_in_regs = " + str(dict(sorted(implicit_in_regs.items()))))
     if implicit_out_regs:
-        code.line("self._implicit_out_regs = " + str(implicit_out_regs))
+        code.line("self._implicit_out_regs = " + str(dict(sorted(implicit_out_regs.items()))))
 
 
 def in_regs_init(code, instruction_form):
@@ -929,6 +929,7 @@ def supported_forms_comment(code, instruction_forms):
 
     form_isa_extensions_options = sorted(set(map(tuple, get_isa_extensions(instruction_forms))),
                                          key=lambda isa_tuple: score_isa_extensions(isa_tuple))
+    lines = []
     for isa_extensions_option in form_isa_extensions_options:
         isa_description = ""
         if isa_extensions_option:
@@ -937,9 +938,11 @@ def supported_forms_comment(code, instruction_forms):
         for form_description in format_form_descriptions(instruction_forms[0].name, get_operand_types_list(isa_forms)):
             if isa_description:
                 padding = " " * (4 + padding_length - len(form_description))
-                code.line("* " + form_description + padding + isa_description)
+                lines.append("* " + form_description + padding + isa_description)
             else:
-                code.line("* " + form_description)
+                lines.append("* " + form_description)
+    for x in sorted(lines):
+        code.line(x)
 
 
 def is_label_branch(instruction_form):

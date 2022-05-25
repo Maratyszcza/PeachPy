@@ -35,7 +35,7 @@ class GenerateInstructions(Command):
     def run(self):
         # package_dir may be None, in that case use the current directory.
         import os
-        if self.distribution.package_dir is None:
+        if not self.distribution.package_dir:
             src_dir = os.getcwd()
         else:
             src_dir = os.path.abspath(self.distribution.package_dir[""])
@@ -67,6 +67,7 @@ setup(
         "Operating System :: OS Independent",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
+        "Operating System :: POSIX :: FreeBSD",
         "Operating System :: MacOS :: MacOS X",
         "Programming Language :: Assembly",
         "Programming Language :: Python",
@@ -88,7 +89,7 @@ setup(
         "Topic :: Software Development :: Libraries"
         ],
     setup_requires=["Opcodes>=0.3.13", "six"],
-    install_requires=["six", "enum34"],
+    install_requires=["six", 'enum34;python_version<"3.4"'],
     cmdclass={
         "build": BuildGenerateInstructions,
         "develop": DevelopGenerateInstructions,

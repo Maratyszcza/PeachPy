@@ -244,11 +244,11 @@ class MemoryOperand:
         from peachpy.x86_64.function import LocalVariable
         from peachpy.literal import Constant
         assert isinstance(address, (GeneralPurposeRegister64, XMMRegister, YMMRegister, ZMMRegister,
-                                    MemoryAddress, Constant, LocalVariable)) or \
+                                    MemoryAddress, Constant, LocalVariable, RIPRelativeOffset)) or \
             isinstance(address, MaskedRegister) and \
             isinstance(address.register, (XMMRegister, YMMRegister, ZMMRegister)) and \
             not address.mask.is_zeroing, \
-            "Only MemoryAddress, 64-bit general-purpose registers, XMM/YMM/ZMM registers, " \
+            "Only MemoryAddress, 64-bit general-purpose registers, RIP-Relative addresses, XMM/YMM/ZMM registers, " \
             "and merge-masked XMM/YMM/ZMM registers may be specified as an address"
         from peachpy.util import is_int
         assert size is None or is_int(size) and int(size) in SizeSpecification._size_name_map, \
@@ -279,6 +279,8 @@ class MemoryOperand:
             self.address = MemoryAddress(rsp, displacement=address.offset)
             self.symbol = address
             self.size = address.size
+        elif isinstance(address, RIPRelativeOffset):
+            self.address = address
         else:
             # Convert register to memory address expression
             self.address = MemoryAddress(address)
@@ -315,7 +317,7 @@ class MemoryOperand:
             return text
         elif assembly_format == "gas":
             if isinstance(self.address, RIPRelativeOffset):
-                return str(self.address.offset) + "(%%rip)"
+                return str(self.address.offset) + "(%rip)"
             else:
                 base = self.address.base
                 if self.address.index is None:
@@ -326,7 +328,7 @@ class MemoryOperand:
                     return "{displacement}({base},{index},{scale})".format(
                         displacement=self.address.displacement,
                         base="" if base is None else base.format(assembly_format),
-                        index=self.address.index,
+                        index=self.address.index.format(assembly_format),
                         scale=self.address.scale)
         else:
             return str(self)
@@ -426,6 +428,17 @@ class RIPRelativeOffset:
 
     def __sub__(self, extra_offset):
         return RIPRelativeOffset(self.offset - extra_offset)
+
+    def __str__(self):
+        return self.format("peachpy")
+
+    def format(self, assembly_format):
+        if assembly_format == "gas":
+            return "%d(%rip)" % self.offset
+        elif assembly_format == "go":
+            return "%d(IP)" % self.offset
+        else:
+            return "rip%+d" % self.offset
 
 
 def is_al(operand):
