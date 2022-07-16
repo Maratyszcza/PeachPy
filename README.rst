@@ -227,7 +227,7 @@ Users
 
 - `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20>`_ -- Go implementation of ChaCha20 cryptographic cipher.
 
-- `AEZ <https://git.schwanenlied.me/yawning/aez>`_ -- Go implemenetation of AEZ authenticated-encryption scheme.
+- `AEZ <https://git.schwanenlied.me/yawning/aez>`_ -- Go implementation of AEZ authenticated-encryption scheme.
 
 - `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
 
