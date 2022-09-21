@@ -34,4 +34,4 @@ class TestARM(unittest.TestCase):
 
             RETURN()
 
-        print add_function.assembly
+        print(add_function.assembly)
