@@ -52,7 +52,7 @@ from peachpy.x86_64.operand import check_operand, format_operand_type, is_r32, i
 #       mov ...,%esp
 #       lea (%rsp,%rZP,1),%rsp
 #
-# - naclspadj $N,%rZP (sandboxed %esp/rsp restore from %rbp; incudes $N offset)
+# - naclspadj $N,%rZP (sandboxed %esp/rsp restore from %rbp; includes $N offset)
 #       lea N(%rbp),%esp
 #       add %rZP,%rsp
 #

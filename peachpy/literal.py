@@ -17,7 +17,7 @@ class Constant:
         assert isinstance(size, six.integer_types), "Constant size must be an integer"
         assert size in Constant._supported_sizes, "Unsupported size %s: the only supported sizes are %s" \
             % (str(size), ", ".join(map(str, sorted(Constant._supported_sizes))))
-        assert isinstance(repeats, six.integer_types), "The number of contant repeats must be an integer"
+        assert isinstance(repeats, six.integer_types), "The number of constant repeats must be an integer"
         assert size % repeats == 0, "The number of constant repeats must divide constant size without remainder"
         assert isinstance(element_ctype, Type), "Element type must be an instance of peachpy.c.Type"
         assert element_ctype in Constant._supported_types, "The only supported types are %s" \

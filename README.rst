@@ -102,7 +102,7 @@ Using PeachPy as a command-line tool
   # Everything inside the `with` statement is function body
   with Function("DotProduct", (x, y), float_,
     # Enable instructions up to SSE4.2
-    # PeachPy will report error if you accidentially use a newer instruction
+    # PeachPy will report error if you accidentally use a newer instruction
     target=uarch.default + isa.sse4_2):
   
     # Request two 64-bit general-purpose registers. No need to specify exact names.
@@ -227,7 +227,7 @@ Users
 
 - `ChaCha20 <https://git.schwanenlied.me/yawning/chacha20>`_ -- Go implementation of ChaCha20 cryptographic cipher.
 
-- `AEZ <https://git.schwanenlied.me/yawning/aez>`_ -- Go implemenetation of AEZ authenticated-encryption scheme.
+- `AEZ <https://git.schwanenlied.me/yawning/aez>`_ -- Go implementation of AEZ authenticated-encryption scheme.
 
 - `bp128 <https://github.com/robskie/bp128>`_ -- Go implementation of SIMD-BP128 integer encoding and decoding.
 
