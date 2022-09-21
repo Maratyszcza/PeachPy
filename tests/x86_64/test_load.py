@@ -1,9 +1,12 @@
 import unittest
-from test import equal_codes
+import pytest
 from peachpy import *
 from peachpy.x86_64 import *
 
 
+@pytest.mark.xfail(
+    not abi.detect(), reason="x86-only test is run on non-x86 hardware!", strict=True
+)
 class LoadAsm(unittest.TestCase):
     def runTest(self):
 

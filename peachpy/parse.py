@@ -38,7 +38,7 @@ def parse_with_variable_name(stack_frames, constructor_name):
                 if source_line:
                     import re
 
-                    with_regexp = r"with\s+(?:\w+\.)*" + re.escape(constructor_name) + "\(.*\)\s+as\s+([_a-zA-Z]\w*)\s*:"
+                    with_regexp = r"with\s+(?:\w+\.)*" + re.escape(constructor_name) + r"\(.*\)\s+as\s+([_a-zA-Z]\w*)\s*:"
                     match = re.match(with_regexp, source_line.strip())
                     if match:
                         return match.group(1)

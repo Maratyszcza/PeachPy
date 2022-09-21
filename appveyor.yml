@@ -1,12 +1,19 @@
-version: 0.2.0.{build}
+# appveyor.yml - https://www.appveyor.com/docs/lang/python
+---
+image:
+  - Visual Studio 2022
 environment:
   matrix:
   - PYTHON: C:\Python27-x64
   - PYTHON: C:\Python36-x64
-  - PYTHON: C:\Python37-x64
+  # - PYTHON: C:\Python37-x64
+  - PYTHON: C:\Python38-x64
+  # - PYTHON: C:\Python39-x64
+  - PYTHON: C:\Python310-x64
+  # - PYTHON: C:\Python311-x64  # On or after 05 Oct 2022
 install:
-- '"%PYTHON%\Scripts\pip" install -r test\requirements.txt'
+- '"%PYTHON%\Scripts\pip" install -r requirements.txt -r tests/requirements.txt'
 build_script:
-- '"%PYTHON%\Scripts\pip" install .'
+- '"%PYTHON%\Scripts\pip" install --editable .'
 test_script:
-- '"%PYTHON%\Scripts\nosetests"'
+- '"%PYTHON%\Scripts\pytest" --ignore=tests/arm/test_arm.py'
