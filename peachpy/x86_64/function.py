@@ -719,11 +719,11 @@ class Function:
             if any(surplus_count < 0 for surplus_count in six.itervalues(live_registers)):
                 if instruction.source_file is not None and instruction.line_number is not None:
                     raise peachpy.RegisterAllocationError(
-                        "The number of live virtual registers exceeds physical constaints %s at %s:%d" %
+                        "The number of live virtual registers exceeds physical constraints %s at %s:%d" %
                             (str(instruction), instruction.source_file, instruction.line_number))
                 else:
                     raise peachpy.RegisterAllocationError(
-                        "The number of live virtual registers exceeds physical constaints %s" % str(instruction))
+                        "The number of live virtual registers exceeds physical constraints %s" % str(instruction))
 
     def _preallocate_registers(self):
         """Allocates registers that can be binded only to a single virtual register.
@@ -800,14 +800,14 @@ class Function:
             other_cl_registers = filter(operator.methodcaller("__ne__", cl_register), cl_binded_registers)
             conflicting_registers = self._conflicting_registers[1][cl_register]
             if any([other_register in conflicting_registers for other_register in other_cl_registers]):
-                raise RegisterAllocationError("Two conflicting virtual registers are requred to bind to cl")
+                raise RegisterAllocationError("Two conflicting virtual registers are required to bind to cl")
 
         # Check that xmm0-binded registers are not mutually conflicting
         for xmm0_register in xmm0_binded_registers:
             other_xmm0_registers = filter(operator.methodcaller("__ne__", xmm0_register), xmm0_binded_registers)
             conflicting_registers = self._conflicting_registers[3][xmm0_register]
             if any([other_register in conflicting_registers for other_register in other_xmm0_registers]):
-                raise RegisterAllocationError("Two conflicting virtual registers are requred to bind to xmm0")
+                raise RegisterAllocationError("Two conflicting virtual registers are required to bind to xmm0")
 
         # Commit register allocations
         for cl_register in cl_binded_registers:

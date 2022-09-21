@@ -598,7 +598,7 @@ class Function(object):
                                 else:
                                     constraints[register_id_list] = tuple(options)
                         else:
-                            raise RegisterAllocationError("Imposible virtual register combination in instruction %s"
+                            raise RegisterAllocationError("Impossible virtual register combination in instruction %s"
                                                           % instruction)
                     elif all(isinstance(register, SRegister) for register in register_list) and \
                             isinstance(instruction, VFPLoadStoreMultipleInstruction):
@@ -651,7 +651,7 @@ class Function(object):
                                     constraints[register_id_list] = tuple(options)
                         else:
                             raise RegisterAllocationError(
-                                "Imposible virtual register combination in instruction %s" % instruction)
+                                "Impossible virtual register combination in instruction %s" % instruction)
                     else:
                         assert False
         report_register_constraints = False

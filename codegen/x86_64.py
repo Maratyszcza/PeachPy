@@ -432,7 +432,7 @@ def generate_encoding_lambda(encoding, operands, use_off_argument=False):
                 evex_args.append("op[%d].address" % operands.index(component.X))
                 if component.vvvv != 0:
                     assert component.vvvv is component.V
-                    # Component.V | Compnent.vvvv encode the operand
+                    # Component.V | Component.vvvv encode the operand
                     evex_args.append("op[%d].code" % operands.index(component.vvvv))
                 else:
                     assert component.V == 0 or isinstance(component.V, Operand) and component.V.is_memory
