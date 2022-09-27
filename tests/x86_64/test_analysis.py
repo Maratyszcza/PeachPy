@@ -1,5 +1,5 @@
 import unittest
-from test import equal_codes
+from tests import equal_codes
 from peachpy import *
 from peachpy.x86_64 import *
 

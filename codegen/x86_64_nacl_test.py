@@ -6,6 +6,8 @@ from opcodes.x86_64 import *
 from codegen.code import CodeWriter, CodeBlock
 import operator
 import json
+import os
+import six
 
 
 instruction_set = read_instruction_set()
@@ -69,13 +71,13 @@ from peachpy.x86_64 import *\n\
 \n\
 instruction_list = []\n\
 ", file=out)
-    for group, instruction_names in instruction_groups.iteritems():
+    for group, instruction_names in six.iteritems(instruction_groups):
         with CodeWriter() as code:
             code.line("# " + group)
             for name in instruction_names:
 
                 # Instructions with `name` name
-                name_instructions = filter(lambda i: i.name == name, instruction_set)
+                name_instructions = list(filter(lambda i: i.name == name, instruction_set))
                 if not name_instructions:
                     print("No forms for instruction: " + name)
                     continue
