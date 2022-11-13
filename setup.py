@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
+from setuptools import setup
+from setuptools.command.develop import develop
 import distutils.log
 from distutils.command.build import build
-from setuptools.command.develop import develop
 from distutils.cmd import Command
-from setuptools import setup
 
 def read_text_file(path):
     import os
