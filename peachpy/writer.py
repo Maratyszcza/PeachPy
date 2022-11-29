@@ -27,6 +27,7 @@ class TextWriter(object):
             self.output_file = None
         else:
             import os
+            self.output_file.close()
             os.unlink(self.output_file.name)
             self.output_file = None
             raise
@@ -110,6 +111,7 @@ class ImageWriter(object):
             self.output_file = None
         else:
             import os
+            self.output_file.close()
             os.unlink(self.output_file.name)
             self.output_file = None
             raise
