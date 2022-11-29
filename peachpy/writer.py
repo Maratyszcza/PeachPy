@@ -15,7 +15,7 @@ class TextWriter(object):
     def __enter__(self):
         global active_writers
         active_writers.append(self)
-        self.output_file = open(self.output_path, "w")
+        self.output_file = open(self.output_path, "w", encoding="utf-8")
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
