@@ -2,6 +2,7 @@
 #    See license.rst for the full text of the license.
 
 from __future__ import print_function
+import io
 import time
 
 import peachpy.arm.instructions
@@ -117,7 +118,7 @@ class Function(object):
                 self.determine_live_registers(exclude_parameter_loads=True)
 
                 if self.dump_intermediate_assembly:
-                    with open('%s.S' % self.symbol_name, "w", encoding="utf-8") as intermediate_assembly_file:
+                    with io.open('%s.S' % self.symbol_name, "w", encoding="utf-8") as intermediate_assembly_file:
                         for instruction in self.instructions:
                             if isinstance(instruction, Instruction):
                                 consumed_registers = ", ".join(sorted(map(str, list(instruction.get_input_registers_list()))))

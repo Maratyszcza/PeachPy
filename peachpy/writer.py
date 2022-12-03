@@ -1,6 +1,8 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
+import io
+
 active_writers = []
 
 
@@ -15,7 +17,7 @@ class TextWriter(object):
     def __enter__(self):
         global active_writers
         active_writers.append(self)
-        self.output_file = open(self.output_path, "w", encoding="utf-8")
+        self.output_file = io.open(self.output_path, "w", encoding="utf-8")
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):

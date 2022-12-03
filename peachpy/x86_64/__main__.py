@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import io
 
 from peachpy import *
 from peachpy.x86_64 import *
@@ -251,7 +252,7 @@ def main():
     if options.dependencies_makefile_path:
         dependencies_makefile_path = options.dependencies_makefile_path
     if options.rtl_dump:
-        peachpy.x86_64.options.rtl_dump_file = open(options.rtl_dump, "w", encoding="utf-8")
+        peachpy.x86_64.options.rtl_dump_file = io.open(options.rtl_dump, "w", encoding="utf-8")
     if options.c_header_file:
         writers.append(CHeaderWriter(options.c_header_file, options.input[0]))
     if options.json_metadata_file:
@@ -275,7 +276,7 @@ def main():
 
         dependencies = list(sorted(module_files))
         dependencies.insert(0, options.input[0])
-        with open(dependencies_makefile_path, "w", encoding="utf-8") as dependencies_makefile:
+        with io.open(dependencies_makefile_path, "w", encoding="utf-8") as dependencies_makefile:
             dependencies_makefile.write(options.output + ": \\\n  " + " \\\n  ".join(dependencies) + "\n")
 
 if __name__ == "__main__":
