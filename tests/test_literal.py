@@ -76,10 +76,21 @@ class Float64(unittest.TestCase):
         self.assertEqual(Constant.float64(-0.75).data,                  (0xBFE8000000000000,))
         self.assertEqual(Constant.float64(-2.0).data,                   (0xC000000000000000,))
         self.assertEqual(Constant.float64(-float("inf")).data,          (0xFFF0000000000000,))
+        self.assertEqual(Constant.float64(1.23).data,                   (0x3FF3AE147AE147AE,))
         self.assertEqual(Constant.float64("0x1.6A09E667F3BCDp+0").data, (0x3FF6A09E667F3BCD,))
         self.assertEqual(Constant.float64("0x1.BB67AE8584CAAp+0").data, (0x3FFBB67AE8584CAA,))
         self.assertEqual(Constant.float64("0x1.921fb54442d18p+1").data, (0x400921FB54442D18,))
         self.assertEqual(Constant.float64("0x1.5bf0a8b145769p+1").data, (0x4005BF0A8B145769,))
+
+        # absolutely largest positive (and negative) normalzed single float
+        self.assertEqual(Constant.float64("0x1.0000000000000p-1022").data, (0x0010000000000000,))
+        self.assertEqual(Constant.float64("-0x1.0000000000000p-1022").data, (0x8010000000000000,))
+        # absolutely largest positive (and negative) denormalized single float
+        self.assertEqual(Constant.float64("0x0.fffffffffffffp-1022").data, (0x000FFFFFFFFFFFFF,))
+        self.assertEqual(Constant.float64("-0x0.fffffffffffffp-1022").data, (0x800FFFFFFFFFFFFF,))
+        # absolutely smallest positive (and negative) denormalized single float
+        self.assertEqual(Constant.float64("0x0.0000000000001p-1022").data, (0x0000000000000001,))
+        self.assertEqual(Constant.float64("-0x0.0000000000001p-1022").data, (0x8000000000000001,))
 
 
 class Float32(unittest.TestCase):
@@ -95,8 +106,18 @@ class Float32(unittest.TestCase):
         self.assertEqual(Constant.float32(-0.5).data,            (0xBF000000,))
         self.assertEqual(Constant.float32(-0.75).data,           (0xBF400000,))
         self.assertEqual(Constant.float32(-2.0).data,            (0xC0000000,))
+        self.assertEqual(Constant.float32(1.23).data,            (0x3f9d70a4,))
         self.assertEqual(Constant.float32(-float("inf")).data,   (0xFF800000,))
         self.assertEqual(Constant.float32("0x1.6A09E6p+0").data, (0x3FB504F3,))
         self.assertEqual(Constant.float32("0x1.BB67AEp+0").data, (0x3FDDB3D7,))
         self.assertEqual(Constant.float32("0x1.921FB6p+1").data, (0x40490FDB,))
-        self.assertEqual(Constant.float32("0x1.5BF0A8p+1").data, (0x402DF854,))
+        self.assertEqual(Constant.float32("0x1.5BF0A8p+1").data,   (0x402DF854,))
+        # absolutely largest positive (and negative) normalzed single float
+        self.assertEqual(Constant.float32("0x1.000000p-126").data, (0x00800000,))
+        self.assertEqual(Constant.float32("-0x1.000000p-126").data, (0x80800000,))
+        # absolutely largest positive (and negative) denormalized single float
+        self.assertEqual(Constant.float32("0x0.fffffep-126").data,  (0x007fffff,))
+        self.assertEqual(Constant.float32("-0x0.fffffep-126").data, (0x807fffff,))
+        # absolutely smallest positive (and negative) denormalized single float
+        self.assertEqual(Constant.float32("0x0.000002p-126").data,  (0x00000001,))
+        self.assertEqual(Constant.float32("-0x0.000002p-126").data, (0x80000001,))
