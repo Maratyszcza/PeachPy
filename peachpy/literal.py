@@ -407,27 +407,25 @@ class Constant:
         is_negative = number.startswith("-")
         point_position = number.index('.')
         exp_position = number.rindex('p')
+        exponent = int(number[exp_position + 1:])
         number_prefix = number[int(is_negative):point_position]
-        assert number_prefix == '0x0' or number_prefix == '0x1'
-        mantissa = number[point_position + 1:exp_position]
-        if number_prefix == '0x0' and int(mantissa) == 0:
-            # Zero
-            return int(is_negative) << 31
+        fraction_str = number[point_position + 1:exp_position]
+        shifted_sign = int(is_negative) << 31
+        if number_prefix == '0x0':
+            # Zero, or a float64 denormal that will be zero as a float32
+            assert exponent == 0 if int(fraction_str, 16) == 0 else exponent == -1022
+            return shifted_sign
+        assert number_prefix == '0x1'
+        mantissa_bits = len(fraction_str) * 4
+        if mantissa_bits < 23:
+            mantissa = int(fraction_str, 16) << (23 - mantissa_bits)
         else:
-            exponent = number[exp_position + 1:]
-            mantissa_bits = len(mantissa) * 4
-            if mantissa_bits == 23:
-                mantissa = int(mantissa, 16)
-            elif mantissa_bits < 23:
-                mantissa = int(mantissa, 16) << (23 - mantissa_bits)
-            else:
-                mantissa = int(mantissa, 16) >> (mantissa_bits - 23)
-            exponent = int(exponent)
-            if exponent <= -127:
-                # Denormals
-                mantissa = (mantissa + (1 << 23)) >> -(exponent + 126)
-                exponent = -127
-            return mantissa + (int(exponent + 127) << 23) + (int(is_negative) << 31)
+            mantissa = int(fraction_str, 16) >> (mantissa_bits - 23)
+        if exponent <= -127:
+            # Denormals
+            mantissa = (mantissa + (1 << 23)) >> -(exponent + 126)
+            return mantissa + shifted_sign
+        return mantissa + (exponent + 127 << 23) + shifted_sign
 
     @staticmethod
     def _parse_float64(number):
@@ -438,7 +436,9 @@ class Constant:
             try:
                 number = float.hex(float.fromhex(number))
             except ValueError:
-                raise ValueError("The string %s is not a hexadecimal floating-point number" % number)
+                raise ValueError(
+                    "The string %s is not a hexadecimal floating-point number" % number
+                )
         else:
             raise TypeError("Unsupported type of constant number %s" % str(number))
         if number == "inf" or number == "+inf":
@@ -448,31 +448,22 @@ class Constant:
         if number == "nan":
             return 0x7FF8000000000000
         is_negative = number.startswith("-")
-        point_position = number.index('.')
-        exp_position = number.rindex('p')
-        number_prefix = number[int(is_negative):point_position]
-        assert number_prefix == '0x0' or number_prefix == '0x1'
-        mantissa = number[point_position + 1:exp_position]
-        if number_prefix == '0x0':
-            # Zero
-            assert int(mantissa) == 0
-            return int(is_negative) << 63
+        point_position = number.index(".")
+        exp_position = number.rindex("p")
+        exponent = int(number[exp_position + 1 :])
+        assert -1022 <= exponent <= 1023
+        number_prefix = number[int(is_negative) : point_position]
+        fraction_str = number[point_position + 1 : exp_position]
+        mantissa_bits = len(fraction_str) * 4
+        shifted_sign = int(is_negative) << 63
+        if mantissa_bits == 52:
+            mantissa = int(fraction_str, 16)
         else:
-            exponent = number[exp_position + 1:]
-            mantissa_bits = len(mantissa) * 4
-            if mantissa_bits == 52:
-                mantissa = int(mantissa, 16)
-            elif mantissa_bits < 52:
-                mantissa = int(mantissa, 16) << (52 - mantissa_bits)
-            else:
-                mantissa = int(mantissa, 16) >> (mantissa_bits - 52)
-            exponent = int(exponent)
-            if exponent <= -1023:
-                # Denormals
-                mantissa = (mantissa + (1 << 52)) >> -(exponent + 1022)
-                exponent = -1023
-            elif exponent > 1023:
-                # Infinity
-                mantissa = 0
-                exponent = 1023
-            return mantissa + (int(exponent + 1023) << 52) + (int(is_negative) << 63)
+            assert mantissa_bits < 52
+            mantissa = int(fraction_str, 16) << (52 - mantissa_bits)
+        if number_prefix == "0x0":
+            # Either Zero or a Denormal
+            assert exponent == 0 and mantissa == 0 or exponent == -1022 and mantissa != 0
+            return mantissa + shifted_sign
+        assert number_prefix == "0x1"
+        return mantissa + (exponent + 1023 << 52) + shifted_sign
