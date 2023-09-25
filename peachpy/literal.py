@@ -407,27 +407,25 @@ class Constant:
         is_negative = number.startswith("-")
         point_position = number.index('.')
         exp_position = number.rindex('p')
+        exponent = int(number[exp_position + 1:])
         number_prefix = number[int(is_negative):point_position]
-        assert number_prefix == '0x0' or number_prefix == '0x1'
-        mantissa = number[point_position + 1:exp_position]
-        if number_prefix == '0x0' and int(mantissa) == 0:
-            # Zero
-            return int(is_negative) << 31
+        fraction_str = number[point_position + 1:exp_position]
+        shifted_sign = int(is_negative) << 31
+        if number_prefix == '0x0':
+            # Zero, or a float64 denormal that will be zero as a float32
+            assert exponent == 0 if int(fraction_str, 16) == 0 else exponent == -1022
+            return shifted_sign
+        assert number_prefix == '0x1'
+        mantissa_bits = len(fraction_str) * 4
+        if mantissa_bits < 23:
+            mantissa = int(fraction_str, 16) << (23 - mantissa_bits)
         else:
-            exponent = number[exp_position + 1:]
-            mantissa_bits = len(mantissa) * 4
-            if mantissa_bits == 23:
-                mantissa = int(mantissa, 16)
-            elif mantissa_bits < 23:
-                mantissa = int(mantissa, 16) << (23 - mantissa_bits)
-            else:
-                mantissa = int(mantissa, 16) >> (mantissa_bits - 23)
-            exponent = int(exponent)
-            if exponent <= -127:
-                # Denormals
-                mantissa = (mantissa + (1 << 23)) >> -(exponent + 126)
-                exponent = -127
-            return mantissa + (int(exponent + 127) << 23) + (int(is_negative) << 31)
+            mantissa = int(fraction_str, 16) >> (mantissa_bits - 23)
+        if exponent <= -127:
+            # Denormals
+            mantissa = (mantissa + (1 << 23)) >> -(exponent + 126)
+            return mantissa + shifted_sign
+        return mantissa + (exponent + 127 << 23) + shifted_sign
 
     @staticmethod
     def _parse_float64(number):
