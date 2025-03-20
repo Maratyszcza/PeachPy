@@ -44,7 +44,7 @@ class SectionIndex(IntEnum):
     undefined = 0x0000
 
 
-class Section(object):
+class Section:
     def __init__(self, name, type, allocate=False, writable=False, executable=False):
         # Section name
         self.name = name
@@ -158,39 +158,39 @@ null_section = Section(None, SectionType.null)
 
 class ProgramBitsSection(Section):
     def __init__(self, name, allocate=True, writable=False, executable=False):
-        super(ProgramBitsSection, self).__init__(name, SectionType.program_bits, allocate, writable, executable)
+        super().__init__(name, SectionType.program_bits, allocate, writable, executable)
         self.content = bytearray()
 
     def get_content_size(self, abi):
         return len(self.content)
 
     def encode_header(self, encoder, name_index_map, section_index_map, offset, address=None):
-        return super(ProgramBitsSection, self).encode_header(encoder, name_index_map, section_index_map, offset,
+        return super().encode_header(encoder, name_index_map, section_index_map, offset,
                                                              address=address, content_size=len(self.content))
 
     def encode_content(self, encoder, name_index_map, section_index_map, symbol_index_map):
-        super(ProgramBitsSection, self).encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
+        super().encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
         return self.content
 
 
 class TextSection(ProgramBitsSection):
     def __init__(self, name=".text"):
-        super(TextSection, self).__init__(name, executable=True)
+        super().__init__(name, executable=True)
 
 
 class DataSection(ProgramBitsSection):
     def __init__(self, name=".data"):
-        super(DataSection, self).__init__(name, writable=True)
+        super().__init__(name, writable=True)
 
 
 class ReadOnlyDataSection(ProgramBitsSection):
     def __init__(self, name=".rodata"):
-        super(ReadOnlyDataSection, self).__init__(name)
+        super().__init__(name)
 
 
 class StringSection(Section):
     def __init__(self, name=".strtab"):
-        super(StringSection, self).__init__(name, SectionType.string_table)
+        super().__init__(name, SectionType.string_table)
         self._string_index_map = dict()
         self.content_size = 0
 
@@ -214,11 +214,11 @@ class StringSection(Section):
         return self.content_size
 
     def encode_header(self, encoder, name_index_map, section_index_map, offset):
-        return super(StringSection, self).encode_header(encoder, name_index_map, section_index_map, offset,
+        return super().encode_header(encoder, name_index_map, section_index_map, offset,
                                                         content_size=self.content_size)
 
     def encode_content(self, encoder, name_index_map, section_index_map, symbol_index_map):
-        super(StringSection, self).encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
+        super().encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
         if self.content_size != 0:
             import codecs
 
@@ -232,7 +232,7 @@ class StringSection(Section):
 
 class SymbolSection(Section):
     def __init__(self, name=".symtab", string_table=None):
-        super(SymbolSection, self).__init__(name, SectionType.symbol_table)
+        super().__init__(name, SectionType.symbol_table)
         self._symbols_set = set()
         self._local_symbols = list()
         self._nonlocal_symbols = list()
@@ -251,7 +251,7 @@ class SymbolSection(Section):
         assert isinstance(symbol, Symbol)
 
         if symbol in self._symbols_set:
-            raise ValueError("Symbol %s is already present in the section %s" % (str(symbol), self.name))
+            raise ValueError(f"Symbol {str(symbol)} is already present in the section {self.name}")
         self._symbols_set.add(symbol)
         if symbol.binding == SymbolBinding.local:
             self._local_symbols.append(symbol)
@@ -274,14 +274,14 @@ class SymbolSection(Section):
 
         entry_size = {32: 16, 64: 24}[encoder.bitness]
         symbols_count = len(self._local_symbols) + len(self._nonlocal_symbols)
-        return super(SymbolSection, self).encode_header(encoder, name_index_map, section_index_map, offset,
+        return super().encode_header(encoder, name_index_map, section_index_map, offset,
                                                         link_section=self._string_table,
                                                         info=len(self._local_symbols),
                                                         content_size=symbols_count * entry_size,
                                                         entry_size=entry_size)
 
     def encode_content(self, encoder, name_index_map, section_index_map, symbol_index_map):
-        super(SymbolSection, self).encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
+        super().encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
 
         # Local symbols must be encoded before non-local symbols. Thus, need to separate the two classes
         content = bytearray()
@@ -298,7 +298,7 @@ class SymbolSection(Section):
 
 class RelocationsWithAddendSection(Section):
     def __init__(self, reference_section, symbol_table):
-        super(RelocationsWithAddendSection, self).__init__(".rela" + reference_section.name,
+        super().__init__(".rela" + reference_section.name,
                                                            SectionType.relocations_with_addend)
         self.reference_section = reference_section
         self.symbol_table = symbol_table
@@ -327,7 +327,7 @@ class RelocationsWithAddendSection(Section):
         entry_size = {32: 16, 64: 24}[encoder.bitness]
         relocations_count = len(self.relocations)
         reference_section_index = section_index_map[self.reference_section]
-        return super(RelocationsWithAddendSection, self).\
+        return super().\
             encode_header(encoder, name_index_map, section_index_map, offset,
                           link_section=self.symbol_table,
                           info=reference_section_index,
@@ -335,7 +335,7 @@ class RelocationsWithAddendSection(Section):
                           entry_size=entry_size)
 
     def encode_content(self, encoder, name_index_map, section_index_map, symbol_index_map):
-        super(RelocationsWithAddendSection, self).\
+        super().\
             encode_content(encoder, name_index_map, section_index_map, symbol_index_map)
 
         content = bytearray()

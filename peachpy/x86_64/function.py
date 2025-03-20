@@ -1,12 +1,10 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-from __future__ import print_function
 import os
 import operator
 import bisect
 import collections
-import six
 
 import peachpy
 import peachpy.writer
@@ -163,13 +161,13 @@ class Function:
         go_arguments = map(lambda name_gotype: " ".join(name_gotype),
                            zip(map(operator.attrgetter("name"), self.arguments), go_argument_types))
         if self.result_type is None:
-            return "func %s(%s)" % (self.name, ", ".join(go_arguments))
+            return "func {}({})".format(self.name, ", ".join(go_arguments))
         else:
             go_result_type = c_to_go_type(self.result_type)
             if go_result_type is None:
                 return None
             else:
-                return "func %s(%s) %s" % (self.name, ", ".join(go_arguments), go_result_type)
+                return "func {}({}) {}".format(self.name, ", ".join(go_arguments), go_result_type)
 
     @property
     def isa_extensions(self):
@@ -293,7 +291,7 @@ class Function:
         # Check that the instruction is supported by the target ISA
         for extension in instruction.isa_extensions:
             if self.target is not None and extension not in self.target.extensions:
-                raise ValueError("{0} is not supported on the target microarchitecture".format(extension))
+                raise ValueError(f"{extension} is not supported on the target microarchitecture")
 
         instruction._indent_level = self._indent_level
         self._instructions.append(instruction)
@@ -417,11 +415,11 @@ class Function:
                 # - If a register is produced by an instruction, it becomes available for the subsequent instructions
                 #   of the basic block and counts as produced by the basic block
                 for (input_registers, output_registers) in zip(input_registers_list, output_registers_list):
-                    for (input_register_id, input_register_mask) in six.iteritems(input_registers):
+                    for (input_register_id, input_register_mask) in input_registers.items():
                         consumed_mask = input_register_mask & ~self.produced_register_masks[input_register_id]
                         if consumed_mask != 0:
                             self.consumed_register_masks[input_register_id] |= consumed_mask
-                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
+                    for (output_register_id, output_register_mask) in output_registers.items():
                         self.produced_register_masks[output_register_id] |= output_register_mask
 
             def reset_processed_blocks(self):
@@ -437,7 +435,7 @@ class Function:
                     # Record available registers for current instruction
                     available_registers_list.append(available_registers_masks.copy())
                     # Update with output registers for current instruction
-                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
+                    for (output_register_id, output_register_mask) in output_registers.items():
                         available_registers_masks[output_register_id] = \
                             available_registers_masks.get(output_register_id, 0) | output_register_mask
                 return available_registers_list
@@ -450,7 +448,7 @@ class Function:
                 for (input_registers, output_registers) in \
                         reversed(list(zip(self.input_registers_list, self.output_registers_list))):
                     # Mark register written by the instruction as non-live
-                    for (output_register_id, output_register_mask) in six.iteritems(output_registers):
+                    for (output_register_id, output_register_mask) in output_registers.items():
                         if output_register_id in live_registers_masks:
                             new_live_register_mask = live_registers_masks[output_register_id] & ~output_register_mask
                             if new_live_register_mask != 0:
@@ -458,7 +456,7 @@ class Function:
                             else:
                                 del live_registers_masks[output_register_id]
                     # Mark registers read by the instruction as live
-                    for (input_register_id, input_register_mask) in six.iteritems(input_registers):
+                    for (input_register_id, input_register_mask) in input_registers.items():
                         live_registers_masks[input_register_id] = \
                             live_registers_masks.get(input_register_id, 0) | input_register_mask
                     # Record available registers for current instruction
@@ -480,12 +478,12 @@ class Function:
                     self.available_register_masks.update(extra_available_registers)
                     if self.output_blocks:
                         # Add registers produced by this block
-                        for (produced_reg_id, produced_reg_mask) in six.iteritems(self.produced_register_masks):
+                        for (produced_reg_id, produced_reg_mask) in self.produced_register_masks.items():
                             extra_available_registers[produced_reg_id] =\
                                 extra_available_registers.get(produced_reg_id, 0) | produced_reg_mask
                 else:
                     # Subsequent passes: compute and propagate only the input registers that were not processed before
-                    for (reg_id, extra_reg_mask) in list(six.iteritems(extra_available_registers)):
+                    for (reg_id, extra_reg_mask) in list(extra_available_registers.items()):
                         old_reg_mask = self.available_register_masks[reg_id]
                         update_reg_mask = extra_reg_mask & ~old_reg_mask
                         if update_reg_mask != 0:
@@ -512,7 +510,7 @@ class Function:
                 self.liveness_analysis_passes += 1
 
                 # Steps 1 and 2
-                for (reg_id, extra_reg_mask) in list(six.iteritems(extra_live_registers)):
+                for (reg_id, extra_reg_mask) in list(extra_live_registers.items()):
                     old_reg_mask = self.live_register_masks[reg_id]
                     update_reg_mask = extra_reg_mask & ~old_reg_mask
                     if update_reg_mask != 0:
@@ -531,7 +529,7 @@ class Function:
                 # Step 3
                 if self.input_blocks:
                     if self.liveness_analysis_passes == 1:
-                        for (consumed_reg_id, consumed_reg_mask) in six.iteritems(self.consumed_register_masks):
+                        for (consumed_reg_id, consumed_reg_mask) in self.consumed_register_masks.items():
                             extra_live_registers[consumed_reg_id] =\
                                 extra_live_registers.get(consumed_reg_id, 0) | consumed_reg_mask
 
@@ -683,7 +681,7 @@ class Function:
             for instruction_register in instruction_registers:
                 if instruction_register.is_virtual:
                     conflict_internal_ids = [reg_id for (reg_id, reg_mask)
-                                             in six.iteritems(instruction._live_registers)
+                                             in instruction._live_registers.items()
                                              if reg_mask & instruction_register.mask != 0]
                     self._register_allocators[instruction_register.kind].add_conflicts(
                         instruction_register.virtual_id, conflict_internal_ids)
@@ -693,7 +691,7 @@ class Function:
                 from peachpy.x86_64.registers import Register
                 live_virtual_registers = \
                     Register._reconstruct_multiple({reg_id: reg_mask for (reg_id, reg_mask)
-                                                   in six.iteritems(instruction._live_registers)
+                                                   in instruction._live_registers.items()
                                                    if reg_id < 0})
                 for live_virtual_register in live_virtual_registers:
                     conflict_internal_ids = [reg._internal_id for reg in physical_registers
@@ -716,7 +714,7 @@ class Function:
             live_registers = max_live_registers.copy()
             for reg in instruction.live_registers:
                 live_registers[reg.kind] -= 1
-            if any(surplus_count < 0 for surplus_count in six.itervalues(live_registers)):
+            if any(surplus_count < 0 for surplus_count in live_registers.values()):
                 if instruction.source_file is not None and instruction.line_number is not None:
                     raise peachpy.RegisterAllocationError(
                         "The number of live virtual registers exceeds physical constraints %s at %s:%d" %
@@ -907,7 +905,7 @@ class Argument(peachpy.Argument):
         from peachpy.x86_64.abi import ABI
         assert isinstance(abi, ABI), "ABI object expected"
         from copy import deepcopy
-        super(Argument, self).__init__(deepcopy(argument.c_type), argument.name)
+        super().__init__(deepcopy(argument.c_type), argument.name)
         if self.c_type.size is None:
             self.c_type.size = self.c_type.get_size(abi)
         self.abi = abi
@@ -1125,7 +1123,7 @@ class ABIFunction:
                     instruction.memory_address.displacement = local_variable.address
 
     def _allocate_registers(self):
-        for register_kind, register_allocator in six.iteritems(self._register_allocators):
+        for register_kind, register_allocator in self._register_allocators.items():
             register_allocator.set_allocation_options(self.abi, register_kind)
 
         from peachpy.x86_64.pseudo import LOAD
@@ -1140,7 +1138,7 @@ class ABIFunction:
                     self._register_allocators[dst_reg.kind]\
                         .try_allocate_register(dst_reg.virtual_id, src_arg.register.physical_id)
 
-        for register_allocator in six.itervalues(self._register_allocators):
+        for register_allocator in self._register_allocators.values():
             register_allocator.allocate_registers()
 
     def _lower_argument_loads(self):
@@ -1476,10 +1474,7 @@ class ABIFunction:
             package_string = self.package
             if package_string is None:
                 package_string = ""
-            if six.PY2:
-                text_arguments = [package_string + "\xC2\xB7" + self.mangled_name + "(SB)"]
-            else:
-                text_arguments = [package_string + "\u00B7" + self.mangled_name + "(SB)"]
+            text_arguments = [package_string + "\u00B7" + self.mangled_name + "(SB)"]
 
             text_arguments.append("4")
             stack_size = sum(map(operator.attrgetter("size"), self.arguments))
@@ -1499,18 +1494,18 @@ class ABIFunction:
             code = [
                 "#ifdef __APPLE__",
                 ".section __TEXT,__text,regular,pure_instructions",
-                ".globl _{name}".format(name=self.mangled_name),
+                f".globl _{self.mangled_name}",
                 ".p2align {ilog2alignment}, 0x90".format(
                     ilog2alignment=ilog2(code_alignment)),
-                "_{name}:".format(name=self.mangled_name),
+                f"_{self.mangled_name}:",
                 "#else /* !__APPLE__ */",
                 ".text",
                 ".p2align {ilog2alignment},,{max_alignment_bytes}".format(
                     ilog2alignment=ilog2(code_alignment),
                     max_alignment_bytes=code_alignment - 1),
                 ".globl " + self.mangled_name,
-                ".type {name}, @function".format(name=self.mangled_name),
-                "{name}:".format(name=self.mangled_name),
+                f".type {self.mangled_name}, @function",
+                f"{self.mangled_name}:",
                 "#endif /* !__APPLE */",
             ]
         else:
@@ -1629,7 +1624,7 @@ class InstructionBundle:
             return
 
         def suitable_encodings(instruction):
-            return [(encoding, length) for (length, encoding) in six.iteritems(instruction.encode_length_options())
+            return [(encoding, length) for (length, encoding) in instruction.encode_length_options().items()
                     if 0 < length - len(instruction.bytecode) <= self.padding]
 
         while self.size < self.capacity:
@@ -1907,7 +1902,7 @@ class EncodedFunction:
 
         if assembly_format == "go":
             # Arguments for TEXT directive in Go assembler
-            text_arguments = ["%s\xC2\xB7%s(SB)" % (self.package_name, self.name)]
+            text_arguments = [f"{self.package_name}\xC2\xB7{self.name}(SB)"]
 
             text_arguments.append("4")
             text_arguments.append("$0")

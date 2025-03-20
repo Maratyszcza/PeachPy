@@ -1,14 +1,12 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-from __future__ import absolute_import
 
 
 from peachpy import *
 from peachpy.x86_64 import *
 import sys
 import argparse
-import six
 
 
 parser = argparse.ArgumentParser(
@@ -138,13 +136,13 @@ def guess_assembly_format_from_abi(abi):
 def check_abi_assembly_format_combination(abi, assembly_format):
     _, supported_assembly_formats, _ = abi_map[abi]
     if assembly_format not in supported_assembly_formats:
-        raise ValueError("Assembly format %s is not supported for %s" % (assembly_format, str(abi)))
+        raise ValueError(f"Assembly format {assembly_format} is not supported for {str(abi)}")
 
 
 def check_abi_image_format_combination(image_format, abi):
     _, _, supported_image_formats = abi_map[abi]
     if image_format not in supported_image_formats:
-        raise ValueError("Image format %s is not supported for %s" % (image_format, str(abi)))
+        raise ValueError(f"Image format {image_format} is not supported for {str(abi)}")
 
 
 def detect_native_image_format():
@@ -213,7 +211,7 @@ def main():
         if abi is None:
             raise ValueError("Could not auto-detect ABI: specify it with -mabi option")
         # Set options.abi to the corresponding string value because it is used later on
-        options.abi = {abi: name for name, (abi, _, _) in six.iteritems(abi_map)}[abi]
+        options.abi = {abi: name for name, (abi, _, _) in abi_map.items()}[abi]
     else:
         abi, _, _ = abi_map[options.abi]
     peachpy.x86_64.options.abi = abi

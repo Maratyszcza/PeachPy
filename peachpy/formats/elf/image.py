@@ -11,7 +11,7 @@ class Image:
         self.strtab = StringSection(".strtab")
         self.symtab = SymbolSection(string_table=self.strtab)
         self.sections = [null_section, self.shstrtab, self.strtab, self.symtab]
-        self._section_names = set([self.shstrtab.name, self.strtab.name, self.symtab.name])
+        self._section_names = {self.shstrtab.name, self.strtab.name, self.symtab.name}
         if source:
             source_symbol = Symbol()
             source_symbol.value = 0
@@ -38,7 +38,6 @@ class Image:
 
     @property
     def as_bytearray(self):
-        import six
         from peachpy.formats.elf.file import FileHeader
         from peachpy.formats.elf.section import Section, StringSection, SymbolSection
         from peachpy.util import roundup
@@ -55,7 +54,7 @@ class Image:
             if isinstance(section, StringSection):
                 pass
             elif isinstance(section, SymbolSection):
-                for symbol in six.iterkeys(section.symbol_index_map):
+                for symbol in section.symbol_index_map.keys():
                     self.strtab.add(symbol.name)
 
         # Layout sections

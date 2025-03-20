@@ -1,9 +1,9 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-class QuasiInstruction(object):
+class QuasiInstruction:
     def __init__(self, name, origin=None):
-        super(QuasiInstruction, self).__init__()
+        super().__init__()
         self.name = name
         self.line_number = origin[1][2] if origin else None
         self.source_file = origin[1][1] if origin else None
@@ -13,7 +13,7 @@ class QuasiInstruction(object):
 class Instruction(QuasiInstruction):
     def __init__(self, name, operands, isa_extensions=None, origin=None):
         import peachpy.x86_64.isa
-        super(Instruction, self).__init__(name, origin=origin)
+        super().__init__(name, origin=origin)
         self.operands = operands
         self.isa_extensions = peachpy.x86_64.isa.Extensions(isa_extensions)
         self.available_registers = set()
@@ -39,7 +39,7 @@ class Instruction(QuasiInstruction):
                 return operand.constant
 
 
-class Operand(object):
+class Operand:
     RegisterType = 1
     RegisterListType = 2
     RegisterLanesType = 3
@@ -54,7 +54,7 @@ class Operand(object):
     NoneType = 12
 
     def __init__(self, operand):
-        super(Operand, self).__init__()
+        super().__init__()
         import copy
         from peachpy import Constant
         from peachpy.arm.registers import Register, GeneralPurposeRegister, \
@@ -77,22 +77,22 @@ class Operand(object):
             self.register = copy.deepcopy(operand)
         elif isinstance(operand, tuple):
             if all(isinstance(element, Register) for element in operand):
-                if len(set((register.type, register.size) for register in operand)) == 1:
+                if len({(register.type, register.size) for register in operand}) == 1:
                     self.type = Operand.RegisterListType
                     self.register_list = copy.deepcopy(operand)
                 else:
-                    raise TypeError('Register in the list {0} have different types'.format(", ".join(operand)))
+                    raise TypeError('Register in the list {} have different types'.format(", ".join(operand)))
             elif all(isinstance(element, DRegisterLanes) for element in operand):
                 self.type = Operand.RegisterLanesListType
                 self.register_list = copy.deepcopy(operand)
             else:
-                raise TypeError('Unknown tuple elements {0}'.format(operand))
+                raise TypeError(f'Unknown tuple elements {operand}')
         elif is_int(operand):
             if -9223372036854775808 <= operand <= 18446744073709551615:
                 self.type = Operand.ImmediateType
                 self.immediate = operand
             else:
-                raise ValueError('The immediate operand {0} is not a 64-bit value'.format(operand))
+                raise ValueError(f'The immediate operand {operand} is not a 64-bit value')
         elif isinstance(operand, list):
             if len(operand) == 1 and (isinstance(operand[0], GeneralPurposeRegister) or isinstance(operand[0],
                                                                                                    GeneralPurposeRegisterWriteback)):
@@ -123,14 +123,14 @@ class Operand(object):
         elif operand is None:
             self.type = Operand.NoneType
         else:
-            raise TypeError('The operand {0} is not a valid assembly instruction operand'.format(operand))
+            raise TypeError(f'The operand {operand} is not a valid assembly instruction operand')
 
     def __str__(self):
         if self.is_constant():
             if self.constant.prefix is None:
-                return "[rel {0}]".format(self.constant.label)
+                return f"[rel {self.constant.label}]"
             else:
-                return "[rel {1}.{0}]".format(self.constant.label, self.constant.prefix)
+                return f"[rel {self.constant.prefix}.{self.constant.label}]"
         elif self.is_local_variable():
             return str(self.variable)
         elif self.is_memory_address():

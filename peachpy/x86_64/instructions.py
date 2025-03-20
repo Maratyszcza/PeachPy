@@ -2,9 +2,9 @@
 #    See license.rst for the full text of the license.
 
 
-class Instruction(object):
+class Instruction:
     def __init__(self, name, origin=None, prototype=None):
-        super(Instruction, self).__init__()
+        super().__init__()
         self.name = name
 
         self.line_number = None
@@ -375,7 +375,7 @@ class Instruction(object):
 
 class BranchInstruction(Instruction):
     def __init__(self, name, origin=None, prototype=None):
-        super(BranchInstruction, self).__init__(name, origin=origin, prototype=prototype)
+        super().__init__(name, origin=origin, prototype=prototype)
         self.is_conditional = name != "JMP"
 
     def _encode_label_branch(self, address, label_address=None, long_encoding=False):

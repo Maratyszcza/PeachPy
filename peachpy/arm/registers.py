@@ -2,16 +2,13 @@
 #    See license.rst for the full text of the license.
 
 
-import six
-
-
-class Register(object):
+class Register:
     GPType = 1
     WMMXType = 2
     VFPType = 3
 
     def __init__(self):
-        super(Register, self).__init__()
+        super().__init__()
         self.number = None
         self.size = None
 
@@ -286,7 +283,7 @@ class GeneralPurposeRegister(Register):
                            0x2F001: 'pc'}
 
     def __init__(self, id=None):
-        super(GeneralPurposeRegister, self).__init__()
+        super().__init__()
         if id is None:
             from peachpy.arm.function import active_function
             self.number = active_function.allocate_general_purpose_register()
@@ -302,7 +299,7 @@ class GeneralPurposeRegister(Register):
                 self.type = Register.GPType
                 self.size = 4
             else:
-                raise ValueError('Unknown register name: {0}'.format(id))
+                raise ValueError(f'Unknown register name: {id}')
         elif isinstance(id, GeneralPurposeRegister):
             self.number = id.number
             self.type = id.type
@@ -337,7 +334,7 @@ class GeneralPurposeRegister(Register):
 
     def __str__(self):
         if self.is_virtual:
-            return 'gp-vreg<{0}>'.format((self.number - 0x40000) >> 12)
+            return f'gp-vreg<{(self.number - 0x40000) >> 12}>'
         else:
             return GeneralPurposeRegister._number_to_name_map[self.number]
 
@@ -384,7 +381,7 @@ pc = GeneralPurposeRegister('pc')
 class GeneralPurposeRegisterWriteback(GeneralPurposeRegister):
     def __init__(self, register):
         if isinstance(register, GeneralPurposeRegister):
-            super(GeneralPurposeRegisterWriteback, self).__init__(register)
+            super().__init__(register)
             self.register = register
         else:
             raise TypeError('Register parameter is not an instance of GeneralPurposeRegister')
@@ -474,7 +471,7 @@ class WMMXRegister(Register):
                            0x1F002: 'wr15'}
 
     def __init__(self, id=None):
-        super(WMMXRegister, self).__init__()
+        super().__init__()
         if id is None:
             from peachpy.arm.function import active_function
             self.number = active_function.allocate_wmmx_register()
@@ -490,7 +487,7 @@ class WMMXRegister(Register):
                 self.regtype = Register.WMMXType
                 self.size = 8
             else:
-                raise ValueError('Unknown register name: {0}'.format(id))
+                raise ValueError(f'Unknown register name: {id}')
         elif isinstance(id, WMMXRegister):
             self.number = id.number
             self.regtype = id.regtype
@@ -508,7 +505,7 @@ class WMMXRegister(Register):
 
     def __str__(self):
         if self.is_virtual:
-            return 'wmmx-vreg<{0}>'.format((self.number - 0x40000) >> 12)
+            return f'wmmx-vreg<{(self.number - 0x40000) >> 12}>'
         else:
             return WMMXRegister._number_to_name_map[self.number]
 
@@ -599,7 +596,7 @@ class SRegister(Register):
                            0x07080: 's31'}
 
     def __init__(self, id=None):
-        super(SRegister, self).__init__()
+        super().__init__()
         if id is None:
             from peachpy.arm.function import active_function
             self.number = active_function.allocate_s_register()
@@ -615,7 +612,7 @@ class SRegister(Register):
                 self.type = Register.VFPType
                 self.size = 4
             else:
-                raise ValueError('Unknown register name: {0}'.format(id))
+                raise ValueError(f'Unknown register name: {id}')
         elif isinstance(id, SRegister):
             self.number = id.number
             self.type = id.type
@@ -704,7 +701,7 @@ class SRegister(Register):
 
     def __str__(self):
         if self.is_virtual:
-            return 's-vreg<{0}>'.format((self.number - 0x40000) >> 12)
+            return f's-vreg<{(self.number - 0x40000) >> 12}>'
         else:
             return SRegister._number_to_name_map[self.number]
 
@@ -824,7 +821,7 @@ class DRegister(Register):
                            0x0F0C0: 'd31'}
 
     def __init__(self, id=None):
-        super(DRegister, self).__init__()
+        super().__init__()
         if id is None:
             from peachpy.arm.function import active_function
             self.number = active_function.allocate_d_register()
@@ -840,7 +837,7 @@ class DRegister(Register):
                 self.type = Register.VFPType
                 self.size = 8
             else:
-                raise ValueError('Unknown register name: {0}'.format(id))
+                raise ValueError(f'Unknown register name: {id}')
         elif isinstance(id, DRegister):
             self.number = id.number
             self.type = id.type
@@ -945,7 +942,7 @@ class DRegister(Register):
 
     def __str__(self):
         if self.is_virtual:
-            return 'd-vreg<{0}>'.format((self.number - 0x40000) >> 12)
+            return f'd-vreg<{(self.number - 0x40000) >> 12}>'
         else:
             return DRegister._number_to_name_map[self.number]
 
@@ -1060,7 +1057,7 @@ class QRegister(Register):
                           0x0F0F0: 'q15'}
 
     def __init__(self, id=None):
-        super(QRegister, self).__init__()
+        super().__init__()
         if id is None:
             from peachpy.arm.function import active_function
             self.number = active_function.allocate_q_register()
@@ -1076,7 +1073,7 @@ class QRegister(Register):
                 self.type = Register.VFPType
                 self.size = 16
             else:
-                raise ValueError('Unknown register name: {0}'.format(id))
+                raise ValueError(f'Unknown register name: {id}')
         elif isinstance(id, QRegister):
             self.number = id.number
             self.type = id.type
@@ -1131,7 +1128,7 @@ class QRegister(Register):
 
     def __str__(self):
         if self.is_virtual:
-            return 'q-vreg<{0}>'.format((self.number - 0x40000) >> 12)
+            return f'q-vreg<{(self.number - 0x40000) >> 12}>'
         else:
             return QRegister.number_to_name_map[self.number]
 

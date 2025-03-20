@@ -7,9 +7,9 @@ import peachpy.stream
 from peachpy.arm.instructions import QuasiInstruction, Instruction, Operand
 
 
-class Label(object):
+class Label:
     def __init__(self, name):
-        super(Label, self).__init__()
+        super().__init__()
         self.name = name
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Label(object):
 
 class LabelQuasiInstruction(QuasiInstruction):
     def __init__(self, name, origin=None):
-        super(LabelQuasiInstruction, self).__init__('<LABEL>', origin=origin)
+        super().__init__('<LABEL>', origin=origin)
         if name.is_label():
             self.name = name.label
         else:
@@ -33,23 +33,23 @@ class AlignQuasiInstruction(QuasiInstruction):
     supported_alignments = [2, 4, 8, 16, 32]
 
     def __init__(self, alignment, origin=None):
-        super(AlignQuasiInstruction, self).__init__('<ALIGN>', origin=origin)
+        super().__init__('<ALIGN>', origin=origin)
         if isinstance(alignment, int):
             if alignment in AlignQuasiInstruction.supported_alignments:
                 self.alignment = alignment
             else:
-                raise ValueError("The alignment value {0} is not in the list of supported alignments ({1})"
+                raise ValueError("The alignment value {} is not in the list of supported alignments ({})"
                                  .format(alignment, ", ".join(AlignQuasiInstruction.supported_alignments)))
         else:
             raise TypeError("The alignment value must be an integer")
 
     def __str__(self):
-        return "align {0}".format(self.alignment)
+        return f"align {self.alignment}"
 
 
 class LoadConstantPseudoInstruction(Instruction):
     def __init__(self, destination, source, origin=None):
-        super(LoadConstantPseudoInstruction, self).__init__('<LOAD-CONSTANT>', origin=origin)
+        super().__init__('<LOAD-CONSTANT>', origin=origin)
         if destination.is_register():
             self.destination = destination
         else:
@@ -74,7 +74,7 @@ class LoadConstantPseudoInstruction(Instruction):
         self.size = 4 + 4
 
     def __str__(self):
-        return "LOAD.CONSTANT {0} = {1}".format(self.destination, self.source)
+        return f"LOAD.CONSTANT {self.destination} = {self.source}"
 
     def get_input_registers_list(self):
         return list()
@@ -93,13 +93,13 @@ class LoadArgumentPseudoInstruction(Instruction):
     def __init__(self, destination, source, origin=None):
         from peachpy.arm.function import active_function
         from peachpy import Argument, Yep32f, Yep64f
-        super(LoadArgumentPseudoInstruction, self).__init__('<LOAD-PARAMETER>', [destination, source], origin=origin)
+        super().__init__('<LOAD-PARAMETER>', [destination, source], origin=origin)
         if isinstance(source, Argument):
             argument = active_function.find_argument(source)
             if argument is not None:
                 self.argument = argument
             else:
-                raise ValueError('{0} is not an argument of the active function'.format(source))
+                raise ValueError(f'{source} is not an argument of the active function')
         else:
             raise TypeError('LOAD.ARGUMENT expects an Argument object as a source')
         if destination.is_general_purpose_register() and \
@@ -107,7 +107,7 @@ class LoadArgumentPseudoInstruction(Instruction):
             if destination.register.size >= argument.size:
                 self.destination = destination
             else:
-                raise ValueError('Destination register %s is too narrow for the argument %s' % (destination, argument))
+                raise ValueError(f'Destination register {destination} is too narrow for the argument {argument}')
         elif destination.is_s_register() and source.ctype == Yep32f:
             self.destination = destination
         elif destination.is_d_register() and source.ctype == Yep64f:
@@ -116,7 +116,7 @@ class LoadArgumentPseudoInstruction(Instruction):
             raise ValueError('Unsupported combination of instruction operands')
 
     def __str__(self):
-        return "LOAD.ARGUMENT {0} = {1}".format(self.destination, self.argument)
+        return f"LOAD.ARGUMENT {self.destination} = {self.argument}"
 
     def get_input_registers_list(self):
         from peachpy.arm.registers import sp
@@ -131,7 +131,7 @@ class LoadArgumentPseudoInstruction(Instruction):
 
 class ReturnInstruction(QuasiInstruction):
     def __init__(self, return_value=None, origin=None):
-        super(ReturnInstruction, self).__init__('RETURN', origin=origin)
+        super().__init__('RETURN', origin=origin)
         if return_value.is_none():
             self.return_value = None
         elif return_value.is_modified_immediate12():
@@ -153,7 +153,7 @@ class ReturnInstruction(QuasiInstruction):
         return list(iter(return_instructions))
 
     def __str__(self):
-        return "RETURN {0}".format(self.return_value)
+        return f"RETURN {self.return_value}"
 
     def get_input_registers_list(self):
         from peachpy.arm.registers import sp
@@ -172,7 +172,7 @@ class ReturnInstruction(QuasiInstruction):
 
 class AssumeInitializedPseudoInstruction(Instruction):
     def __init__(self, destination, origin=None):
-        super(AssumeInitializedPseudoInstruction, self).__init__('<ASSUME-INITIALIZED>', origin=origin)
+        super().__init__('<ASSUME-INITIALIZED>', origin=origin)
         if destination.is_register():
             self.destination = destination
         else:
@@ -180,7 +180,7 @@ class AssumeInitializedPseudoInstruction(Instruction):
         self.size = 0
 
     def __str__(self):
-        return "ASSUME.INITIALIZED {0}".format(self.destination)
+        return f"ASSUME.INITIALIZED {self.destination}"
 
     def get_input_registers_list(self):
         return list()
@@ -344,7 +344,7 @@ class LOAD:
                     else:
                         LDRB(destination, source)
                 else:
-                    raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                    raise ValueError(f"Invalid memory operand size {memory_size}")
             elif ctype.is_signed_integer:
                 if memory_size == 4:
                     if increment_pointer:
@@ -362,7 +362,7 @@ class LOAD:
                     else:
                         LDRSB(destination, source)
                 else:
-                    raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                    raise ValueError(f"Invalid memory operand size {memory_size}")
             else:
                 raise TypeError("Invalid memory operand type")
         elif isinstance(destination, SRegister):
@@ -373,7 +373,7 @@ class LOAD:
                         address_register = Operand(source).get_registers_list()[0]
                         ADD(address_register, memory_size)
                 else:
-                    raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                    raise ValueError(f"Invalid memory operand size {memory_size}")
             else:
                 raise TypeError("Invalid memory operand type")
         elif isinstance(destination, DRegister):
@@ -384,7 +384,7 @@ class LOAD:
                         address_register = Operand(source).get_registers_list()[0]
                         ADD(address_register, memory_size)
                 else:
-                    raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                    raise ValueError(f"Invalid memory operand size {memory_size}")
             else:
                 raise TypeError("Invalid memory operand type")
         else:
@@ -421,7 +421,7 @@ class STORE:
                                 else:
                                     STRB(source, destination)
                             else:
-                                raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                                raise ValueError(f"Invalid memory operand size {memory_size}")
                         else:
                             raise TypeError("Invalid memory operand type")
                     elif isinstance(source, SRegister):
@@ -432,7 +432,7 @@ class STORE:
                                     address_register = Operand(destination).get_registers_list()[0]
                                     ADD(address_register, memory_size)
                             else:
-                                raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                                raise ValueError(f"Invalid memory operand size {memory_size}")
                         else:
                             raise TypeError("Invalid memory operand type")
                     elif isinstance(source, DRegister):
@@ -443,7 +443,7 @@ class STORE:
                                     address_register = Operand(destination).get_registers_list()[0]
                                     ADD(address_register, memory_size)
                             else:
-                                raise ValueError("Invalid memory operand size {0}".format(memory_size))
+                                raise ValueError(f"Invalid memory operand size {memory_size}")
                         else:
                             raise TypeError("Invalid memory operand type")
                     else:
@@ -503,7 +503,7 @@ class SWAP:
                 register_x.number, register_y.number = register_y.number, register_x.number
             else:
                 raise ValueError(
-                    "Registers {0} and {1} have incompatible register types".format(register_x, register_y))
+                    f"Registers {register_x} and {register_y} have incompatible register types")
         else:
             raise TypeError("Arguments must be of register type")
 

@@ -2,7 +2,7 @@
 #    See license.rst for the full text of the license.
 
 
-class Argument(object):
+class Argument:
     """
     Function argument.
 

@@ -1,7 +1,6 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-from __future__ import print_function
 from opcodes.x86_64 import *
 from codegen.code import CodeWriter, CodeBlock
 import os
@@ -232,8 +231,8 @@ def main(package_root="."):
                                 gas_operands = [generate_operand(o, i, peachpy=False, evex=is_avx512) for (i, o)
                                                 in enumerate(instruction_form.operands)]
                                 if not any(map(lambda op: op is None, gas_operands)):
-                                    gas_assembly = "%s %s" % (instruction_form.name, ", ".join(gas_operands))
-                                    peachpy_assembly = "%s(%s)" % (instruction_form.name, ", ".join(peachpy_operands))
+                                    gas_assembly = "{} {}".format(instruction_form.name, ", ".join(gas_operands))
+                                    peachpy_assembly = "{}({})".format(instruction_form.name, ", ".join(peachpy_operands))
                                     reference_bytecode = binutils_encode(gas_assembly)
                                     code.line("self.assertEqual(%s, %s.encode())" %
                                               (reference_bytecode, peachpy_assembly))

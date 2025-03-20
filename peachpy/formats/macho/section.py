@@ -122,7 +122,7 @@ class SectionAttributes(IntEnum):
     local_relocations = 0x00000100
 
 
-class Section(object):
+class Section:
     def __init__(self, type, segment_name, section_name):
         self.type = type
         self.segment_name = segment_name
@@ -200,7 +200,7 @@ class Section(object):
 
 class RegularSection(Section):
     def __init__(self, segment_name, section_name):
-        super(RegularSection, self).__init__(SectionType.regular, segment_name, section_name)
+        super().__init__(SectionType.regular, segment_name, section_name)
 
     def align(self, alignment):
         import peachpy.util
@@ -213,13 +213,13 @@ class RegularSection(Section):
 
 class TextSection(RegularSection):
     def __init__(self):
-        super(TextSection, self).__init__("__TEXT", "__text")
+        super().__init__("__TEXT", "__text")
         self.attributes = SectionAttributes.only_instructions | SectionAttributes.some_instructions
 
 
 class ConstSection(RegularSection):
     def __init__(self):
-        super(ConstSection, self).__init__("__TEXT", "__const")
+        super().__init__("__TEXT", "__const")
 
 
 class SymbolTable:

@@ -1,8 +1,6 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-import six
-
 
 class RegisterAllocator:
     def __init__(self):
@@ -31,7 +29,7 @@ class RegisterAllocator:
             if reg.kind == register_kind and reg.physical_id in physical_ids:
                 physical_ids.remove(reg.physical_id)
         # TODO: account the pre-allocated registers in allocation options
-        for virtual_id, conflict_internal_ids in six.iteritems(self.conflicting_registers):
+        for virtual_id, conflict_internal_ids in self.conflicting_registers.items():
             self.allocation_options[virtual_id] = \
                 [physical_id for physical_id in physical_ids if physical_id not in conflict_internal_ids]
 
@@ -69,7 +67,7 @@ class RegisterAllocator:
             return 0
 
     def allocate_registers(self):
-        unallocated_registers = [reg for reg in six.iterkeys(self.allocation_options)
+        unallocated_registers = [reg for reg in self.allocation_options.keys()
                                  if reg not in self.register_allocations]
 
         while unallocated_registers:

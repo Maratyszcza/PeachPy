@@ -1,4 +1,3 @@
-import six
 from peachpy.c.types import Type, \
     int8_t, int16_t, int32_t, int64_t, \
     uint8_t, uint16_t, uint32_t, uint64_t, \
@@ -14,10 +13,10 @@ class Constant:
                         float_, double_]
 
     def __init__(self, size, repeats, data, element_ctype, name):
-        assert isinstance(size, six.integer_types), "Constant size must be an integer"
+        assert isinstance(size, int), "Constant size must be an integer"
         assert size in Constant._supported_sizes, "Unsupported size %s: the only supported sizes are %s" \
             % (str(size), ", ".join(map(str, sorted(Constant._supported_sizes))))
-        assert isinstance(repeats, six.integer_types), "The number of constant repeats must be an integer"
+        assert isinstance(repeats, int), "The number of constant repeats must be an integer"
         assert size % repeats == 0, "The number of constant repeats must divide constant size without remainder"
         assert isinstance(element_ctype, Type), "Element type must be an instance of peachpy.c.Type"
         assert element_ctype in Constant._supported_types, "The only supported types are %s" \

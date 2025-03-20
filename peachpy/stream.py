@@ -4,7 +4,7 @@
 active_stream = None
 
 
-class InstructionStream(object):
+class InstructionStream:
     def __init__(self):
         self.instructions = list()
         self.previous_stream = None

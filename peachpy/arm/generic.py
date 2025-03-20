@@ -51,16 +51,16 @@ class ArithmeticInstruction(Instruction):
                                 'EORVC', 'EORHI', 'EORLS', 'EORGE', 'EORLT', 'EORGT', 'EORLE',
                                 'EORS', 'EORSEQ', 'EORSNE', 'EORSCS', 'EORSHS', 'EORSCC', 'EORSLO', 'EORSMI', 'EORSPL',
                                 'EORSVS', 'EORSVC', 'EORSHI', 'EORSLS', 'EORSGE', 'EORSLT', 'EORSGT', 'EORSLE']
-        super(ArithmeticInstruction, self).__init__(name, [destination, source_x, source_y], origin=origin)
+        super().__init__(name, [destination, source_x, source_y], origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_general_purpose_register() and source_x.is_general_purpose_register() and source_y.is_modified_immediate12():
             pass
         elif destination.is_general_purpose_register() and source_x.is_general_purpose_register() and source_y.is_shifted_general_purpose_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def is_conditional(self):
@@ -81,16 +81,16 @@ class ArithmeticInstruction(Instruction):
 class ShiftInstruction(Instruction):
     def __init__(self, name, destination, source_x, source_y, origin=None):
         allowed_instructions = ['LSL', 'LSR', 'ASR']
-        super(ShiftInstruction, self).__init__(name, [destination, source_x, source_y], origin=origin)
+        super().__init__(name, [destination, source_x, source_y], origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_general_purpose_register() and source_x.is_general_purpose_register() and source_y.is_immediate5():
             pass
         elif destination.is_general_purpose_register() and source_x.is_general_purpose_register() and source_y.is_general_purpose_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -111,16 +111,16 @@ class CompareInstruction(Instruction):
                                 'TEQ', 'TEQEQ', 'TEQNE', 'TEQCS', 'TEQHS', 'TEQCC', 'TEQLO', 'TEQMI', 'TEQPL', 'TEQVS',
                                 'TEQVC', 'TEQHI', 'TEQLS', 'TEQGE', 'TEQLT', 'TEQGT', 'TEQLE']
         if name in allowed_instructions:
-            super(CompareInstruction, self).__init__(name, [source_x, source_y], origin=origin)
+            super().__init__(name, [source_x, source_y], origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if source_x.is_general_purpose_register() and source_y.is_modified_immediate12():
             pass
         elif source_x.is_general_purpose_register() and source_y.is_general_purpose_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, source_x, source_y))
+            raise ValueError(f'Invalid operands in instruction {name} {source_x}, {source_y}')
 
     def get_input_registers_list(self):
         return self.operands[0].get_registers_list() + self.operands[1].get_registers_list()
@@ -136,16 +136,16 @@ class MovInstruction(Instruction):
                                 'MOVS', 'MOVSEQ', 'MOVSNE', 'MOVSCS', 'MOVSHS', 'MOVSCC', 'MOVSLO', 'MOVSMI', 'MOVSPL',
                                 'MOVSVS', 'MOVSVC', 'MOVSHI', 'MOVSLS', 'MOVSGE', 'MOVSLT', 'MOVSGT', 'MOVSLE']
         if name in allowed_instructions:
-            super(MovInstruction, self).__init__(name, [destination, source], origin=origin)
+            super().__init__(name, [destination, source], origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_general_purpose_register() and source.is_modified_immediate12():
             pass
         elif destination.is_general_purpose_register() and source.is_general_purpose_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, destination, source))
+            raise ValueError(f'Invalid operands in instruction {name} {destination}, {source}')
 
     def is_conditional(self):
         return self.name[-2:] in {"EQ", "NE", "CS", "CC", "LO", "MI", "PL", "VS", "VC", "HI", "LS", "GE", "LT", "GT",
@@ -168,25 +168,25 @@ class LoadStoreInstruction(Instruction):
     def __init__(self, name, register, address, increment, origin=None):
         allowed_instructions = LoadStoreInstruction.load_instructions + LoadStoreInstruction.store_instructions
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'.format(name, ", ".join(
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'.format(name, ", ".join(
                 allowed_instructions)))
         if register.is_general_purpose_register() and address.is_memory_address(offset_bits=8) and increment.is_none():
-            super(LoadStoreInstruction, self).__init__(name, [register, address], origin=origin)
+            super().__init__(name, [register, address], origin=origin)
         elif name in {'STR', 'LDR', 'LDRB',
                       'STRB'} and register.is_general_purpose_register() and address.is_memory_address(
                 offset_bits=12) and increment.is_none():
-            super(LoadStoreInstruction, self).__init__(name, [register, address], origin=origin)
+            super().__init__(name, [register, address], origin=origin)
         elif register.is_general_purpose_register() and address.is_memory_address(offset_bits=0,
                                                                                   allow_writeback=False) and increment.is_offset8():
-            super(LoadStoreInstruction, self).__init__(name, [register, address, increment], origin=origin)
+            super().__init__(name, [register, address, increment], origin=origin)
         elif register.is_general_purpose_register() and address.is_memory_address(offset_bits=0,
                                                                                   allow_writeback=False) and increment.is_offset12():
-            super(LoadStoreInstruction, self).__init__(name, [register, address, increment], origin=origin)
+            super().__init__(name, [register, address, increment], origin=origin)
         else:
             if increment.is_none():
-                raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, register, address))
+                raise ValueError(f'Invalid operands in instruction {name} {register}, {address}')
             else:
-                raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+                raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                                  .format(name, register, address, increment))
 
     def get_input_registers_list(self):
@@ -208,13 +208,13 @@ class PushPopInstruction(Instruction):
     def __init__(self, name, register_list, origin=None):
         allowed_instructions = {'PUSH', 'POP'}
         if name in allowed_instructions:
-            super(PushPopInstruction, self).__init__(name, [register_list], origin=origin)
+            super().__init__(name, [register_list], origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if register_list.is_general_purpose_register_list():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}'.format(name, register_list))
+            raise ValueError(f'Invalid operands in instruction {name} {register_list}')
 
     def get_input_registers_list(self):
         if self.name == 'PUSH':
@@ -234,14 +234,14 @@ class BranchInstruction(Instruction):
         allowed_instructions = {'B', 'BEQ', 'BNE', 'BCS', 'BHS', 'BCC', 'BLO', 'BMI', 'BPL', 'BVS', 'BVC', 'BHI', 'BLS',
                                 'BGE', 'BLT', 'BGT', 'BLE'}
         if name in allowed_instructions:
-            super(BranchInstruction, self).__init__(name, [destination], origin=origin)
+            super().__init__(name, [destination], origin=origin)
             self.is_visited = False
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if destination.is_label():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}'.format('BX', destination))
+            raise ValueError('Invalid operands in instruction {} {}'.format('BX', destination))
 
     def get_input_registers_list(self):
         return self.operands[0].get_registers_list()
@@ -259,11 +259,11 @@ class BranchInstruction(Instruction):
 class BranchExchangeInstruction(Instruction):
     def __init__(self, destination, origin=None):
         from peachpy.arm.registers import lr
-        super(BranchExchangeInstruction, self).__init__('BX', [destination], origin=origin)
+        super().__init__('BX', [destination], origin=origin)
         if destination.is_general_purpose_register() and destination.register == lr:
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}'.format('BX', destination))
+            raise ValueError('Invalid operands in instruction {} {}'.format('BX', destination))
 
     def get_input_registers_list(self):
         return self.operands[0].get_registers_list()
@@ -274,7 +274,7 @@ class BranchExchangeInstruction(Instruction):
 
 class BreakInstruction(Instruction):
     def __init__(self, origin=None):
-        super(BreakInstruction, self).__init__('BKPT', (), origin=origin)
+        super().__init__('BKPT', (), origin=origin)
 
     def __str__(self):
         return "BKPT"

@@ -9,7 +9,7 @@ class Extension:
                     'XScale', 'WMMX', 'WMMX2', 'NEON', 'NEONHP', 'NEON2'}:
             self.name = name
         else:
-            raise ValueError('Invalid ISA extension: {0} is not supported on this architecture'.format(name))
+            raise ValueError(f'Invalid ISA extension: {name} is not supported on this architecture')
 
     def __eq__(self, other):
         return self.name == other.name
@@ -158,7 +158,7 @@ class Extensions:
         if extension in extensions:
             del extensions[extension]
         else:
-            raise KeyError('Extension set does not contain {0}'.format(extension))
+            raise KeyError(f'Extension set does not contain {extension}')
         return Extensions(*extensions)
 
     def __str__(self):

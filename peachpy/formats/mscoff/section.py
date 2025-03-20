@@ -2,9 +2,6 @@
 # See license.rst for the full text of the license.
 
 
-import six
-
-
 class SectionFlags:
     # Section contains executable code
     code = 0x00000020
@@ -30,7 +27,7 @@ class SectionFlags:
     writable = 0x80000000
 
 
-class Section(object):
+class Section:
     header_size = 40
 
     _alignment_flag_map = {
@@ -50,7 +47,7 @@ class Section(object):
         8192: 0x00E00000
     }
 
-    _flag_alignment_map = {flag: alignment for (alignment, flag) in six.iteritems(_alignment_flag_map)}
+    _flag_alignment_map = {flag: alignment for (alignment, flag) in _alignment_flag_map.items()}
 
     _alignment_mask = 0x00F00000
 
@@ -61,7 +58,7 @@ class Section(object):
         if not is_uint32(flags):
             raise TypeError("Flags %s are not representable as a 32-bit unsigned integer" % str(flags))
 
-        super(Section, self).__init__()
+        super().__init__()
         # Section name
         self.name = name
         # Flags for the section
@@ -123,14 +120,14 @@ class Section(object):
 
 class TextSection(Section):
     def __init__(self, name=".text", alignment=None):
-        super(TextSection, self).__init__(name,
+        super().__init__(name,
                                           SectionFlags.code | SectionFlags.readable | SectionFlags.executable,
                                           alignment)
 
 
 class ReadOnlyDataSection(Section):
     def __init__(self, name=".rdata", alignment=None):
-        super(ReadOnlyDataSection, self).__init__(name,
+        super().__init__(name,
                                            SectionFlags.initialized_data | SectionFlags.readable,
                                            alignment)
 

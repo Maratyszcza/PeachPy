@@ -6,7 +6,7 @@ class Endianness:
     Big, Little = "Big-Endian", "Little-Endian"
 
 
-class ABI(object):
+class ABI:
     def __init__(self, name, endianness,
                  bool_size, wchar_size, short_size, int_size, long_size, longlong_size,
                  pointer_size, index_size,
@@ -14,7 +14,7 @@ class ABI(object):
                  callee_save_registers, argument_registers, volatile_registers, restricted_registers=[],
                  elf_class=None, elf_data_encoding=None, elf_machine_type=None,
                  mscoff_machine_type=None):
-        super(ABI, self).__init__()
+        super().__init__()
         self.name = name
         self.endianness = endianness
         self.bool_size = bool_size

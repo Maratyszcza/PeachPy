@@ -83,7 +83,7 @@ class NACLJMP(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLJMP, self).__init__("NACLJMP", origin=origin, prototype=prototype)
+        super().__init__("NACLJMP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) != 1:
             raise SyntaxError("Instruction \"NACLJMP\" requires 1 operand")
@@ -124,7 +124,7 @@ class NACLASP(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLASP, self).__init__("NACLASP", origin=origin, prototype=prototype)
+        super().__init__("NACLASP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) != 1:
             raise SyntaxError("Instruction \"NACLASP\" requires 1 operand")
@@ -164,7 +164,7 @@ class NACLSSP(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLSSP, self).__init__("NACLSSP", origin=origin, prototype=prototype)
+        super().__init__("NACLSSP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) != 1:
             raise SyntaxError("Instruction \"NACLSSP\" requires 1 operand")
@@ -203,7 +203,7 @@ class NACLRESTSP(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLRESTSP, self).__init__("NACLRESTSP", origin=origin, prototype=prototype)
+        super().__init__("NACLRESTSP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) != 1:
             raise SyntaxError("Instruction \"NACLRESTSP\" requires 1 operand")
@@ -244,7 +244,7 @@ class NACLRESTBP(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(NACLRESTBP, self).__init__("NACLRESTBP", origin=origin, prototype=prototype)
+        super().__init__("NACLRESTBP", origin=origin, prototype=prototype)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) != 1:
             raise SyntaxError("Instruction \"NACLRESTBP\" requires 1 operand")

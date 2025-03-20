@@ -2,7 +2,7 @@
 #    See license.rst for the full text of the license.
 
 
-class CodeGenerator(object):
+class CodeGenerator:
     def __init__(self, use_tabs=True):
         self.indentationLevel = 0
         self.use_tabs = use_tabs

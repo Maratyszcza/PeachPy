@@ -9,7 +9,7 @@ class SectionType(Enum):
     const_data = 1
 
 
-class Section(object):
+class Section:
     max_alignment = 4096
 
     def __init__(self, type, alignment_byte=None):

@@ -245,7 +245,7 @@ class Extensions:
         if extension in extensions:
             del extensions[extension]
         else:
-            raise KeyError("Extension set does not contain {0}".format(extension))
+            raise KeyError(f"Extension set does not contain {extension}")
         return Extensions(*extensions)
 
     def __str__(self):

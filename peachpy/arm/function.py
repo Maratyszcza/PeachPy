@@ -1,7 +1,6 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-from __future__ import print_function
 import time
 
 import peachpy.arm.instructions
@@ -11,7 +10,7 @@ from peachpy.arm.microarchitecture import Microarchitecture
 active_function = None
 
 
-class Function(object):
+class Function:
     def __init__(self, name, arguments, return_type=None,
                  target=Microarchitecture.Default,
                  abi=None,
@@ -68,7 +67,7 @@ class Function(object):
                         argument.stack_offset = stack_offset
                         stack_offset += 8
                 else:
-                    raise ValueError("Unsupported argument size {0}".format(argument.size))
+                    raise ValueError(f"Unsupported argument size {argument.size}")
         else:
             raise ValueError("Unsupported assembler ABI %s" % abi)
 
@@ -86,7 +85,7 @@ class Function(object):
         global active_function
 
         if active_function is not None:
-            raise ValueError('Function {0} was not detached'.format(active_function.name))
+            raise ValueError(f'Function {active_function.name} was not detached')
         if peachpy.stream.active_stream is not None:
             raise ValueError('Alternative instruction stream is active')
         active_function = self
@@ -196,7 +195,7 @@ class Function(object):
             need_alignment = False
             for constant_bucket in self.constants:
                 if need_alignment:
-                    assembly += "\tALIGN {Alignment}".format(Alignment=constant_bucket.capacity) + os.linesep
+                    assembly += f"\tALIGN {constant_bucket.capacity}" + os.linesep
                 for constant in constant_bucket.constants:
                     assembly += "\t.{Label}: {Declaration} {Value}"\
                         .format(Label=constant.label,
@@ -213,7 +212,7 @@ class Function(object):
             assembly += "\t" + self.gnu_fpu_spec + os.linesep
         for instruction in self.instructions:
             if isinstance(instruction, BranchInstruction):
-                assembly += "\t" + "{0} L{1}.{2}"\
+                assembly += "\t" + "{} L{}.{}"\
                     .format(instruction.name, self.name, instruction.operands[0].label) + os.linesep
             elif isinstance(instruction, Instruction):
                 constant = instruction.get_constant()
@@ -221,7 +220,7 @@ class Function(object):
                     constant.prefix = constants_label
                 assembly += "\t" + str(instruction) + os.linesep
             elif isinstance(instruction, LabelQuasiInstruction):
-                assembly += "L{0}.{1}:".format(self.name, instruction.name) + os.linesep
+                assembly += f"L{self.name}.{instruction.name}:" + os.linesep
             else:
                 assembly += "\t" + str(instruction) + os.linesep
         assembly += "END_ARM_FUNCTION " + function_label + os.linesep
@@ -282,7 +281,7 @@ class Function(object):
         if isinstance(instruction, Instruction):
             for extension in instruction.isa_extensions:
                 if extension not in self.target.extensions:
-                    raise ValueError("{0} is not supported on the target microarchitecture".format(extension))
+                    raise ValueError(f"{extension} is not supported on the target microarchitecture")
             local_variable = instruction.get_local_variable()
             if local_variable is not None:
                 self.stack_frame.add_variable(local_variable.get_root())
@@ -444,8 +443,8 @@ class Function(object):
                         else:
                             live_registers[instruction_live_register.id] = instruction_live_register.mask
 
-                    instruction.live_registers = set([Register.from_parts(id, mask, expand=True)
-                                                      for (id, mask) in live_registers.iteritems()])
+                    instruction.live_registers = {Register.from_parts(id, mask, expand=True)
+                                                      for (id, mask) in live_registers.iteritems()}
                 elif isinstance(instruction, LabelQuasiInstruction):
                     for entry_point in instruction.input_branches:
                         if not instructions[entry_point].is_visited:
@@ -988,10 +987,10 @@ class Function(object):
         return (self.virtual_registers_count << 12) | 0x001
 
 
-class LocalVariable(object):
+class LocalVariable:
     def __init__(self, register_type):
         from peachpy.arm.registers import GeneralPurposeRegister, WMMXRegister, SRegister, DRegister, QRegister
-        super(LocalVariable, self).__init__()
+        super().__init__()
         if isinstance(register_type, int):
             self.size = register_type
         elif register_type == GeneralPurposeRegister:
@@ -1005,7 +1004,7 @@ class LocalVariable(object):
         elif register_type == QRegister:
             self.size = 16
         else:
-            raise ValueError('Unsupported register type {0}'.format(register_type))
+            raise ValueError(f'Unsupported register type {register_type}')
         self.id = active_function.allocate_local_variable()
         self.address = None
         self.offset = 0
@@ -1025,9 +1024,9 @@ class LocalVariable(object):
         else:
             address = self.address
         if address is not None:
-            return "[{0}]".format(address)
+            return f"[{address}]"
         else:
-            return "local-variable<{0}>".format(self.id)
+            return f"local-variable<{self.id}>"
 
     def is_subvariable(self):
         return self.parent is not None
@@ -1065,9 +1064,9 @@ class LocalVariable(object):
         return child
 
 
-class StackFrame(object):
+class StackFrame:
     def __init__(self, abi):
-        super(StackFrame, self).__init__()
+        super().__init__()
         self.abi = abi
         self.general_purpose_registers = list()
         self.d_registers = list()
@@ -1105,7 +1104,7 @@ class StackFrame(object):
                 if register in self.abi.callee_save_registers:
                     self.d_registers.append(d_high)
         else:
-            raise TypeError("Unsupported register type {0}".format(type(register)))
+            raise TypeError(f"Unsupported register type {type(register)}")
 
     def add_variable(self, variable):
         if variable.get_size() == 16:
@@ -1115,7 +1114,7 @@ class StackFrame(object):
             if variable not in self.avx_variables:
                 self.avx_variables.append(variable)
         else:
-            raise TypeError("Unsupported variable type {0}".format(type(variable)))
+            raise TypeError(f"Unsupported variable type {type(variable)}")
 
     def get_parameters_offset(self):
         parameters_offset = len(self.general_purpose_registers) * 4

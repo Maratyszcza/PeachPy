@@ -1,8 +1,6 @@
 # This file is part of PeachPy package and is licensed under the Simplified BSD license.
 #    See license.rst for the full text of the license.
 
-import six
-
 from peachpy.abi import Endianness
 
 
@@ -150,7 +148,7 @@ class Encoder:
     @staticmethod
     def fixed_string(string, size):
         """Converts string to fixed-length bytearray representation"""
-        assert isinstance(size, six.integer_types) and size > 0, "size %u is not a positive integer" % size
+        assert isinstance(size, int) and size > 0, "size %u is not a positive integer" % size
         if string is None:
             return bytearray(size)
         import codecs

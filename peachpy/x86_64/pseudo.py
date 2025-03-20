@@ -48,7 +48,7 @@ class Label:
 class LABEL(Instruction):
     def __init__(self, label, origin=None):
         label = check_operand(label)
-        super(LABEL, self).__init__("LABEL", origin=origin)
+        super().__init__("LABEL", origin=origin)
         self.operands = (label,)
         if not isinstance(label, Label):
             raise SyntaxError("Invalid operand for LABEL statement: Label object expected")
@@ -164,18 +164,18 @@ class ALIGN(Instruction):
     supported_alignments = (2, 4, 8, 16, 32)
 
     def __init__(self, alignment, origin=None):
-        super(ALIGN, self).__init__('ALIGN', origin=origin)
+        super().__init__('ALIGN', origin=origin)
         if not isinstance(alignment, int):
             raise TypeError("The alignment value must be an integer")
         if alignment not in ALIGN.supported_alignments:
-            raise ValueError("The alignment value {0} is not in the list of supported alignments ({1})"
+            raise ValueError("The alignment value {} is not in the list of supported alignments ({})"
                              .format(alignment, ", ".join(ALIGN.supported_alignments)))
         self.alignment = alignment
         if peachpy.stream.active_stream is not None:
             peachpy.stream.active_stream.add_instruction(self)
 
     def __str__(self):
-        return "align {0}".format(self.alignment)
+        return f"align {self.alignment}"
 
 
 class RETURN(Instruction):
@@ -187,7 +187,7 @@ class RETURN(Instruction):
         prototype = kwargs.get("prototype")
         if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
             origin = inspect.stack()
-        super(RETURN, self).__init__("RETURN", origin=origin)
+        super().__init__("RETURN", origin=origin)
         self.operands = tuple(map(check_operand, args))
         if len(self.operands) == 0:
             # It is not an error to return nothing from a function with a return type
@@ -268,7 +268,7 @@ class LOAD:
             prototype = kwargs.get("prototype")
             if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
                 origin = inspect.stack()
-            super(LOAD.ARGUMENT, self).__init__("LOAD.ARGUMENT", origin=origin)
+            super().__init__("LOAD.ARGUMENT", origin=origin)
             self.operands = tuple(map(check_operand, args))
             self.out_regs = (True, False)
             self.in_regs = (False, False)
@@ -375,7 +375,7 @@ class STORE:
             prototype = kwargs.get("prototype")
             if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
                 origin = inspect.stack()
-            super(STORE.RESULT, self).__init__("STORE.RESULT", origin=origin)
+            super().__init__("STORE.RESULT", origin=origin)
             self.operands = tuple(map(check_operand, args))
             self.out_regs = (False,)
             self.in_regs = (True,)
@@ -471,7 +471,7 @@ class SWAP:
                 register_x.virtual_id, register_y.virtual_id = register_y.virtual_id, register_x.virtual_id
                 register_x.physical_id, register_y.physical_id = register_y.physical_id, register_x.physical_id
             else:
-                raise ValueError("Registers {0} and {1} have incompatible register types"
+                raise ValueError("Registers {} and {} have incompatible register types"
                                  .format(register_x, register_y))
         else:
             raise TypeError("Arguments must be of register regtype")
@@ -496,7 +496,7 @@ class IACA:
             prototype = kwargs.get("prototype")
             if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
                 origin = inspect.stack()
-            super(IACA.START, self).__init__("IACA.START", origin=origin)
+            super().__init__("IACA.START", origin=origin)
 
             self.operands = tuple(map(check_operand, args))
             if len(self.operands) == 0:
@@ -516,7 +516,7 @@ class IACA:
             prototype = kwargs.get("prototype")
             if origin is None and prototype is None and peachpy.x86_64.options.get_debug_level() > 0:
                 origin = inspect.stack()
-            super(IACA.END, self).__init__("IACA.END", origin=origin)
+            super().__init__("IACA.END", origin=origin)
 
             self.operands = tuple(map(check_operand, args))
             if len(self.operands) == 0:

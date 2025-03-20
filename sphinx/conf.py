@@ -10,8 +10,8 @@ master_doc = 'index'
 
 autoclass_content = "both"
 
-project = u'PeachPy'
-copyright = u'2013-2015, Georgia Institute of Technology'
+project = 'PeachPy'
+copyright = '2013-2015, Georgia Institute of Technology'
 
 version = __version__
 release = __version__

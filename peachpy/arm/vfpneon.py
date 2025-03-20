@@ -13,14 +13,14 @@ class VFPLoadStoreInstruction(Instruction):
     def __init__(self, name, register, address, origin=None):
         allowed_instructions = {'VLDR', 'VSTR'}
         if name in allowed_instructions:
-            super(VFPLoadStoreInstruction, self).__init__(name, [register, address],
+            super().__init__(name, [register, address],
                                                           isa_extensions=Extension.VFP2, origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if (register.is_d_register() or register.is_s_register()) and address.is_memory_address_offset8_mod4():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, register, address))
+            raise ValueError(f'Invalid operands in instruction {name} {register}, {address}')
 
     def get_input_registers_list(self):
         input_registers_list = self.operands[1].get_registers_list()
@@ -42,16 +42,16 @@ class VFPLoadStoreMultipleInstruction(Instruction):
     def __init__(self, name, address, register_list, origin=None):
         if name in VFPLoadStoreMultipleInstruction.load_instructions or \
                 name in VFPLoadStoreMultipleInstruction.store_instructions:
-            super(VFPLoadStoreMultipleInstruction, self).__init__(name, [address, register_list],
+            super().__init__(name, [address, register_list],
                                                                   isa_extensions=Extension.VFP2, origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if address.is_address_register() and register_list.is_d_register_list():
             pass
         elif address.is_address_register() and register_list.is_s_register_list():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, register_list, address))
+            raise ValueError(f'Invalid operands in instruction {name} {register_list}, {address}')
 
     def get_input_registers_list(self):
         if self.name in VFPLoadStoreMultipleInstruction.store_instructions:
@@ -73,33 +73,33 @@ class NeonLoadStoreInstruction(Instruction):
     def __init__(self, name, register_list, address, increment, origin=None):
         if name not in NeonLoadStoreInstruction.load_instructions and \
                 name not in NeonLoadStoreInstruction.store_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if register_list.is_vldst1_register_list() and \
                 address.is_memory_address(offset_bits=0) and \
                 increment.is_none():
-            super(NeonLoadStoreInstruction, self).__init__(name, [register_list, address],
+            super().__init__(name, [register_list, address],
                                                            isa_extensions=Extension.NEON, origin=origin)
         elif register_list.is_vldst1_register_list() and \
                 address.is_memory_address(offset_bits=0, allow_writeback=False) and \
                 increment.is_general_purpose_register():
-            super(NeonLoadStoreInstruction, self).__init__(name, [register_list, address, increment],
+            super().__init__(name, [register_list, address, increment],
                                                            isa_extensions=Extension.NEON, origin=origin)
         elif register_list.is_vldst1_register_lanes_list() and \
                 address.is_memory_address(offset_bits=0) and \
                 increment.is_none():
-            super(NeonLoadStoreInstruction, self).__init__(name, [register_list, address],
+            super().__init__(name, [register_list, address],
                                                            isa_extensions=Extension.NEON, origin=origin)
         elif register_list.is_vldst1_register_lanes_list() and \
                 address.is_memory_address(offset_bits=0, allow_writeback=False) and \
                 increment.is_general_purpose_register():
-            super(NeonLoadStoreInstruction, self).__init__(name, [register_list, address, increment],
+            super().__init__(name, [register_list, address, increment],
                                                            isa_extensions=Extension.NEON, origin=origin)
         else:
             if increment.is_none():
-                raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, register_list, address))
+                raise ValueError(f'Invalid operands in instruction {name} {register_list}, {address}')
             else:
                 raise ValueError(
-                    'Invalid operands in instruction {0} {1}, {2}, {3}'.format(name, register_list, address, increment))
+                    f'Invalid operands in instruction {name} {register_list}, {address}, {increment}')
 
     def get_input_registers_list(self):
         input_registers_list = self.operands[1].get_registers_list()
@@ -122,14 +122,14 @@ class VFPPushPopInstruction(Instruction):
     def __init__(self, name, register_list, origin=None):
         allowed_instructions = {'VPUSH', 'VPOP'}
         if name in allowed_instructions:
-            super(VFPPushPopInstruction, self).__init__(name, [register_list],
+            super().__init__(name, [register_list],
                                                         isa_extensions=Extension.VFP2, origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if register_list.is_d_register_list():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}'.format(name, register_list))
+            raise ValueError(f'Invalid operands in instruction {name} {register_list}')
 
     def get_input_registers_list(self):
         if self.name == 'VPUSH':
@@ -149,18 +149,18 @@ class VFPDoublePrecisionMultiplyAddInstruction(Instruction):
         mla_instructions = ['VMLA.F64', 'VMLS.F64', 'VNMLA.F64', 'VNMLS.F64']
         fma_instructions = ['VFMA.F64', 'VFMS.F64', 'VFNMA.F64', 'VFNMS.F64']
         if name in mla_instructions:
-            super(VFPDoublePrecisionMultiplyAddInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                            isa_extensions=Extension.VFP2, origin=origin)
         elif name in fma_instructions:
-            super(VFPDoublePrecisionMultiplyAddInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                            isa_extensions=Extension.VFP4, origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if destination.is_d_register() and source_x.is_d_register() and source_y.is_d_register():
             pass
         else:
             raise ValueError(
-                'Invalid operands in instruction {0} {1}, {2}, {3}'.format(name, destination, source_x, source_y))
+                f'Invalid operands in instruction {name} {destination}, {source_x}, {source_y}')
 
     def get_input_registers_list(self):
         return self.operands[0].get_registers_list() + self.operands[1].get_registers_list() + self.operands[
@@ -175,18 +175,18 @@ class VFPSinglePrecisionMultiplyAddInstruction(Instruction):
         mla_instructions = ['VNMLA.F32', 'VNMLS.F32']
         fma_instructions = ['VFNMA.F32', 'VFNMS.F32']
         if name in mla_instructions:
-            super(VFPSinglePrecisionMultiplyAddInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                            isa_extensions=Extension.VFP2, origin=origin)
         elif name in fma_instructions:
-            super(VFPSinglePrecisionMultiplyAddInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                            isa_extensions=Extension.VFP4, origin=origin)
         else:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(mla_instructions + fma_instructions)))
         if destination.is_s_register() and source_x.is_s_register() and source_y.is_s_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -201,19 +201,19 @@ class VFPNeonBinaryArithmeticInstruction(Instruction):
     def __init__(self, name, destination, source_x, source_y, origin=None):
         allowed_instructions = ['VADD.F32', 'VSUB.F32', 'VMUL.F32']
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_s_register() and source_x.is_s_register() and source_y.is_s_register():
-            super(VFPNeonBinaryArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                      isa_extensions=Extension.VFP2, origin=origin)
         elif destination.is_d_register() and source_x.is_d_register() and source_y.is_d_register():
-            super(VFPNeonBinaryArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                      isa_extensions=Extension.NEON, origin=origin)
         elif destination.is_q_register() and source_x.is_q_register() and source_y.is_q_register():
-            super(VFPNeonBinaryArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+            super().__init__(name, [destination, source_x, source_y],
                                                                      isa_extensions=Extension.NEON, origin=origin)
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -228,45 +228,45 @@ class VFPNeonMultiplyAddInstruction(Instruction):
         mla_instructions = ['VMLA.F32', 'VMLS.F32']
         fma_instructions = ['VFMA.F32', 'VFMS.F32']
         if name not in mla_instructions and name not in fma_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+            raise ValueError(f'Instruction {name} is not one of the allowed instructions')
         if name in mla_instructions and \
                 accumulator.is_s_register() and \
                 factor_x.is_s_register() and \
                 factor_y.is_s_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.VFP2, origin=origin)
         elif name in fma_instructions and \
                 accumulator.is_s_register() and \
                 factor_x.is_s_register() and \
                 factor_y.is_s_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.VFP4, origin=origin)
         elif name in mla_instructions and \
                 accumulator.is_d_register() and \
                 factor_x.is_d_register() and \
                 factor_y.is_d_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.NEON, origin=origin)
         elif name in mla_instructions and \
                 accumulator.is_q_register() and \
                 factor_x.is_q_register() and \
                 factor_y.is_q_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.NEON, origin=origin)
         elif name in fma_instructions and \
                 accumulator.is_d_register() and \
                 factor_x.is_d_register() and \
                 factor_y.is_d_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.NEON2, origin=origin)
         elif name in fma_instructions and \
                 accumulator.is_q_register() and \
                 factor_x.is_q_register() and \
                 factor_y.is_q_register():
-            super(VFPNeonMultiplyAddInstruction, self).__init__(name, [accumulator, factor_x, factor_y],
+            super().__init__(name, [accumulator, factor_x, factor_y],
                                                                 isa_extensions=Extension.NEON2, origin=origin)
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, accumulator, factor_x, factor_y))
 
     def get_input_registers_list(self):
@@ -281,16 +281,16 @@ class VFPNeonMultiplyAddInstruction(Instruction):
 class VFPSinglePrecisionBinaryArithmeticInstruction(Instruction):
     def __init__(self, name, destination, source_x, source_y, origin=None):
         allowed_instructions = ['VNMUL.F32', 'VDIV.F32']
-        super(VFPSinglePrecisionBinaryArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+        super().__init__(name, [destination, source_x, source_y],
                                                                             isa_extensions=Extension.VFP2,
                                                                             origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_d_register() and source_x.is_s_register() and source_y.is_s_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -303,16 +303,16 @@ class VFPSinglePrecisionBinaryArithmeticInstruction(Instruction):
 class VFPDoublePrecisionBinaryArithmeticInstruction(Instruction):
     def __init__(self, name, destination, source_x, source_y, origin=None):
         allowed_instructions = ['VADD.F64', 'VSUB.F64', 'VMUL.F64', 'VNMUL.F32', 'VNMUL.F64', 'VDIV.F32', 'VDIV.F64']
-        super(VFPDoublePrecisionBinaryArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+        super().__init__(name, [destination, source_x, source_y],
                                                                             isa_extensions=Extension.VFP2,
                                                                             origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_d_register() and source_x.is_d_register() and source_y.is_d_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -325,15 +325,15 @@ class VFPDoublePrecisionBinaryArithmeticInstruction(Instruction):
 class VFPDoublePrecisionUnaryArithmeticInstruction(Instruction):
     def __init__(self, name, destination, source, origin=None):
         allowed_instructions = ['VABS.F64', 'VNEG.F64', 'VSQRT.F64']
-        super(VFPDoublePrecisionUnaryArithmeticInstruction, self).__init__(name, [destination, source],
+        super().__init__(name, [destination, source],
                                                                            isa_extensions=Extension.VFP2, origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_d_register() and source.is_d_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, destination, source))
+            raise ValueError(f'Invalid operands in instruction {name} {destination}, {source}')
 
     def get_input_registers_list(self):
         return self.operands[1].get_registers_list()
@@ -364,17 +364,17 @@ class NeonArithmeticInstruction(Instruction):
                                 'VRHADD.S8', 'VRHADD.S16', 'VRHADD.S32', 'VRHADD.U8', 'VRHADD.U16', 'VRHADD.U32',
                                 'VRECPS.F32', 'VRSQRTS.F32',
                                 'VTST.8', 'VTST.16', 'VTST.32']
-        super(NeonArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+        super().__init__(name, [destination, source_x, source_y],
                                                         isa_extensions=Extension.NEON, origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_d_register() and source_x.is_d_register() and source_y.is_d_register():
             pass
         elif destination.is_q_register() and source_x.is_q_register() and source_y.is_q_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -393,15 +393,15 @@ class NeonWideArithmeticInstruction(Instruction):
                                 'VMULL.S8', 'VMULL.S16', 'VMULL.S32',
                                 'VMULL.U8', 'VMULL.U16', 'VMULL.U32',
                                 'VMULL.P8']
-        super(NeonWideArithmeticInstruction, self).__init__(name, [destination, source_x, source_y],
+        super().__init__(name, [destination, source_x, source_y],
                                                             isa_extensions=Extension.NEON, origin=origin)
         if name not in allowed_instructions:
-            raise ValueError('Instruction {0} is not one of the allowed instructions ({1})'
+            raise ValueError('Instruction {} is not one of the allowed instructions ({})'
                              .format(name, ", ".join(allowed_instructions)))
         if destination.is_q_register() and source_x.is_d_register() and source_y.is_d_register():
             pass
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}, {3}'
+            raise ValueError('Invalid operands in instruction {} {}, {}, {}'
                              .format(name, destination, source_x, source_y))
 
     def get_input_registers_list(self):
@@ -414,19 +414,19 @@ class NeonWideArithmeticInstruction(Instruction):
 class VfpNeonMovInstruction(Instruction):
     def __init__(self, name, destination, source, origin=None):
         if name == 'VMOV' and destination.is_q_register() and source.is_q_register():
-            super(VfpNeonMovInstruction, self).__init__(name, [destination, source],
+            super().__init__(name, [destination, source],
                                                         isa_extensions=Extension.NEON, origin=origin)
         elif name == 'VMOV' and destination.is_d_register() and source.is_d_register():
-            super(VfpNeonMovInstruction, self).__init__(name, [destination, source],
+            super().__init__(name, [destination, source],
                                                         isa_extensions=Extension.NEON, origin=origin)
         elif name == 'VMOV.F32' and destination.is_s_register() and source.is_s_register():
-            super(VfpNeonMovInstruction, self).__init__(name, [destination, source],
+            super().__init__(name, [destination, source],
                                                         isa_extensions=Extension.VFP2, origin=origin)
         elif name == 'VMOV.F64' and destination.is_d_register() and source.is_d_register():
-            super(VfpNeonMovInstruction, self).__init__(name, [destination, source],
+            super().__init__(name, [destination, source],
                                                         isa_extensions=Extension.VFP2, origin=origin)
         else:
-            raise ValueError('Invalid operands in instruction {0} {1}, {2}'.format(name, destination, source))
+            raise ValueError(f'Invalid operands in instruction {name} {destination}, {source}')
 
     def get_input_registers_list(self):
         return self.operands[1].get_registers_list()
@@ -1094,7 +1094,7 @@ class VACLT:
         return instruction
 
 
-class VAND(object):
+class VAND:
     @staticmethod
     def __new__(cls, destination, source_x, source_y=None):
         origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
@@ -1107,7 +1107,7 @@ class VAND(object):
         return instruction
 
 
-class VBIC(object):
+class VBIC:
     @staticmethod
     def __new__(cls, destination, source_x, source_y=None):
         origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
@@ -1120,7 +1120,7 @@ class VBIC(object):
         return instruction
 
 
-class VORR(object):
+class VORR:
     @staticmethod
     def __new__(cls, destination, source_x, source_y=None):
         origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
@@ -1133,7 +1133,7 @@ class VORR(object):
         return instruction
 
 
-class VORN(object):
+class VORN:
     @staticmethod
     def __new__(cls, destination, source_x, source_y=None):
         origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
@@ -2221,7 +2221,7 @@ class VST1:
         return instruction
 
 
-class VMOV(object):
+class VMOV:
     @staticmethod
     def __new__(cls, destination, source):
         origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
