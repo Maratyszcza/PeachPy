@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest-small]
 
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build source distribution (Linux only)
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest-small'
         run: python -m build --sdist
 
       - name: Build wheel
@@ -54,9 +54,9 @@ jobs:
 
   publish:
     needs: build-wheels
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-small
     if: github.event_name == 'release' && github.event.action == 'published'
-    
+
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v3

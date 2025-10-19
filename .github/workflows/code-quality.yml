@@ -8,15 +8,15 @@ on:
 
 jobs:
   security-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-small
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -26,11 +26,11 @@ jobs:
       - name: Run security checks with bandit
         run: bandit -r nervapy/ -f json -o bandit-report.json || true
         continue-on-error: true
-      
+
       - name: Run safety checks
         run: safety check --json --output safety-report.json || true
         continue-on-error: true
-      
+
       - name: Upload security reports
         uses: actions/upload-artifact@v3
         with:
@@ -40,15 +40,15 @@ jobs:
             safety-report.json
 
   type-checking:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-small
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -61,15 +61,15 @@ jobs:
         continue-on-error: true
 
   code-formatting:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-small
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -78,21 +78,21 @@ jobs:
       - name: Check code formatting with black
         run: black --check --diff nervapy/
         continue-on-error: true
-      
+
       - name: Check import sorting with isort
         run: isort --check-only --diff nervapy/
         continue-on-error: true
 
   complexity-analysis:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-small
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
