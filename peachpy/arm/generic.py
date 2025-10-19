@@ -206,7 +206,7 @@ class LoadStoreInstruction(Instruction):
 
 class PushPopInstruction(Instruction):
     def __init__(self, name, register_list, origin=None):
-        allowed_instructions = {'PUSH', 'POP'}
+        allowed_instructions = {'PUSH', 'POP', 'PUSH.W', 'POP.W'}
         if name in allowed_instructions:
             super(PushPopInstruction, self).__init__(name, [register_list], origin=origin)
         else:
@@ -217,16 +217,72 @@ class PushPopInstruction(Instruction):
             raise ValueError('Invalid operands in instruction {0} {1}'.format(name, register_list))
 
     def get_input_registers_list(self):
-        if self.name == 'PUSH':
+        if self.name in ('PUSH', 'PUSH.W'):
             return self.operands[0].get_registers_list()
         else:
             return list()
 
     def get_output_registers_list(self):
-        if self.name == 'POP':
+        if self.name in ('POP', 'POP.W'):
             return self.operands[0].get_registers_list()
         else:
             return list()
+
+
+class StoreMultipleInstruction(Instruction):
+    """Store/Load Multiple instructions (STMDB, LDMIA, etc.)"""
+    def __init__(self, name, base_register, register_list, writeback=False, origin=None):
+        allowed_instructions = {'STMDB', 'STMIA', 'STMIB', 'STMDA', 
+                               'LDMDB', 'LDMIA', 'LDMIB', 'LDMDA'}
+        if name in allowed_instructions:
+            # Format: STMDB sp!, {r8, r9} or STMDB sp, {r8, r9}
+            if writeback:
+                base_operand = Operand(str(base_register) + "!")
+            else:
+                base_operand = Operand(base_register)
+            super(StoreMultipleInstruction, self).__init__(name, [base_operand, register_list], origin=origin)
+            self.writeback = writeback
+        else:
+            raise ValueError('Instruction {0} is not one of the allowed instructions'.format(name))
+        
+        if not register_list.is_general_purpose_register_list():
+            raise ValueError('Invalid register list in instruction {0} {1}, {2}'.format(name, base_register, register_list))
+
+    def get_input_registers_list(self):
+        input_regs = []
+        # Base register is always an input
+        base_reg_name = str(self.operands[0]).rstrip('!')
+        if base_reg_name in ('sp', 'r13'):
+            from peachpy.arm.registers import sp
+            input_regs.append(sp)
+        
+        # For store instructions, register list is input
+        if self.name.startswith('STM'):
+            input_regs.extend(self.operands[1].get_registers_list())
+        
+        return input_regs
+
+    def get_output_registers_list(self):
+        output_regs = []
+        
+        # If writeback, base register is output
+        if self.writeback:
+            base_reg_name = str(self.operands[0]).rstrip('!')
+            if base_reg_name in ('sp', 'r13'):
+                from peachpy.arm.registers import sp
+                output_regs.append(sp)
+        
+        # For load instructions, register list is output
+        if self.name.startswith('LDM'):
+            output_regs.extend(self.operands[1].get_registers_list())
+        
+        return output_regs
+
+    def __str__(self):
+        if self.writeback:
+            return f"{self.name} {self.operands[0]}, {self.operands[1]}"
+        else:
+            return f"{self.name} {self.operands[0]}, {self.operands[1]}"
 
 
 class BranchInstruction(Instruction):
@@ -4903,6 +4959,60 @@ def PUSH(register_list):
 def POP(register_list):
     origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
     instruction = PushPopInstruction('POP', Operand(register_list), origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def PUSH_W(register_list):
+    """PUSH.W - 32-bit wide encoding for high registers in ARMv7-M"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = PushPopInstruction('PUSH.W', Operand(register_list), origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def POP_W(register_list):
+    """POP.W - 32-bit wide encoding for high registers in ARMv7-M"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = PushPopInstruction('POP.W', Operand(register_list), origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def STMDB(base_register, register_list, writeback=True):
+    """Store Multiple Decrement Before - equivalent to PUSH for stack operations"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = StoreMultipleInstruction('STMDB', base_register, Operand(register_list), writeback, origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def LDMIA(base_register, register_list, writeback=True):
+    """Load Multiple Increment After - equivalent to POP for stack operations"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = StoreMultipleInstruction('LDMIA', base_register, Operand(register_list), writeback, origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def STMIA(base_register, register_list, writeback=False):
+    """Store Multiple Increment After"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = StoreMultipleInstruction('STMIA', base_register, Operand(register_list), writeback, origin=origin)
+    if peachpy.stream.active_stream is not None:
+        peachpy.stream.active_stream.add_instruction(instruction)
+    return instruction
+
+
+def LDMDB(base_register, register_list, writeback=False):
+    """Load Multiple Decrement Before"""
+    origin = inspect.stack() if peachpy.arm.function.active_function.collect_origin else None
+    instruction = StoreMultipleInstruction('LDMDB', base_register, Operand(register_list), writeback, origin=origin)
     if peachpy.stream.active_stream is not None:
         peachpy.stream.active_stream.add_instruction(instruction)
     return instruction

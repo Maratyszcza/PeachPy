@@ -7,6 +7,7 @@ import peachpy.arm.abi
 import peachpy.arm.isa
 
 from peachpy.arm.microarchitecture import Microarchitecture
+from peachpy.arm.formats import AssemblyFormat, HighRegisterStrategy
 from peachpy.arm.registers import GeneralPurposeRegister, SRegister, DRegister, QRegister, WMMXRegister, \
     r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, lr, pc, \
     s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, \
@@ -75,6 +76,7 @@ from peachpy.arm.generic import \
     MOVSVS, MOVSVC, MOVSHI, MOVSLS, MOVSGE, MOVSLT, MOVSGT, MOVSLE, \
     LDR, LDRH, LDRSH, LDRB, LDRSB, \
     STR, STRB, STRH, \
+    PUSH, POP, PUSH_W, POP_W, STMDB, LDMIA, STMIA, LDMDB, \
     B, BEQ, BNE, BCS, BHS, BCC, BLO, BMI, BPL, BVS, BVC, BHI, BLS, BGE, BLT, BGT, BLE, \
     BKPT
 

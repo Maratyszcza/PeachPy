@@ -40,5 +40,17 @@ from peachpy.literal import Constant
 from peachpy.function import Argument
 
 
+class ConstantBucket:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.constants = []
+    
+    def add(self, constant):
+        self.constants.append(constant)
+    
+    def is_full(self):
+        return False  # Simple implementation for now
+
+
 class RegisterAllocationError(Exception):
     pass

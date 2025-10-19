@@ -108,9 +108,9 @@ class LoadArgumentPseudoInstruction(Instruction):
                 self.destination = destination
             else:
                 raise ValueError('Destination register %s is too narrow for the argument %s' % (destination, argument))
-        elif destination.is_s_register() and source.ctype == Yep32f:
+        elif destination.is_s_register() and source.c_type == Yep32f:
             self.destination = destination
-        elif destination.is_d_register() and source.ctype == Yep64f:
+        elif destination.is_d_register() and source.c_type == Yep64f:
             self.destination = destination
         else:
             raise ValueError('Unsupported combination of instruction operands')
@@ -277,16 +277,16 @@ class LOAD:
                 else:
                     raise NotImplementedError("TODO: Handle 8-byte integers")
             elif argument.is_floating_point:
-                if argument.ctype == Yep32f:
+                if argument.c_type == Yep32f:
                     register = SRegister()
                     LOAD.ARGUMENT(register, argument)
-                elif argument.ctype == Yep64f:
+                elif argument.c_type == Yep64f:
                     register = DRegister()
                     LOAD.ARGUMENT(register, argument)
                 else:
-                    raise TypeError("Unknown floating-point type %s" % argument.ctype)
+                    raise TypeError("Unknown floating-point type %s" % argument.c_type)
             else:
-                raise TypeError("Unknown argument type %s" % argument.ctype)
+                raise TypeError("Unknown argument type %s" % argument.c_type)
             registers.append(register)
         return tuple(registers)
 

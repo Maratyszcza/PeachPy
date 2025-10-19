@@ -4,9 +4,9 @@
 
 class Extension:
     def __init__(self, name):
-        if name in {'V4', 'V5', 'V5E', 'V6', 'V6K', 'V7', 'V7MP', 'Div', 'Thumb', 'Thumb2',
+        if name in {'V4', 'V5', 'V5E', 'V6', 'V6K', 'V7', 'V7MP', 'V7M', 'Div', 'Thumb', 'Thumb2',
                     'VFP', 'VFP2', 'VFP3', 'VFPd32', 'VFPHP', 'VFP4', 'VFPVectorMode',
-                    'XScale', 'WMMX', 'WMMX2', 'NEON', 'NEONHP', 'NEON2'}:
+                    'XScale', 'WMMX', 'WMMX2', 'NEON', 'NEONHP', 'NEON2', 'DSP'}:
             self.name = name
         else:
             raise ValueError('Invalid ISA extension: {0} is not supported on this architecture'.format(name))
@@ -34,8 +34,11 @@ class Extension:
             'V7': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7],
             'V7MP': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7,
                      Extension.V7MP],
+            'V7M': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7,
+                    Extension.V7M],
             'Div': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7,
                     Extension.V7MP, Extension.Div],
+            'DSP': [Extension.DSP],
             'Thumb': [Extension.Thumb],
             'Thumb2': [Extension.Thumb, Extension.Thumb2],
             'VFP': [Extension.VFP],
@@ -60,13 +63,16 @@ class Extension:
         return {
             'V4': [Extension.V4],
             'V5': [Extension.V4, Extension.V5],
-            'V5E': [Extension.V4, Extension.V5. Extension.V5E],
+            'V5E': [Extension.V4, Extension.V5, Extension.V5E],
             'V6': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6],
             'V6K': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K],
             'V7': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7],
             'V7MP': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7,
                      Extension.V7MP],
+            'V7M': [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7,
+                    Extension.V7M],
             'Div': [Extension.Div],
+            'DSP': [Extension.DSP],
             'Thumb': [Extension.Thumb],
             'Thumb2': [Extension.Thumb, Extension.Thumb2],
             'VFP': [Extension.VFP],
@@ -93,8 +99,8 @@ class Extension:
     def __str__(self):
         return self.name
 
-    V4, V5, V5E, V6, V6K, V7, V7MP = None, None, None, None, None, None, None
-    Div = None
+    V4, V5, V5E, V6, V6K, V7, V7MP, V7M = None, None, None, None, None, None, None, None
+    Div, DSP = None, None
     Thumb, Thumb2 = None, None
     VFP, VFP2, VFP3, VFP4 = None, None, None, None
     VFPVectorMode, VFPd32, VFPHP = None, None, None
@@ -109,7 +115,9 @@ Extension.V6 = Extension('V6')
 Extension.V6K = Extension('V6K')
 Extension.V7 = Extension('V7')
 Extension.V7MP = Extension('V7MP')
+Extension.V7M = Extension('V7M')
 Extension.Div = Extension('Div')
+Extension.DSP = Extension('DSP')
 Extension.Thumb = Extension('Thumb')
 Extension.Thumb2 = Extension('Thumb2')
 Extension.VFP = Extension('VFP')
@@ -125,8 +133,8 @@ Extension.WMMX2 = Extension('WMMX2')
 Extension.NEON = Extension('NEON')
 Extension.NEONHP = Extension('NEONHP')
 Extension.NEON2 = Extension('NEON2')
-Extension.All = [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7, Extension.V7MP,
-                 Extension.Div, Extension.Thumb, Extension.Thumb2,
+Extension.All = [Extension.V4, Extension.V5, Extension.V5E, Extension.V6, Extension.V6K, Extension.V7, Extension.V7MP, Extension.V7M,
+                 Extension.Div, Extension.DSP, Extension.Thumb, Extension.Thumb2,
                  Extension.VFP, Extension.VFP2, Extension.VFP3, Extension.VFP4, Extension.VFPd32, Extension.VFPHP,
                  Extension.VFPVectorMode, Extension.XScale, Extension.WMMX, Extension.WMMX2,
                  Extension.NEON, Extension.NEONHP, Extension.NEON2]

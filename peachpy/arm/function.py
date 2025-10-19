@@ -14,17 +14,30 @@ active_function = None
 class Function(object):
     def __init__(self, name, arguments, return_type=None,
                  target=Microarchitecture.Default,
-                 abi=None,
+                 abi=None, assembly_format=None, high_register_strategy=None,
                  collect_origin=False, dump_intermediate_assembly=False,
                  report_generation=True, report_live_registers=False):
         self.name = name
         self.arguments = arguments
         self.return_type = return_type
+        
+        # Set default assembly format to GAS if not specified
+        if assembly_format is None:
+            from peachpy.arm.formats import AssemblyFormat
+            assembly_format = AssemblyFormat.GAS
+        self.assembly_format = assembly_format
+        
+        # Set default high register strategy if not specified
+        if high_register_strategy is None:
+            from peachpy.arm.formats import HighRegisterStrategy
+            high_register_strategy = HighRegisterStrategy.AUTO
+        self.high_register_strategy = high_register_strategy
+        
         for argument in self.arguments:
             argument.stack_offset = None
             argument.register = None
             if argument.is_size_integer or argument.is_pointer_integer or argument.is_pointer:
-                argument.ctype.size = abi.pointer_size
+                argument.c_type.size = abi.pointer_size
             assert argument.size
         self.target = target
         self.abi = abi
@@ -35,9 +48,9 @@ class Function(object):
         self.ticks = None
 
         # Assign argument locations
-        from peachpy.arm.abi import ABI
+        from peachpy.arm.abi import arm_gnueabi, arm_gnueabihf
         from peachpy.arm.registers import r0, r1, r2, r3
-        if abi == ABI.GnuEABI or abi == ABI.GnuEABIHF:
+        if abi == arm_gnueabi or abi == arm_gnueabihf:
             # Up to 4 first arguments are passed in registers, others passed through stack
             # Arguments smaller than 4 bytes are extended to 4 bytes (both when passed on stack or in a register).
             # 8-byte arguments occupy 2 general-purpose registers or 8 bytes on stack. When they are passed in
@@ -169,6 +182,18 @@ class Function(object):
         else:
             self.detach()
 
+    def find_argument(self, argument_target):
+        from peachpy import Argument
+        assert isinstance(argument_target, (Argument, str)), \
+            "Either Argument object or argument name expected"
+        if isinstance(argument_target, Argument):
+            if argument_target in self.arguments:
+                return argument_target
+            else:
+                return None
+        else:
+            return next((argument for argument in self.arguments if argument.name == argument_target), None)
+
     def detach(self):
         import peachpy.stream
         global active_function
@@ -180,6 +205,16 @@ class Function(object):
 
     @property
     def assembly(self):
+        """Generate assembly code in the specified format."""
+        from peachpy.arm.formats import AssemblyFormat
+        
+        if self.assembly_format == AssemblyFormat.ARMCC:
+            return self._generate_armcc_assembly()
+        else:  # Default to GAS format
+            return self._generate_gas_assembly()
+
+    def _generate_gas_assembly(self):
+        """Generate assembly code in GNU Assembler (GAS) format."""
         from peachpy.arm.instructions import Instruction
         from peachpy.arm.generic import BranchInstruction
         from peachpy.arm.pseudo import LabelQuasiInstruction
@@ -228,6 +263,57 @@ class Function(object):
         assembly += os.linesep
         return assembly
 
+    def _generate_armcc_assembly(self):
+        """Generate assembly code in ARM Compiler (ARMCC) format."""
+        from peachpy.arm.instructions import Instruction
+        from peachpy.arm.generic import BranchInstruction
+        from peachpy.arm.pseudo import LabelQuasiInstruction
+        import os
+
+        function_label = self.name
+        constants_label = self.name + "_constants"
+        assembly = ""
+        
+        # ARMCC constants section
+        if len(self.constants) > 0:
+            assembly += "        AREA    |.constdata|, DATA, READONLY" + os.linesep
+            assembly += constants_label + os.linesep
+            data_declaration_map = {8: "DCB", 16: "DCW", 32: "DCD", 64: "DCDU", 128: "DCDU"}
+            for constant_bucket in self.constants:
+                for constant in constant_bucket.constants:
+                    assembly += "{Label}    {Declaration}    {Value}"\
+                        .format(Label=constant.label,
+                                Declaration=data_declaration_map[constant.size],
+                                Value=", ".join([str(constant)] * constant.repeats)) + os.linesep
+            assembly += os.linesep
+
+        # ARMCC code section
+        assembly += "        AREA    |.text|, CODE, READONLY" + os.linesep
+        assembly += "        " + self.armcc_arch_spec + os.linesep
+        if self.armcc_fpu_spec:
+            assembly += "        " + self.armcc_fpu_spec + os.linesep
+        assembly += os.linesep
+        assembly += function_label + "    PROC" + os.linesep
+        assembly += "        EXPORT  " + function_label + os.linesep
+        
+        for instruction in self.instructions:
+            if isinstance(instruction, BranchInstruction):
+                assembly += "        " + "{0} {1}_{2}"\
+                    .format(instruction.name, self.name, instruction.operands[0].label) + os.linesep
+            elif isinstance(instruction, Instruction):
+                constant = instruction.get_constant()
+                if constant is not None:
+                    constant.prefix = constants_label
+                assembly += "        " + str(instruction) + os.linesep
+            elif isinstance(instruction, LabelQuasiInstruction):
+                assembly += "{0}_{1}".format(self.name, instruction.name) + os.linesep
+            else:
+                assembly += "        " + str(instruction) + os.linesep
+        
+        assembly += "        ENDP" + os.linesep
+        assembly += "        END" + os.linesep
+        return assembly
+
     @property
     def gnu_arch_spec(self):
         from peachpy.arm.isa import Extension
@@ -236,6 +322,8 @@ class Function(object):
             return ".cpu cortex-a15"
         elif Extension.V7MP in isa_extensions:
             return ".cpu cortex-a9"
+        elif Extension.V7M in isa_extensions:
+            return ".arch armv7-m"
         elif Extension.V7 in isa_extensions:
             return ".arch armv7-a"
         elif Extension.V6K in isa_extensions:
@@ -272,6 +360,47 @@ class Function(object):
             return
         elif Extension.VFP3 in isa_extensions:
             return ".fpu vfp"
+        else:
+            return None
+
+    @property
+    def armcc_arch_spec(self):
+        """Generate ARMCC-compatible architecture specification."""
+        from peachpy.arm.isa import Extension
+        isa_extensions = self.isa_extensions
+        if Extension.V7M in isa_extensions:
+            return "ARM"
+        elif Extension.V7MP in isa_extensions:
+            return "ARM"
+        elif Extension.V7 in isa_extensions:
+            return "ARM"
+        elif Extension.V6K in isa_extensions:
+            return "ARM"
+        elif Extension.V6 in isa_extensions:
+            return "ARM"
+        elif Extension.V5E in isa_extensions:
+            return "ARM"
+        else:
+            return "ARM"
+
+    @property
+    def armcc_fpu_spec(self):
+        """Generate ARMCC-compatible FPU specification."""
+        from peachpy.arm.isa import Extension
+        isa_extensions = self.isa_extensions
+        if Extension.NEON2 in isa_extensions or Extension.VFP4 in isa_extensions:
+            return "REQUIRE VFPv4"
+        elif Extension.NEONHP in isa_extensions or \
+                Extension.VFPHP in isa_extensions and Extension.NEON in isa_extensions:
+            return "REQUIRE VFPv3_FP16"
+        elif Extension.NEON in isa_extensions:
+            return "REQUIRE VFPv3"
+        elif Extension.VFPHP in isa_extensions:
+            return "REQUIRE VFPv3_FP16"
+        elif Extension.VFP3 in isa_extensions:
+            return "REQUIRE VFPv3"
+        elif Extension.VFP in isa_extensions or Extension.VFP2 in isa_extensions:
+            return "REQUIRE VFPv2"
         else:
             return None
 
@@ -445,7 +574,7 @@ class Function(object):
                             live_registers[instruction_live_register.id] = instruction_live_register.mask
 
                     instruction.live_registers = set([Register.from_parts(id, mask, expand=True)
-                                                      for (id, mask) in live_registers.iteritems()])
+                                                      for (id, mask) in live_registers.items()])
                 elif isinstance(instruction, LabelQuasiInstruction):
                     for entry_point in instruction.input_branches:
                         if not instructions[entry_point].is_visited:
@@ -469,7 +598,7 @@ class Function(object):
     # 			if isinstance(instruction, Instruction):
     # 				for live_register in instruction.live_registers:
     # 					live_registers[live_register.regtype].add(live_register)
-    # 				for register_type in live_registers.iterkeys():
+    # 				for register_type in live_registers.keys():
     # 					if len(live_registers[register_type]) > len(available_registers[register_type]):
     # 						raise ValueError("Not enough available registers to allocate live registers at instruction {0}".format(instruction))
 
@@ -581,7 +710,7 @@ class Function(object):
                                 else:
                                     # Check that allocation bitboards do not overlap:
                                     allocation_bitboard = 0
-                                    for bitboard in register_id_map.itervalues():
+                                    for bitboard in register_id_map.values():
                                         if (allocation_bitboard & bitboard) == 0:
                                             allocation_bitboard |= bitboard
                                         else:
@@ -633,7 +762,7 @@ class Function(object):
                                 else:
                                     # Check that allocation bitboards do not overlap:
                                     allocation_bitboard = 0
-                                    for bitboard in register_id_map.itervalues():
+                                    for bitboard in register_id_map.values():
                                         if (allocation_bitboard & bitboard) == 0:
                                             allocation_bitboard |= bitboard
                                         else:
@@ -656,7 +785,7 @@ class Function(object):
                         assert False
         report_register_constraints = False
         if report_register_constraints:
-            for (register_list, options) in constraints.iteritems():
+            for (register_list, options) in constraints.items():
                 print("REGISTER CONSTRAINTS: ", map(str, register_list))
                 for option in options:
                     print("\t", map(lambda t: "%016X" % t, option))
@@ -664,14 +793,14 @@ class Function(object):
         # Merging of different groups sharing a register will be implemented here sometime
 
         # Check that each register id appears only once
-        constrained_register_id_list = [register_id for register_id_list in constraints.iterkeys() for register_id in
+        constrained_register_id_list = [register_id for register_id_list in constraints.keys() for register_id in
                                         register_id_list]
         assert (len(constrained_register_id_list) == len(set(constrained_register_id_list)))
         constrained_register_id_set = set(constrained_register_id_list)
 
         # Create a map from constrained register to constrained register group
         # 		constrained_register_map = dict()
-        # 		for register_id_list in constraints.iterkeys():
+        # 		for register_id_list in constraints.keys():
         # 			for register_id in register_id_list:
         # 				constrained_register_map[register_id] = register_id_list
 
@@ -679,19 +808,19 @@ class Function(object):
         for constrained_register_id in constrained_register_id_list:
             while (constrained_register_id, Register.VFPType) in self.unallocated_registers:
                 self.unallocated_registers.remove((constrained_register_id, Register.VFPType))
-        for register_id_list in constraints.iterkeys():
+        for register_id_list in constraints.keys():
             self.unallocated_registers.append((register_id_list, Register.VFPType))
 
         # 		print "UNALLOCATED REGISTERS:"
         # 		print "\t", self.unallocated_registers
 
         # Remove individual registers from the sets of conflicting registers and add the register group instead
-        # 		for register_id_list in constraints.iterkeys():
+        # 		for register_id_list in constraints.keys():
         # 			self.conflicting_registers[register_id_list] = set()
         # 		for constrained_register_id in constrained_register_id_list:
         # 			self.conflicting_registers[constrained_register_map[constrained_register_id]].update(self.conflicting_registers[constrained_register_id])
         # 			del self.conflicting_registers[constrained_register_id]
-        # 		for conflicting_registers_set in self.conflicting_registers.itervalues():
+        # 		for conflicting_registers_set in self.conflicting_registers.values():
         # 			for constrained_register_id in constrained_register_id_list:
         # 				if constrained_register_id in conflicting_registers_set:
         # 					conflicting_registers_set.remove(constrained_register_id)
@@ -700,7 +829,7 @@ class Function(object):
         # Remove individual registers from the lists of allocation options and add the register group instead
         for constrained_register_id in constrained_register_id_list:
             del self.allocation_options[constrained_register_id]
-        for register_id_list, constrained_options in constraints.iteritems():
+        for register_id_list, constrained_options in constraints.items():
             self.allocation_options[register_id_list] = list(options)
 
     def allocate_registers(self):
@@ -729,7 +858,7 @@ class Function(object):
             for virtual_register_id, physical_register_bitboard in zip(virtual_register_id_list,
                                                                        physical_register_bitboard_list):
                 for conflicting_register_id in self.conflicting_registers[virtual_register_id]:
-                    for allocation_key, allocation_option in self.allocation_options.iteritems():
+                    for allocation_key, allocation_option in self.allocation_options.items():
                         if isinstance(allocation_key, tuple):
                             if conflicting_register_id in allocation_key:
                                 conflicting_register_index = allocation_key.index(conflicting_register_id)
@@ -907,7 +1036,8 @@ class Function(object):
         from peachpy.arm.instructions import Instruction
         from peachpy.arm.registers import QRegister, DRegister
         from peachpy.arm.isa import Extension, Extensions
-        isa_extensions = Extensions()
+        # Start with the target microarchitecture's extensions
+        isa_extensions = Extensions(*self.target.extensions)
         for instruction in self.instructions:
             if isinstance(instruction, Instruction):
                 for extension in instruction.isa_extensions:
@@ -1125,32 +1255,113 @@ class StackFrame(object):
 
     def generate_prologue(self):
         from peachpy.stream import InstructionStream
-        from peachpy.arm.registers import r3
-        from peachpy.arm.generic import PUSH
+        from peachpy.arm.registers import r3, sp
+        from peachpy.arm.generic import PUSH, PUSH_W, STMDB
         from peachpy.arm.vfpneon import VPUSH
+        from peachpy.arm.isa import Extension
+        from peachpy.arm.formats import HighRegisterStrategy
+        
         with InstructionStream() as instructions:
             if self.general_purpose_registers:
                 general_purpose_registers = list(self.general_purpose_registers)
-                if len(general_purpose_registers) % 2 == 1:
-                    general_purpose_registers.append(r3)
-                PUSH(tuple(sorted(general_purpose_registers, key=lambda reg: reg.get_physical_number())))
+                
+                # Check if we're targeting ARMv7-M (Cortex-M) processors
+                function = self.get_function()
+                is_armv7m = function and Extension.V7M in function.target.extensions
+                
+                if is_armv7m:
+                    # Separate low registers (r0-r7) from high registers (r8-r15)
+                    low_registers = [reg for reg in general_purpose_registers if reg.get_physical_number() <= 7]
+                    high_registers = [reg for reg in general_purpose_registers if reg.get_physical_number() > 7]
+                    
+                    # Handle low registers with standard PUSH (16-bit encoding)
+                    if low_registers:
+                        # Ensure even number of registers for stack alignment
+                        if len(low_registers) % 2 == 1:
+                            low_registers.append(r3)
+                        PUSH(tuple(sorted(low_registers, key=lambda reg: reg.get_physical_number())))
+                    
+                    # Handle high registers based on strategy
+                    if high_registers:
+                        strategy = function.high_register_strategy
+                        
+                        if strategy == HighRegisterStrategy.PUSH_W or \
+                           (strategy == HighRegisterStrategy.AUTO and function.assembly_format.name == "GAS"):
+                            # Use PUSH.W for high registers (modern Thumb-2)
+                            PUSH_W(tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                        elif strategy == HighRegisterStrategy.STMDB or \
+                             (strategy == HighRegisterStrategy.AUTO and function.assembly_format.name == "ARMCC"):
+                            # Use STMDB for maximum compatibility
+                            STMDB(sp, tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                        else:
+                            # Fallback to PUSH.W
+                            PUSH_W(tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                else:
+                    # Standard ARM (non-Cortex-M) handling
+                    if len(general_purpose_registers) % 2 == 1:
+                        general_purpose_registers.append(r3)
+                    PUSH(tuple(sorted(general_purpose_registers, key=lambda reg: reg.get_physical_number())))
+                    
             if self.d_registers:
                 VPUSH(tuple(sorted(self.d_registers, key=lambda reg: reg.get_physical_number())))
         return list(iter(instructions))
 
     def generate_epilogue(self):
         from peachpy.stream import InstructionStream
-        from peachpy.arm.registers import r3
-        from peachpy.arm.generic import POP
+        from peachpy.arm.registers import r3, sp
+        from peachpy.arm.generic import POP, POP_W, LDMIA
         from peachpy.arm.vfpneon import VPOP
+        from peachpy.arm.isa import Extension
+        from peachpy.arm.formats import HighRegisterStrategy
+        
         with InstructionStream() as instructions:
             if self.d_registers:
                 VPOP(tuple(sorted(self.d_registers, key=lambda reg: reg.get_physical_number())))
+                
             if self.general_purpose_registers:
                 general_purpose_registers = list(self.general_purpose_registers)
-                if len(general_purpose_registers) % 2 == 1:
-                    general_purpose_registers.append(r3)
-                POP(tuple(sorted(general_purpose_registers, key=lambda reg: reg.get_physical_number())))
+                
+                # Check if we're targeting ARMv7-M (Cortex-M) processors
+                function = self.get_function()
+                is_armv7m = function and Extension.V7M in function.target.extensions
+                
+                if is_armv7m:
+                    # Separate low registers (r0-r7) from high registers (r8-r15)
+                    low_registers = [reg for reg in general_purpose_registers if reg.get_physical_number() <= 7]
+                    high_registers = [reg for reg in general_purpose_registers if reg.get_physical_number() > 7]
+                    
+                    # Handle high registers first (reverse order of prologue)
+                    if high_registers:
+                        strategy = function.high_register_strategy
+                        
+                        if strategy == HighRegisterStrategy.PUSH_W or \
+                           (strategy == HighRegisterStrategy.AUTO and function.assembly_format.name == "GAS"):
+                            # Use POP.W for high registers
+                            POP_W(tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                        elif strategy == HighRegisterStrategy.STMDB or \
+                             (strategy == HighRegisterStrategy.AUTO and function.assembly_format.name == "ARMCC"):
+                            # Use LDMIA for compatibility
+                            LDMIA(sp, tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                        else:
+                            # Fallback to POP.W
+                            POP_W(tuple(sorted(high_registers, key=lambda reg: reg.get_physical_number())))
+                    
+                    # Handle low registers with standard POP (16-bit encoding)
+                    if low_registers:
+                        # Ensure even number of registers for stack alignment
+                        if len(low_registers) % 2 == 1:
+                            low_registers.append(r3)
+                        POP(tuple(sorted(low_registers, key=lambda reg: reg.get_physical_number())))
+                else:
+                    # Standard ARM (non-Cortex-M) handling
+                    if len(general_purpose_registers) % 2 == 1:
+                        general_purpose_registers.append(r3)
+                    POP(tuple(sorted(general_purpose_registers, key=lambda reg: reg.get_physical_number())))
         return list(iter(instructions))
+
+    def get_function(self):
+        """Get the active function that owns this stack frame."""
+        from peachpy.arm.function import active_function
+        return active_function
 
 

@@ -30,6 +30,7 @@ class Microarchitecture:
     XScale = None
     ARM9, ARM11 = None, None
     CortexA5, CortexA7, CortexA8, CortexA9, CortexA12, CortexA15 = None, None, None, None, None, None
+    CortexM0, CortexM0Plus, CortexM1, CortexM3, CortexM4, CortexM7 = None, None, None, None, None, None
     Scorpion, Krait = None, None
     PJ4 = None
 
@@ -58,3 +59,13 @@ Microarchitecture.Krait = Microarchitecture('Krait', [Extension.V7MP, Extension.
                                                       Extension.VFP4, Extension.VFPd32, Extension.NEON2])
 Microarchitecture.PJ4 = Microarchitecture('PJ4', [Extension.V7, Extension.Thumb2,
                                                   Extension.VFP3, Extension.WMMX2])
+
+# Cortex-M series microarchitectures
+Microarchitecture.CortexM0 = Microarchitecture('Cortex M0', [Extension.V6, Extension.Thumb2])
+Microarchitecture.CortexM0Plus = Microarchitecture('Cortex M0+', [Extension.V6, Extension.Thumb2])
+Microarchitecture.CortexM1 = Microarchitecture('Cortex M1', [Extension.V6, Extension.Thumb2])
+Microarchitecture.CortexM3 = Microarchitecture('Cortex M3', [Extension.V7M, Extension.Thumb2])
+Microarchitecture.CortexM4 = Microarchitecture('Cortex M4', [Extension.V7M, Extension.Thumb2, Extension.DSP,
+                                                             Extension.VFP4])
+Microarchitecture.CortexM7 = Microarchitecture('Cortex M7', [Extension.V7M, Extension.Thumb2, Extension.DSP,
+                                                             Extension.VFP4, Extension.VFPd32])
