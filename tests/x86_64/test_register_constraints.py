@@ -1,5 +1,5 @@
 import unittest
-from peachpy.x86_64 import *
+from nervapy.x86_64 import *
 
 
 class SALwithCL(unittest.TestCase):

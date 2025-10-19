@@ -1,6 +1,6 @@
 import unittest
-from peachpy import *
-from peachpy.x86_64 import *
+from nervapy import *
+from nervapy.x86_64 import *
 
 
 class EndOfInstructionRelocation(unittest.TestCase):

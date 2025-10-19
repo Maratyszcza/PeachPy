@@ -1,0 +1,109 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety
+          pip install -r requirements.txt
+      
+      - name: Run security checks with bandit
+        run: bandit -r nervapy/ -f json -o bandit-report.json || true
+        continue-on-error: true
+      
+      - name: Run safety checks
+        run: safety check --json --output safety-report.json || true
+        continue-on-error: true
+      
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+
+  type-checking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy
+          pip install -r requirements.txt
+          pip install -e .
+      
+      - name: Run type checking
+        run: mypy nervapy/ --ignore-missing-imports --no-strict-optional
+        continue-on-error: true
+
+  code-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort
+      
+      - name: Check code formatting with black
+        run: black --check --diff nervapy/
+        continue-on-error: true
+      
+      - name: Check import sorting with isort
+        run: isort --check-only --diff nervapy/
+        continue-on-error: true
+
+  complexity-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon xenon
+      
+      - name: Analyze code complexity
+        run: |
+          echo "=== Cyclomatic Complexity ==="
+          radon cc nervapy/ -a
+          echo "=== Maintainability Index ==="
+          radon mi nervapy/
+          echo "=== Complexity Check ==="
+          xenon --max-absolute B --max-modules A --max-average A nervapy/ || true
+        continue-on-error: true

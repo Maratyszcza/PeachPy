@@ -1,6 +1,6 @@
 import unittest
 from tests import equal_codes
-from peachpy.x86_64 import *
+from nervapy.x86_64 import *
 
 
 class TestInvalidLabelName(unittest.TestCase):

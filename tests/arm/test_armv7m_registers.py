@@ -1,9 +1,9 @@
 import unittest
-from peachpy import *
-from peachpy.arm import *
-from peachpy.arm.abi import arm_gnueabihf
-from peachpy.arm.microarchitecture import Microarchitecture
-from peachpy.arm.formats import AssemblyFormat
+from nervapy import *
+from nervapy.arm import *
+from nervapy.arm.abi import arm_gnueabihf
+from nervapy.arm.microarchitecture import Microarchitecture
+from nervapy.arm.formats import AssemblyFormat
 
 
 class TestARMv7MRegisterConstraints(unittest.TestCase):

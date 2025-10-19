@@ -1,7 +1,7 @@
 import unittest
-from peachpy import *
-from peachpy.arm import *
-from peachpy.arm.abi import arm_gnueabihf
+from nervapy import *
+from nervapy.arm import *
+from nervapy.arm.abi import arm_gnueabihf
 
 
 class TestARM(unittest.TestCase):

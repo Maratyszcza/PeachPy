@@ -1,6 +1,6 @@
 import unittest
-from peachpy import *
-from peachpy.x86_64 import *
+from nervapy import *
+from nervapy.x86_64 import *
 
 abi_list = [abi.microsoft_x64_abi, abi.system_v_x86_64_abi, abi.linux_x32_abi, abi.native_client_x86_64_abi]
 

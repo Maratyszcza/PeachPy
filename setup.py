@@ -23,7 +23,7 @@ class DevelopGenerateInstructions(develop):
         develop.run(self)
 
 class GenerateInstructions(Command):
-    description = "Generate PeachPy instructions from Opcodes DB"
+    description = "Generate NervaPy instructions from Opcodes DB"
     user_options = []
 
     def initialize_options(self):
@@ -48,15 +48,15 @@ class GenerateInstructions(Command):
 
 
 setup(
-    name="PeachPy",
+    name="NervaPy",
     version="0.2.0",
-    description="Portable Efficient Assembly Codegen in Higher-level Python",
+    description="Experimental Python framework for exploring advanced program synthesis and transformation techniques",
     author="Marat Dukhan",
     author_email="maratek@gmail.com",
     url="https://github.com/Maratyszcza/PeachPy/",
-    packages=["peachpy", "peachpy.c",
-              "peachpy.common", "peachpy.x86_64", "peachpy.arm",
-              "peachpy.formats", "peachpy.formats.elf", "peachpy.formats.macho", "peachpy.formats.mscoff"],
+    packages=["nervapy", "nervapy.c",
+              "nervapy.common", "nervapy.x86_64", "nervapy.arm",
+              "nervapy.formats", "nervapy.formats.elf", "nervapy.formats.macho", "nervapy.formats.mscoff"],
     keywords=["assembly", "codegen", "x86-64"],
     long_description=read_text_file("README.rst"),
     classifiers=[

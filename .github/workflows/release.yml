@@ -1,0 +1,72 @@
+name: Build and Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      test_build:
+        description: 'Test build without publishing'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build-wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine wheel
+          pip install -r requirements.txt
+
+      - name: Build source distribution (Linux only)
+        if: matrix.os == 'ubuntu-latest'
+        run: python -m build --sdist
+
+      - name: Build wheel
+        run: python -m build --wheel
+
+      - name: Test built wheel
+        run: |
+          pip install dist/*.whl
+          python -c "import nervapy; print('NervaPy version:', nervapy.__version__)"
+          python -c "from nervapy import *; from nervapy.x86_64 import *; print('Import test passed')"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels-${{ matrix.os }}
+          path: dist/
+
+  publish:
+    needs: build-wheels
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: dist/
+          pattern: wheels-*
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true

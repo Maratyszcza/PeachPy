@@ -1,5 +1,5 @@
 import unittest
-from peachpy import *
+from nervapy import *
 
 
 class UInt32(unittest.TestCase):

@@ -1,0 +1,165 @@
+name: Test NervaPy
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths-ignore:
+      - '**.md'
+      - '**.rst'
+      - 'docs/**'
+      - 'logo/**'
+  pull_request:
+    branches: [ main, master, develop ]
+    paths-ignore:
+      - '**.md'
+      - '**.rst'
+      - 'docs/**'
+      - 'logo/**'
+  schedule:
+    # Run tests daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        exclude:
+          # Exclude some combinations to reduce CI load if needed
+          - os: windows-latest
+            python-version: '3.8'
+          - os: macos-latest
+            python-version: '3.8'
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/tests/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install system dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt
+        pip install -r tests/requirements.txt
+    
+    - name: Install NervaPy
+      run: |
+        pip install -e .
+    
+    - name: Test import
+      run: |
+        python -c "import nervapy; print('NervaPy version:', nervapy.__version__)"
+        python -c "from nervapy import *; from nervapy.x86_64 import *; print('Import successful')"
+    
+    - name: Run basic functionality test
+      run: |
+        python -c "
+        from nervapy import *
+        from nervapy.x86_64 import *
+        
+        # Test basic functionality
+        x = Argument(ptr(const_float_), name='x')
+        y = Argument(ptr(const_float_), name='y')
+        
+        with Function('TestFunction', (x, y), float_, target=uarch.default + isa.sse4_2):
+            reg_x = GeneralPurposeRegister64()
+            reg_y = GeneralPurposeRegister64()
+            
+            LOAD.ARGUMENT(reg_x, x)
+            LOAD.ARGUMENT(reg_y, y)
+            
+            xmm_x = XMMRegister()
+            MOVAPS(xmm_x, [reg_x])
+            MOVAPS(xmm2, [reg_y])
+            
+            DPPS(xmm_x, xmm2, 0xF1)
+            
+            RETURN(xmm_x)
+        
+        print('Basic functionality test passed')
+        "
+    
+    - name: Run unit tests
+      run: |
+        pytest tests/ -v --tb=short --maxfail=5
+    
+    - name: Test x86_64 encoding (Linux/macOS only)
+      if: runner.os != 'Windows'
+      run: |
+        pytest tests/x86_64/encoding/ -v --tb=short --maxfail=3
+      continue-on-error: ${{ matrix.python-version == '3.12' }}  # Allow failures on bleeding edge Python
+    
+    - name: Test command line interface
+      run: |
+        python -m nervapy.x86_64 --help
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pylint
+        pip install -r requirements.txt
+        pip install -e .
+    
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 nervapy --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings
+        flake8 nervapy --count --exit-zero --max-complexity=15 --max-line-length=120 --statistics
+      continue-on-error: true
+    
+    - name: Check import structure
+      run: |
+        python -c "
+        import sys
+        import importlib
+        
+        # Test that all major modules can be imported
+        modules = [
+            'nervapy',
+            'nervapy.x86_64',
+            'nervapy.arm',
+            'nervapy.formats.elf',
+            'nervapy.formats.macho',
+            'nervapy.formats.mscoff'
+        ]
+        
+        for module in modules:
+            try:
+                importlib.import_module(module)
+                print(f'✓ {module}')
+            except Exception as e:
+                print(f'✗ {module}: {e}')
+                sys.exit(1)
+        "

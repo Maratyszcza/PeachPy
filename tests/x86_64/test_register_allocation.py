@@ -1,7 +1,7 @@
 import unittest
 from tests import equal_codes
-from peachpy import *
-from peachpy.x86_64 import *
+from nervapy import *
+from nervapy.x86_64 import *
 
 
 class TestExplicitRegisterInputConflict(unittest.TestCase):

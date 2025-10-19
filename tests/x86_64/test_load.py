@@ -1,7 +1,7 @@
 import unittest
 import pytest
-from peachpy import *
-from peachpy.x86_64 import *
+from nervapy import *
+from nervapy.x86_64 import *
 
 
 @pytest.mark.xfail(
